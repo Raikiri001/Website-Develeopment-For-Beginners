@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Step through how a browser tokenises HTML and CSS, then builds the DOM tree, the CSSOM tree and the render tree."
+    />
+    <title>How Browsers Parse HTML and CSS - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>How Browsers Parse HTML &amp; CSS</h1>
+      <div class="header-desc">
+        A browser reads files from top to bottom. Raw bytes are converted to
+        characters, then <strong>tokenised</strong>. HTML tokens build the
+        <strong>DOM tree</strong>, while CSS rules build the
+        <strong>CSSOM tree</strong>. The browser then combines both trees
+        into a <strong>render tree</strong>, which it lays out and paints to
+        produce the visual page.
+      </div>
+    </header>
+
+    <div class="main-container">
+      <!-- Panel 1 -->
+      <div id="ide-panel" class="panel">
+        <div class="panel-header">
+          <div class="header-top">
+            <span>1. Tokenisation</span>
+            <div style="display: flex; gap: 8px">
+              <button class="btn" id="btnParseNext">Parse next</button>
+              <button class="btn" id="btnResetParser">Reset</button>
+            </div>
+          </div>
+          <div class="header-tabs">
+            <button id="tab-ide-html" class="tab-btn active">index.html</button>
+            <button id="tab-ide-css" class="tab-btn">style.css</button>
+          </div>
+        </div>
+        <div class="ide-code-container" id="ide-code">
+          <!-- Lines injected by app.js -->
+        </div>
+        <div id="parser-log">
+          <div class="log-title">Parser tokenisation log:</div>
+          <div id="log-entries"></div>
+        </div>
+      </div>
+
+      <div class="resizer" id="resizer-ide"></div>
+
+      <!-- Panel 2 -->
+      <div id="tree-panel" class="panel">
+        <div class="panel-header">
+          <div class="header-top">
+            <span>2. Tree construction</span>
+            <div style="display: flex; gap: 8px; align-items: center">
+              <button class="btn" id="btnZoomIn">Zoom in</button>
+              <button class="btn" id="btnZoomOut">Zoom out</button>
+              <button class="btn" id="btnZoomReset">Reset</button>
+            </div>
+          </div>
+          <div class="header-tabs">
+            <button id="tab-tree-dom" class="tab-btn active">DOM tree</button>
+            <button id="tab-tree-cssom" class="tab-btn">CSSOM tree</button>
+            <button id="tab-tree-render" class="tab-btn">Render tree</button>
+          </div>
+        </div>
+        <div class="tree-scroll-wrapper" id="tree-scroll-wrapper">
+          <div id="zoom-container">
+            <svg class="connections" id="connections-svg"></svg>
+            <div class="tree-container" id="tree-container">
+              <!-- Tree injected by app.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="resizer" id="resizer-preview"></div>
+
+      <!-- Panel 3 -->
+      <div id="preview-panel" class="panel">
+        <div class="panel-header">
+          <div class="header-top">
+            <span>3. Layout &amp; render</span>
+          </div>
+          <div class="header-tabs">
+            <button class="tab-btn active">Visual output</button>
+          </div>
+        </div>
+        <div class="browser-window">
+          <div class="browser-header">
+            <div class="browser-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="browser-tab">
+              <span class="tab-icon">&#127760;</span>
+              <span class="tab-title" id="browser-tab-title">New Tab</span>
+            </div>
+          </div>
+          <div class="browser-content">
+            <iframe
+              id="preview-frame"
+              sandbox="allow-same-origin allow-scripts"
+              title="Live preview"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast">Error message</div>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

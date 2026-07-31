@@ -1,0 +1,177 @@
+/* Dashboard-specific layout. Relies on tokens.css and base.css for everything else. */
+
+.dashboard-header {
+  padding: var(--space-16) var(--space-6) var(--space-8);
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.dashboard-header h1 {
+  font-size: var(--text-4xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-3);
+}
+
+.dashboard-header p {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  max-width: 640px;
+}
+
+.dashboard-content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 var(--space-6) var(--space-24);
+}
+
+/* ---------- Overview: ring + stat cards ---------- */
+.overview {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-8);
+  align-items: center;
+  padding: var(--space-8);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-12);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+/* ---------- Filter tabs ---------- */
+.filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.filter-tab {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filter-tab:hover {
+  border-color: var(--border-active);
+  color: var(--text-primary);
+}
+
+.filter-tab.active {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--white);
+}
+
+/* ---------- Activity list ---------- */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.activity-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.activity-row:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-active);
+}
+
+.activity-row .activity-main {
+  min-width: 0;
+}
+
+.activity-row .activity-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.activity-row h3 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.activity-row p {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.activity-row .activity-progress {
+  max-width: 320px;
+}
+
+.activity-row .activity-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.activity-row .activity-meta {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.activity-row .activity-meta .last-viewed {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  margin-top: var(--space-2);
+}
+
+.empty-state {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 768px) {
+  .overview {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .activity-row {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+  .activity-row .activity-meta {
+    text-align: left;
+  }
+}

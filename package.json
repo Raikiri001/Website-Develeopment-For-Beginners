@@ -1,0 +1,13 @@
+{
+  "name": "web-dev-for-beginners",
+  "version": "1.0.0",
+  "description": "Interactive theory and practical activities for learning HTML, CSS and how the web works.",
+  "private": true,
+  "scripts": {
+    "start": "serve"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  },
+  "license": "MIT"
+}

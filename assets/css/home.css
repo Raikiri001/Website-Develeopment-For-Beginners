@@ -1,0 +1,105 @@
+/* Homepage-specific layout. Relies on tokens.css and base.css for everything else. */
+
+.hero {
+  padding: var(--space-24) var(--space-6) var(--space-16);
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero .eyebrow {
+  display: inline-block;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  background-color: var(--accent-primary-tint);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  margin-bottom: var(--space-6);
+}
+
+.hero h1 {
+  font-size: var(--text-5xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+  margin-bottom: var(--space-6);
+}
+
+.hero .hero-subtitle {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.hero .hero-subtitle a {
+  font-weight: 700;
+}
+
+.content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 var(--space-6) var(--space-24);
+}
+
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  margin: var(--space-20) 0 var(--space-6);
+  flex-wrap: wrap;
+}
+
+.section-heading h2 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.section-heading p {
+  font-size: var(--text-base);
+  color: var(--text-muted);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-6);
+}
+
+.card .card-progress {
+  margin-top: var(--space-2);
+}
+
+.card .card-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.empty-state {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: var(--space-16) var(--space-4) var(--space-10);
+  }
+  .hero h1 {
+    font-size: var(--text-3xl);
+  }
+  .hero .hero-subtitle {
+    font-size: var(--text-base);
+  }
+}

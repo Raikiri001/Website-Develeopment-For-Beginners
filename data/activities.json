@@ -1,0 +1,18 @@
+[
+  {
+    "id": "dom-parsing",
+    "title": "How Browsers Parse HTML and CSS",
+    "description": "Step through a browser's parser one token at a time and watch it build the DOM tree, the CSSOM tree and the render tree in real time.",
+    "category": "theory",
+    "href": "theory/dom-parsing/",
+    "tags": ["DOM", "CSSOM", "rendering"]
+  },
+  {
+    "id": "html-drag-and-drop",
+    "title": "HTML Structure Trainer",
+    "description": "Thirty drag-and-drop problems that train you to arrange HTML elements in the correct order, from your first heading to a full semantic page layout.",
+    "category": "practical",
+    "href": "practical/html-drag-and-drop/",
+    "tags": ["HTML", "semantics", "structure"]
+  }
+]

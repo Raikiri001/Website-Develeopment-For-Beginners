@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Learn HTML structure through interactive problems. Drag and drop code blocks into the correct order and see your page render live."
+    />
+    <title>HTML Structure Trainer - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <!-- ═══ App Shell ═══ -->
+    <div class="app-shell">
+      <!-- ─── Sidebar ─── -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <div class="logo-icon">&lt;/&gt;</div>
+            <div>
+              <h1>HTML Structure Trainer</h1>
+              <div class="sidebar-subtitle">Drag-and-drop practice</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span id="progressCount">0/30</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <!-- Category List -->
+        <div class="category-list" id="categoryList"></div>
+      </aside>
+
+      <!-- Mobile sidebar overlay -->
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+      <!-- ─── Main Content ─── -->
+      <div class="main-content">
+        <!-- Title Bar -->
+        <div class="title-bar">
+          <div class="title-bar-left">
+            <button
+              class="mobile-toggle"
+              id="mobileToggle"
+              aria-label="Toggle sidebar"
+            >
+              &#9776;
+            </button>
+            <span class="problem-badge" id="titleBarBadge">Ready</span>
+            <h2 id="titleBarTitle">Select a Problem</h2>
+          </div>
+          <div class="title-bar-right">
+            <button class="btn btn-hint" id="btnHint" disabled>
+              Hint
+              <span class="shortcut-hint">&#8984;H</span>
+            </button>
+            <button class="btn" id="btnReset" disabled>&#8635; Reset</button>
+            <button class="btn btn-success" id="btnCheck" disabled>
+              &#10003; Check Solution
+              <span class="shortcut-hint">&#8984;&#9166;</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Description Bar -->
+        <div class="description-bar">
+          <span class="desc-icon">&#9656;</span>
+          <span class="desc-text" id="descText"
+            >Choose a problem from the sidebar to begin.</span
+          >
+        </div>
+
+        <!-- Welcome State (shown when no problem is selected) -->
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon">&#9633;</div>
+          <h2 class="welcome-title">Welcome to the HTML Structure Trainer</h2>
+          <p class="welcome-subtitle">
+            Select a problem from the sidebar to start learning HTML
+            structure. Drag the code blocks into the correct order and watch
+            your page come to life.
+          </p>
+          <div class="welcome-stats">
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">6 Basics</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">6 Lists</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">6 Attributes</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">6 Semantic</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">6 Advanced</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Workspace (hidden until a problem is loaded) -->
+        <div class="workspace" id="workspaceArea" style="display: none">
+          <!-- IDE Panel -->
+          <div class="ide-panel">
+            <div class="panel-tab">
+              <span class="tab-icon">&#9998;</span>
+              <span class="tab-label">Code Blocks</span>
+              <span class="tab-badge" id="blockCount">0</span>
+            </div>
+            <div class="code-area" id="codeArea"></div>
+          </div>
+
+          <!-- Resize Handle -->
+          <div class="resize-handle" id="resizeHandle"></div>
+
+          <!-- Preview Panel -->
+          <div class="preview-panel">
+            <div class="panel-tab">
+              <span class="tab-icon">&#9654;</span>
+              <span class="tab-label">Live Preview</span>
+              <span class="tab-badge">LIVE</span>
+            </div>
+            <iframe
+              class="preview-iframe"
+              id="previewFrame"
+              sandbox="allow-same-origin"
+              title="Live HTML Preview"
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <div class="status-left">
+            <span class="status-item" id="statusCategory">No category</span>
+            <span class="status-item">|</span>
+            <span class="status-item" id="statusProblem"
+              >No problem selected</span
+            >
+          </div>
+          <div class="status-right">
+            <span class="status-item" id="statusBlocks">No blocks yet</span>
+            <span class="status-item">|</span>
+            <span class="status-item">HTML</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Success Overlay ═══ -->
+    <div class="success-overlay" id="successOverlay">
+      <div class="success-card">
+        <div class="success-icon">&#10003;</div>
+        <h2 class="success-title">Problem Solved!</h2>
+        <p class="success-subtitle">
+          Great work! You've arranged the HTML correctly.
+        </p>
+        <div style="display: flex; gap: 10px; justify-content: center">
+          <button class="btn" id="btnStayHere">Stay Here</button>
+          <button class="btn btn-primary" id="btnNextProblem">
+            Next Problem &#8594;
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Confetti Container ═══ -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- ═══ Toast Container ═══ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ═══ Developer Guard Overlay ═══ -->
+    <div class="dev-guard-overlay" id="devGuardOverlay">
+      <div class="guard-icon">&#9632;</div>
+      <h2 class="guard-title">Access Restricted</h2>
+      <p class="guard-text">
+        Developer tools are disabled for this exercise.<br />
+        Focus on solving the problem by arranging the code blocks!
+      </p>
+    </div>
+
+    <!-- Scripts (problems first, then app logic) -->
+    <script src="../../assets/js/progress.js"></script>
+    <script src="problems.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

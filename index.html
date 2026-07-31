@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Web Dev For Beginners: interactive theory and practical activities for learning HTML, CSS and how browsers work."
+    />
+    <title>Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/home.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="#theory-heading">Theory</a>
+        <a href="#practical-heading">Practical</a>
+        <a href="dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="hero">
+        <p class="eyebrow">Learn by reading, then doing</p>
+        <h1>Understand the web, then build it with your own hands</h1>
+        <p class="hero-subtitle">
+          Each theory activity explains a concept interactively. Each
+          practical activity gives you hands-on problems to solve. Pick a
+          card below to get started, and track your progress on the
+          <a href="dashboard/">dashboard</a>.
+        </p>
+      </div>
+
+      <div class="content" id="activityContent">
+        <!-- Sections are rendered here by assets/js/home.js from data/activities.json -->
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built for learning HTML, CSS and JavaScript from first principles.</p>
+    </footer>
+
+    <script src="assets/js/progress.js"></script>
+    <script src="assets/js/home.js"></script>
+  </body>
+</html>

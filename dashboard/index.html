@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Track your progress across every Web Dev For Beginners activity: what's completed, what's in progress, and what's still to try."
+    />
+    <title>Dashboard - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/dashboard.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../#theory-heading">Theory</a>
+        <a href="../#practical-heading">Practical</a>
+        <a href="./" class="active">Dashboard</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="dashboard-header">
+        <h1>Your learning dashboard</h1>
+        <p>
+          See what you've completed, what's in progress, and what you
+          haven't tried yet. This is tracked in your browser, so it's yours
+          alone and stays private to this device.
+        </p>
+      </div>
+
+      <div class="dashboard-content">
+        <section class="overview" id="overview">
+          <!-- Progress ring + stat cards rendered by dashboard.js -->
+        </section>
+
+        <div class="filter-tabs" id="filterTabs">
+          <!-- Filter buttons rendered by dashboard.js -->
+        </div>
+
+        <div class="activity-list" id="activityList">
+          <!-- Activity rows rendered by dashboard.js -->
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built for learning HTML, CSS and JavaScript from first principles.</p>
+    </footer>
+
+    <script src="../assets/js/progress.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
+</html>
