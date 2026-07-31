@@ -512,43 +512,6 @@ body {
   font-style: italic;
 }
 
-/* Drop indicator */
-.drop-indicator {
-  position: absolute;
-  height: 2px;
-  left: 12px;
-  right: 12px;
-  background: var(--accent-primary);
-  border-radius: 2px;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  pointer-events: none;
-  z-index: 10;
-}
-
-.drop-indicator.visible {
-  opacity: 1;
-}
-
-.drop-indicator.visible::before,
-.drop-indicator.visible::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  transform: translateY(-50%);
-}
-
-.drop-indicator.visible::before {
-  left: -3px;
-}
-.drop-indicator.visible::after {
-  right: -3px;
-}
-
 /* ---------- Preview Panel ---------- */
 .preview-panel {
   flex: 1;

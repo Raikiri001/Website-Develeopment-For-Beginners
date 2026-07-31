@@ -3,7 +3,7 @@
 An interactive website for learning web development, combining short **theory**
 explainers with hands-on **practical** activities. 
 
-**Live site:** https://raikiri001.github.io/Web-Dev-For-Beginners/
+**Live site:** https://raikiri001.github.io/Website-Develeopment-For-Beginners/
 
 ## What's here
 

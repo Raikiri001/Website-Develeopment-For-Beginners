@@ -287,11 +287,6 @@
   function renderBlocks(animate) {
     dom.codeArea.innerHTML = "";
 
-    // Create the drop indicator line (reused during drag)
-    const indicator = document.createElement("div");
-    indicator.className = "drop-indicator";
-    indicator.id = "dropIndicator";
-
     state.blocks.forEach((code, index) => {
       const block = document.createElement("div");
       block.className = "code-block" + (animate ? " animate-in" : "");
@@ -308,8 +303,6 @@
       // Drag events
       block.addEventListener("dragstart", onDragStart);
       block.addEventListener("dragend", onDragEnd);
-      block.addEventListener("dragover", onDragOver);
-      block.addEventListener("drop", onDrop);
 
       // Touch events for mobile
       block.addEventListener("touchstart", onTouchStart, { passive: false });
@@ -318,17 +311,66 @@
 
       dom.codeArea.appendChild(block);
     });
-
-    // Append the floating drop indicator
-    dom.codeArea.appendChild(indicator);
   }
 
-  // ── Drag & Drop with Insertion Line ──────────────────
-  let dropInsertIndex = null; // where to insert the dragged block
+  // ── Live Drag Reordering (blocks shift as you drag) ──
+  // Rather than showing a static insertion line, the dragged block is
+  // physically moved within the DOM as soon as it crosses a neighbor, and a
+  // FLIP animation makes the displaced blocks slide smoothly into their new
+  // spots. The underlying state.blocks array is only resynced from the DOM
+  // once the drag finishes, since dataset.index still points at each node's
+  // position in state.blocks as of the last renderBlocks() call.
+  let draggedEl = null;
+
+  function renumberBlocks() {
+    dom.codeArea.querySelectorAll(".code-block").forEach((b, i) => {
+      const ln = b.querySelector(".line-number");
+      if (ln) ln.textContent = i + 1;
+    });
+  }
+
+  function animateReorder(mutate) {
+    const blocks = Array.from(dom.codeArea.querySelectorAll(".code-block"));
+    const firstRects = new Map();
+    blocks.forEach((b) => firstRects.set(b, b.getBoundingClientRect()));
+
+    mutate();
+    renumberBlocks();
+
+    blocks.forEach((b) => {
+      const first = firstRects.get(b);
+      const last = b.getBoundingClientRect();
+      const deltaY = first.top - last.top;
+      if (!deltaY) return;
+
+      b.style.transition = "none";
+      b.style.transform = `translateY(${deltaY}px)`;
+      void b.offsetHeight; // force reflow so the "from" transform applies first
+      b.style.transition = "transform 180ms ease";
+      b.style.transform = "";
+
+      b.addEventListener(
+        "transitionend",
+        () => {
+          b.style.transition = "";
+        },
+        { once: true }
+      );
+    });
+  }
+
+  function syncBlocksFromDom() {
+    state.blocks = Array.from(dom.codeArea.querySelectorAll(".code-block")).map(
+      (el) => state.blocks[parseInt(el.dataset.index, 10)]
+    );
+    renderBlocks();
+    updatePreview();
+  }
 
   function onDragStart(e) {
     const block = e.target.closest(".code-block");
-    state.dragSrcIndex = parseInt(block.dataset.index);
+    draggedEl = block;
+    state.dragSrcIndex = parseInt(block.dataset.index, 10);
     block.classList.add("dragging");
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", state.dragSrcIndex.toString());
@@ -337,90 +379,56 @@
   function onDragEnd(e) {
     const block = e.target.closest(".code-block");
     if (block) block.classList.remove("dragging");
-    hideDropIndicator();
-    dropInsertIndex = null;
+    draggedEl = null;
+    state.dragSrcIndex = null;
   }
 
-  function onDragOver(e) {
+  function onContainerDragOver(e) {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
+    if (!draggedEl) return;
 
-    const block = e.target.closest(".code-block");
-    if (!block) return;
+    const target = e.target.closest(".code-block");
+    let wantNextSibling;
 
-    const targetIndex = parseInt(block.dataset.index);
-    if (targetIndex === state.dragSrcIndex) {
-      hideDropIndicator();
+    if (target && target !== draggedEl) {
+      const rect = target.getBoundingClientRect();
+      const isAbove = e.clientY < rect.top + rect.height / 2;
+      wantNextSibling = isAbove ? target : target.nextElementSibling;
+    } else if (!target) {
+      // Hovering empty space: the small margin gaps between blocks also miss
+      // the ".code-block" selector, so only treat this as "before the first
+      // block" or "after the last block" when the cursor is truly outside
+      // the block list — otherwise leave the current position alone rather
+      // than guessing (guessing wrong here yanks the block to the wrong end).
+      const allBlocks = Array.from(dom.codeArea.querySelectorAll(".code-block"));
+      if (allBlocks.length === 0) return;
+      const first = allBlocks[0];
+      const last = allBlocks[allBlocks.length - 1];
+
+      if (e.clientY < first.getBoundingClientRect().top) {
+        wantNextSibling = first;
+      } else if (e.clientY > last.getBoundingClientRect().bottom) {
+        wantNextSibling = null;
+      } else {
+        return; // in a gap between blocks; keep current position
+      }
+    } else {
       return;
     }
 
-    // Determine if cursor is in the top or bottom half of the block
-    const rect = block.getBoundingClientRect();
-    const midY = rect.top + rect.height / 2;
-    const isAbove = e.clientY < midY;
+    if (draggedEl.nextElementSibling === wantNextSibling) return;
 
-    // Calculate insertion index
-    if (isAbove) {
-      dropInsertIndex = targetIndex;
-    } else {
-      dropInsertIndex = targetIndex + 1;
-    }
-
-    // Position the indicator line
-    showDropIndicator(block, isAbove);
+    animateReorder(() => {
+      dom.codeArea.insertBefore(draggedEl, wantNextSibling);
+    });
   }
 
-  function onDrop(e) {
+  function onContainerDrop(e) {
     e.preventDefault();
-    hideDropIndicator();
-
-    if (state.dragSrcIndex === null || dropInsertIndex === null) return;
-
-    const srcIdx = state.dragSrcIndex;
-    let destIdx = dropInsertIndex;
-
-    // Remove dragged item
-    const [moved] = state.blocks.splice(srcIdx, 1);
-
-    // Adjust destination if source was before destination
-    if (srcIdx < destIdx) destIdx--;
-
-    // Insert at new position
-    state.blocks.splice(destIdx, 0, moved);
-
-    renderBlocks();
-    updatePreview();
-
+    if (!draggedEl) return;
+    syncBlocksFromDom();
     state.dragSrcIndex = null;
-    dropInsertIndex = null;
-  }
-
-  function showDropIndicator(targetBlock, isAbove) {
-    const indicator = document.getElementById("dropIndicator");
-    if (!indicator) return;
-
-    const codeAreaRect = dom.codeArea.getBoundingClientRect();
-    const blockRect = targetBlock.getBoundingClientRect();
-
-    indicator.style.position = "absolute";
-    indicator.style.left = "12px";
-    indicator.style.right = "12px";
-    indicator.style.width = "auto";
-
-    if (isAbove) {
-      indicator.style.top =
-        blockRect.top - codeAreaRect.top + dom.codeArea.scrollTop - 2 + "px";
-    } else {
-      indicator.style.top =
-        blockRect.bottom - codeAreaRect.top + dom.codeArea.scrollTop + "px";
-    }
-
-    indicator.classList.add("visible");
-  }
-
-  function hideDropIndicator() {
-    const indicator = document.getElementById("dropIndicator");
-    if (indicator) indicator.classList.remove("visible");
   }
 
   // ── Touch Drag (Mobile) ──────────────────────────────
@@ -433,14 +441,14 @@
     if (!block) return;
 
     touchDragEl = block;
-    touchSrcIndex = parseInt(block.dataset.index);
+    touchSrcIndex = parseInt(block.dataset.index, 10);
 
-    // Create visual clone
+    // Create visual clone that follows the finger
     touchClone = block.cloneNode(true);
     touchClone.style.position = "fixed";
     touchClone.style.zIndex = "9999";
     touchClone.style.width = block.offsetWidth + "px";
-    touchClone.style.opacity = "0.8";
+    touchClone.style.opacity = "0.9";
     touchClone.style.pointerEvents = "none";
     touchClone.style.transform = "scale(1.02)";
     touchClone.style.boxShadow = "0 8px 24px rgba(0,0,0,0.4)";
@@ -454,48 +462,33 @@
   }
 
   function onTouchMove(e) {
-    if (!touchClone) return;
+    if (!touchClone || !touchDragEl) return;
     e.preventDefault();
 
     const touch = e.touches[0];
     const rect = touchDragEl.getBoundingClientRect();
     touchClone.style.top = touch.clientY - rect.height / 2 + "px";
 
-    // Find target block and show insertion indicator
-    hideDropIndicator();
-    const target = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (target) {
-      const targetBlock = target.closest(".code-block");
-      if (
-        targetBlock &&
-        parseInt(targetBlock.dataset.index) !== touchSrcIndex
-      ) {
-        const tRect = targetBlock.getBoundingClientRect();
-        const isAbove = touch.clientY < tRect.top + tRect.height / 2;
-        const targetIndex = parseInt(targetBlock.dataset.index);
-        dropInsertIndex = isAbove ? targetIndex : targetIndex + 1;
-        showDropIndicator(targetBlock, isAbove);
-      }
-    }
+    const hit = document.elementFromPoint(touch.clientX, touch.clientY);
+    const target = hit ? hit.closest(".code-block") : null;
+    if (!target || target === touchDragEl) return;
+
+    const tRect = target.getBoundingClientRect();
+    const isAbove = touch.clientY < tRect.top + tRect.height / 2;
+    const wantNextSibling = isAbove ? target : target.nextElementSibling;
+
+    if (touchDragEl.nextElementSibling === wantNextSibling) return;
+
+    animateReorder(() => {
+      dom.codeArea.insertBefore(touchDragEl, wantNextSibling);
+    });
   }
 
   function onTouchEnd(e) {
-    if (!touchClone) return;
+    if (!touchDragEl) return;
 
-    if (touchDragEl) touchDragEl.classList.remove("dragging");
-    hideDropIndicator();
-
-    if (touchSrcIndex !== null && dropInsertIndex !== null) {
-      const srcIdx = touchSrcIndex;
-      let destIdx = dropInsertIndex;
-
-      const [moved] = state.blocks.splice(srcIdx, 1);
-      if (srcIdx < destIdx) destIdx--;
-      state.blocks.splice(destIdx, 0, moved);
-
-      renderBlocks();
-      updatePreview();
-    }
+    touchDragEl.classList.remove("dragging");
+    syncBlocksFromDom();
 
     if (touchClone && touchClone.parentNode) {
       touchClone.parentNode.removeChild(touchClone);
@@ -504,7 +497,6 @@
     touchClone = null;
     touchDragEl = null;
     touchSrcIndex = null;
-    dropInsertIndex = null;
   }
 
   // ── Live Preview ─────────────────────────────────────
@@ -823,13 +815,27 @@
   }
 
   // ── Persist solved state to localStorage ─────────────
+  /** Ids of every problem that currently exists, so stale saved ids
+   * (e.g. left over from a since-edited problem set) never inflate progress. */
+  function getAllProblemIds() {
+    const ids = new Set();
+    PROBLEM_CATEGORIES.forEach((cat) =>
+      cat.problems.forEach((prob) => ids.add(prob.id))
+    );
+    return ids;
+  }
+
   function loadSavedState() {
     try {
       const saved = localStorage.getItem("parsons_solved");
       if (saved) {
-        JSON.parse(saved).forEach((id) => state.solved.add(id));
+        const validIds = getAllProblemIds();
+        JSON.parse(saved).forEach((id) => {
+          if (validIds.has(id)) state.solved.add(id);
+        });
         updateSolvedUI();
         updateProgress();
+        saveSolvedState(); // drop any stale ids we just filtered out
       }
     } catch (e) {
       /* ignore */
@@ -857,6 +863,9 @@
     initMobileToggle();
     initKeyboard();
     loadSavedState();
+
+    dom.codeArea.addEventListener("dragover", onContainerDragOver);
+    dom.codeArea.addEventListener("drop", onContainerDrop);
 
     // Button events
     dom.btnCheck.addEventListener("click", checkSolution);
