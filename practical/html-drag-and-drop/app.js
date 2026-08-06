@@ -196,7 +196,6 @@
       const header = document.createElement("div");
       header.className = "category-header" + (catIdx === 0 ? " expanded" : "");
       header.innerHTML = `
-          <span class="cat-icon">${cat.icon}</span>
           <span>${cat.name}</span>
           <span class="category-count">(${cat.problems.length})</span>
           <span class="cat-chevron">&#9656;</span>
@@ -250,7 +249,7 @@
 
     // Update title bar
     dom.titleBarTitle.textContent = problem.title;
-    dom.titleBarBadge.textContent = category.name.toUpperCase();
+    dom.titleBarBadge.textContent = category.name;
     dom.titleBarBadge.style.background = category.color + "22";
     dom.titleBarBadge.style.color = category.color;
     dom.descText.textContent = problem.description;
@@ -277,10 +276,9 @@
     // Close sidebar on mobile
     dom.sidebar.classList.remove("open");
 
-    showToast(
-      "info",
-      `Loaded "${problem.title}". Drag the blocks into the correct order.`
-    );
+    // No toast here: the title bar, description bar and workspace already
+    // show which problem is loaded, and this fires on every single problem
+    // selection, so a toast on top of that was just noise while browsing.
   }
 
   // ── Render Code Blocks ───────────────────────────────
@@ -695,7 +693,18 @@
   }
 
   // ── Toast Notifications ──────────────────────────────
+  // Only one toast is ever shown at a time: a new call replaces whatever's
+  // currently on screen instead of stacking another one underneath it, so
+  // repeatedly checking/hinting/resetting while iterating on a problem can't
+  // pile up a wall of notifications.
+  let toastDismissTimeout = null;
+  let toastRemoveTimeout = null;
+
   function showToast(type, message) {
+    clearTimeout(toastDismissTimeout);
+    clearTimeout(toastRemoveTimeout);
+    dom.toastContainer.innerHTML = "";
+
     const toast = document.createElement("div");
     toast.className = `toast ${type}`;
 
@@ -715,9 +724,9 @@
       toast.classList.add("show");
     });
 
-    setTimeout(() => {
+    toastDismissTimeout = setTimeout(() => {
       toast.classList.remove("show");
-      setTimeout(() => toast.remove(), 400);
+      toastRemoveTimeout = setTimeout(() => toast.remove(), 400);
     }, 3500);
   }
 

@@ -40,6 +40,7 @@
     if (window.WDFBProgress) window.WDFBProgress.markViewed(ACTIVITY_ID);
 
     initZoom();
+    initPan();
     renderIDE();
     renderTree();
     updatePreview();
@@ -64,6 +65,7 @@
     const prevPanel = document.getElementById(prevPanelId);
     const nextPanel = document.getElementById(nextPanelId);
     let startX, startWidthPrev, startWidthNext;
+    let redrawQueued = false;
 
     resizer.addEventListener("mousedown", (e) => {
       startX = e.clientX;
@@ -84,7 +86,17 @@
         nextPanel.style.width = `${startWidthNext - dx}px`;
         nextPanel.style.flex = "none";
       }
-      drawConnections();
+      // Rebuilding the connections SVG on every single mousemove tick is
+      // wasteful and makes the drag feel laggy; one redraw per animation
+      // frame keeps the lines in sync without doing that work multiple
+      // times per frame.
+      if (!redrawQueued) {
+        redrawQueued = true;
+        requestAnimationFrame(() => {
+          drawConnections();
+          redrawQueued = false;
+        });
+      }
     }
 
     function onMouseUp() {
@@ -276,7 +288,7 @@
 
       let htmlContent = "";
       if (line.type === "doctype") {
-        htmlContent = `<span class="tag" style="color: #007acc;">${line.text
+        htmlContent = `<span class="tag" style="color:var(--code-keyword);">${line.text
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;")}</span>`;
       } else if (line.type === "open" && currentIdeTab === "html") {
@@ -291,7 +303,7 @@
       } else if (line.type === "css-rule") {
         htmlContent = `<span class="tag" style="color:var(--code-string);">${line.selector}</span> <span class="text-content">${line.styles}</span>`;
       } else if (line.type === "open" && line.elId === "stylesheet") {
-        htmlContent = `<span class="tag" style="color:#888;">${line.text}</span>`;
+        htmlContent = `<span class="tag" style="color:var(--code-comment);">${line.text}</span>`;
       }
 
       div.innerHTML = checkboxHtml + htmlContent;
@@ -510,10 +522,16 @@
         nodeData.text.length > 25 ? nodeData.text.substring(0, 25) + "..." : nodeData.text
       }"</span>`;
       nodeEl.classList.add("text-node");
+      nodeEl.title = "Text node: the literal text inside its parent element, not an element itself.";
       nodeContainer.appendChild(nodeEl);
       wrapper.appendChild(nodeContainer);
       return wrapper;
     }
+
+    nodeEl.title =
+      currentTreeTab === "render"
+        ? `Render tree node for <${nodeData.tag}>: this DOM element combined with the computed styles that apply to it.`
+        : `DOM node for <${nodeData.tag}>: created the moment the parser reads this element's start tag.`;
 
     nodeEl.innerHTML = `<span class="node-tag">${nodeData.tag}</span>`;
     let propsHtml = "";
@@ -585,6 +603,10 @@
 
     const label = nodeData.id === "stylesheet" ? "StyleSheet" : nodeData.selector;
     nodeEl.innerHTML = `<span class="node-tag">${label}</span>`;
+    nodeEl.title =
+      nodeData.id === "stylesheet"
+        ? "CSSOM root: represents the loaded stylesheet itself, before any of its rules are parsed."
+        : `CSSOM rule for "${nodeData.selector}": one entry in the stylesheet's own rule list, independent of the DOM.`;
     nodeEl.addEventListener("mouseenter", () => highlightCode(nodeData.id));
     nodeEl.addEventListener("mouseleave", () => highlightCode(null));
 
@@ -723,13 +745,14 @@
     const endX = (childRect.left + childRect.width / 2 - containerRect.left) / zoomFactor;
     const endY = (childRect.top - containerRect.top) / zoomFactor;
 
-    const line = document.createElementNS(SVG_NS, "line");
-    line.setAttribute("x1", startX);
-    line.setAttribute("y1", startY);
-    line.setAttribute("x2", endX);
-    line.setAttribute("y2", endY);
-    line.classList.add("connection");
-    return line;
+    // A smooth S-curve (vertical tangent at both ends) reads as a proper
+    // family-tree/org-chart connector instead of a rigid straight line,
+    // especially once a parent has several children fanned out sideways.
+    const midY = (startY + endY) / 2;
+    const path = document.createElementNS(SVG_NS, "path");
+    path.setAttribute("d", `M ${startX} ${startY} C ${startX} ${midY}, ${endX} ${midY}, ${endX} ${endY}`);
+    path.classList.add("connection");
+    return path;
   }
 
   function highlightNode(id) {
@@ -828,6 +851,8 @@
   // ── Zoom ─────────────────────────────────────────────
   function initZoom() {
     const wrapper = document.getElementById("tree-scroll-wrapper");
+    const zoomContainer = document.getElementById("zoom-container");
+
     wrapper.addEventListener(
       "wheel",
       (e) => {
@@ -838,6 +863,49 @@
       },
       { passive: false }
     );
+
+    // Redraw connecting lines exactly when the scale transition finishes,
+    // instead of guessing at a fixed delay (see applyZoom).
+    zoomContainer.addEventListener("transitionend", (e) => {
+      if (e.propertyName === "transform") drawConnections();
+    });
+  }
+
+  // ── Pan ──────────────────────────────────────────────
+  // Click-and-drag panning over the tree canvas (in addition to the native
+  // scrollbars), the same interaction as a diagram/whiteboard tool. Tree
+  // nodes have no click handler of their own (hovering the IDE lines is what
+  // highlights them), so a plain drag never conflicts with anything else.
+  function initPan() {
+    const wrapper = document.getElementById("tree-scroll-wrapper");
+    let isPanning = false;
+    let startX = 0;
+    let startY = 0;
+    let startScrollLeft = 0;
+    let startScrollTop = 0;
+
+    wrapper.addEventListener("mousedown", (e) => {
+      if (e.button !== 0) return;
+      isPanning = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startScrollLeft = wrapper.scrollLeft;
+      startScrollTop = wrapper.scrollTop;
+      wrapper.classList.add("panning");
+      e.preventDefault();
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!isPanning) return;
+      wrapper.scrollLeft = startScrollLeft - (e.clientX - startX);
+      wrapper.scrollTop = startScrollTop - (e.clientY - startY);
+    });
+
+    document.addEventListener("mouseup", () => {
+      if (!isPanning) return;
+      isPanning = false;
+      wrapper.classList.remove("panning");
+    });
   }
 
   function zoomTree(delta) {
@@ -854,7 +922,10 @@
     const zoomContainer = document.getElementById("zoom-container");
     zoomContainer.style.transform = `scale(${currentZoom})`;
     zoomContainer.style.transformOrigin = "top center";
-    setTimeout(drawConnections, 50);
+    // #zoom-container animates its transform over 0.1s (see styles.css), so the
+    // connecting lines must be redrawn once that transition actually finishes,
+    // not on a fixed timer that can fire mid-animation and leave lines pointing
+    // at where nodes used to be.
   }
 
   // ── Toast ────────────────────────────────────────────

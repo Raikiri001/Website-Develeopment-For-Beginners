@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../assets/css/tokens.css" />
@@ -30,17 +30,24 @@
       </nav>
     </header>
 
+    <header class="page-header">
+      <h1>HTML Structure Trainer</h1>
+      <div class="header-desc">
+        Each problem gives you a set of shuffled <strong>code blocks</strong>.
+        Drag them into the correct order to rebuild the page; the
+        <strong>live preview</strong> updates as you go, so you can see
+        exactly what your markup produces.
+      </div>
+    </header>
+
     <!-- ═══ App Shell ═══ -->
     <div class="app-shell">
       <!-- ─── Sidebar ─── -->
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-          <div class="sidebar-logo">
-            <div class="logo-icon">&lt;/&gt;</div>
-            <div>
-              <h1>HTML Structure Trainer</h1>
-              <div class="sidebar-subtitle">Drag-and-drop practice</div>
-            </div>
+          <div class="header-top">
+            <span>Problems</span>
+            <span class="panel-badge">30</span>
           </div>
         </div>
 
@@ -101,11 +108,10 @@
         <!-- Welcome State (shown when no problem is selected) -->
         <div class="welcome-state" id="welcomeState">
           <div class="welcome-icon">&#9633;</div>
-          <h2 class="welcome-title">Welcome to the HTML Structure Trainer</h2>
+          <h2 class="welcome-title">Select a problem to begin</h2>
           <p class="welcome-subtitle">
-            Select a problem from the sidebar to start learning HTML
-            structure. Drag the code blocks into the correct order and watch
-            your page come to life.
+            Pick a problem from the sidebar. Drag its code blocks into the
+            correct order and the live preview updates as you go.
           </p>
           <div class="welcome-stats">
             <div class="welcome-stat">
@@ -134,24 +140,26 @@
         <!-- Workspace (hidden until a problem is loaded) -->
         <div class="workspace" id="workspaceArea" style="display: none">
           <!-- IDE Panel -->
-          <div class="ide-panel">
-            <div class="panel-tab">
-              <span class="tab-icon">&#9998;</span>
-              <span class="tab-label">Code Blocks</span>
-              <span class="tab-badge" id="blockCount">0</span>
+          <div class="ide-panel panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>1. Code blocks</span>
+                <span class="panel-badge" id="blockCount">0</span>
+              </div>
             </div>
             <div class="code-area" id="codeArea"></div>
           </div>
 
           <!-- Resize Handle -->
-          <div class="resize-handle" id="resizeHandle"></div>
+          <div class="resizer" id="resizeHandle"></div>
 
           <!-- Preview Panel -->
-          <div class="preview-panel">
-            <div class="panel-tab">
-              <span class="tab-icon">&#9654;</span>
-              <span class="tab-label">Live Preview</span>
-              <span class="tab-badge">LIVE</span>
+          <div class="preview-panel panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>2. Live preview</span>
+                <span class="panel-badge">Live</span>
+              </div>
             </div>
             <iframe
               class="preview-iframe"

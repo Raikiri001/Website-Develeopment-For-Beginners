@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../assets/css/tokens.css" />
@@ -33,11 +33,12 @@
 
     <main>
       <div class="dashboard-header">
-        <h1>Your learning dashboard</h1>
+        <h1>Dashboard</h1>
         <p>
-          See what you've completed, what's in progress, and what you
-          haven't tried yet. This is tracked in your browser, so it's yours
-          alone and stays private to this device.
+          Each activity below is marked not started, in progress or
+          completed, based on how far you've gone. Progress is stored in
+          this browser's local storage only, so it isn't shared across
+          devices and nothing is sent anywhere.
         </p>
       </div>
 
@@ -57,7 +58,28 @@
     </main>
 
     <footer class="site-footer">
-      <p>Built for learning HTML, CSS and JavaScript from first principles.</p>
+      <div class="footer-main">
+        <div class="footer-brand">
+          <a class="brand" href="../">
+            <span class="brand-mark">&lt;/&gt;</span>
+            <span>Web Dev For Beginners</span>
+          </a>
+          <p>
+            Interactive theory and practical activities for learning HTML,
+            CSS and how browsers work.
+          </p>
+        </div>
+        <nav class="footer-links" aria-label="Site">
+          <h4>Site</h4>
+          <a href="../">Home</a>
+          <a href="./">Dashboard</a>
+        </nav>
+        <nav class="footer-links" aria-label="Activities">
+          <h4>Activities</h4>
+          <a href="../theory/dom-parsing/">How Browsers Parse HTML &amp; CSS</a>
+          <a href="../practical/html-drag-and-drop/">HTML Structure Trainer</a>
+        </nav>
+      </div>
     </footer>
 
     <script src="../assets/js/progress.js"></script>

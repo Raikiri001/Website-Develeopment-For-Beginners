@@ -83,10 +83,10 @@
 
     const stats = document.createElement("div");
     stats.className = "stats-grid";
-    stats.appendChild(statCard("layers", "icon-indigo", total, "Total activities"));
+    stats.appendChild(statCard("layers", "icon-primary", total, "Total activities"));
     stats.appendChild(statCard("check", "icon-success", completed, "Completed"));
     stats.appendChild(statCard("clock", "icon-warning", inProgress, "In progress"));
-    stats.appendChild(statCard("circle", "icon-indigo", notStarted, "Not started"));
+    stats.appendChild(statCard("circle", "icon-primary", notStarted, "Not started"));
 
     overview.appendChild(ring);
     overview.appendChild(stats);

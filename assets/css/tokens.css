@@ -4,25 +4,38 @@
   Every page in the site, including each activity, reads its colours, type and spacing
   from these custom properties instead of declaring its own palette.
 
-  Palette: indigo/violet "learning platform" theme, chosen to read as an
-  informative, teaching-focused product (course dashboards, EdTech), not a
-  generic dev tool. Poppins for headings (bold, geometric, large-friendly),
-  Open Sans for body copy (highly readable at length).
+  Palette: neutral slate for all chrome (text, borders, surfaces) with colour
+  reserved for meaning: a muted teal brand accent (links, primary buttons,
+  focus rings), blue/orange category colours, and green/amber/red status
+  colours. No hue in the neutral scale, so nothing reads as "tinted violet"
+  the way an indigo-based neutral scale does. JetBrains Mono for headings
+  (the same face used for code elsewhere on the site, so a heading and a
+  code sample look like they belong to the same product) and IBM Plex Sans
+  for body copy (a plain, highly-legible technical face).
 */
 
 :root {
   /* ---------- Primitives ---------- */
-  --indigo-950: #1e1b4b;
-  --indigo-900: #312e81;
-  --indigo-800: #3730a3;
-  --indigo-700: #4338ca;
-  --indigo-600: #4f46e5;
-  --indigo-500: #6366f1;
-  --indigo-400: #818cf8;
-  --indigo-300: #a5b4fc;
-  --indigo-200: #c7d2fe;
-  --indigo-100: #e0e7ff;
-  --indigo-50: #eef2ff;
+  --teal-700: #1f6f68;
+  --teal-600: #2a8078;
+  --teal-500: #3b9b92;
+  --teal-400: #6bb8af;
+  --teal-300: #9ad2cb;
+  --teal-200: #bfe5e0;
+  --teal-100: #d9f0ec;
+  --teal-50: #eef8f6;
+
+  --blue-600: #3d6fa5;
+  --blue-500: #5588be;
+  --blue-400: #7fa5cf;
+  --blue-100: #dbe7f2;
+  --blue-50: #eef3f9;
+
+  --orange-600: #b8763f;
+  --orange-500: #cc9159;
+  --orange-400: #ddaa7c;
+  --orange-100: #f3e3d3;
+  --orange-50: #f9f0e6;
 
   --slate-950: #0b1120;
   --slate-900: #0f172a;
@@ -47,9 +60,9 @@
   --red-500: #ef4444;
   --red-400: #f87171;
 
-  --font-heading: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-sans: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "Consolas", monospace;
+  --font-heading: "JetBrains Mono", "SF Mono", Consolas, monospace;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
 
   /* ---------- Type scale (large, spacious, per-page headings can go bigger) ---------- */
   --text-xs: 0.8125rem; /* 13px */
@@ -89,30 +102,30 @@
   --transition-medium: 0.22s ease;
   --transition-slow: 0.38s cubic-bezier(0.4, 0, 0.2, 1);
 
-  --shadow-sm: 0 1px 2px 0 rgb(30 27 75 / 0.06);
-  --shadow-md: 0 8px 20px -4px rgb(30 27 75 / 0.12), 0 2px 6px -2px rgb(30 27 75 / 0.08);
-  --shadow-lg: 0 20px 40px -8px rgb(30 27 75 / 0.18);
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06);
+  --shadow-md: 0 8px 20px -4px rgb(15 23 42 / 0.1), 0 2px 6px -2px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 20px 40px -8px rgb(15 23 42 / 0.16);
 
   /* ---------- Semantic tokens: light theme (default) ---------- */
-  --bg-canvas: #f6f6fc;
+  --bg-canvas: var(--slate-50);
   --bg-surface: var(--white);
   --bg-elevated: var(--white);
-  --bg-sunken: var(--indigo-50);
-  --bg-inverse: var(--indigo-950);
+  --bg-sunken: var(--slate-100);
+  --bg-inverse: var(--slate-900);
 
-  --text-primary: var(--indigo-950);
+  --text-primary: var(--slate-900);
   --text-secondary: var(--slate-600);
   --text-muted: var(--slate-500);
   --text-dim: var(--slate-400);
-  --text-inverse: var(--indigo-50);
+  --text-inverse: var(--slate-50);
 
-  --border-color: var(--indigo-100);
-  --border-active: var(--indigo-300);
+  --border-color: var(--slate-200);
+  --border-active: var(--teal-300);
 
-  --accent-primary: var(--indigo-600);
-  --accent-primary-hover: var(--indigo-700);
-  --accent-primary-tint: var(--indigo-50);
-  --accent-primary-tint-strong: var(--indigo-100);
+  --accent-primary: var(--teal-600);
+  --accent-primary-hover: var(--teal-700);
+  --accent-primary-tint: var(--teal-50);
+  --accent-primary-tint-strong: var(--teal-100);
 
   --accent-success: var(--green-600);
   --accent-success-tint: rgb(22 163 74 / 0.1);
@@ -123,37 +136,46 @@
   --accent-danger: var(--red-600);
   --accent-danger-tint: rgb(220 38 38 / 0.1);
 
-  --accent-info: var(--indigo-500);
-  --accent-info-tint: var(--indigo-50);
+  --accent-info: var(--teal-500);
+  --accent-info-tint: var(--teal-50);
+
+  /* Category accents: distinct from both the brand accent and the semantic
+     status colours above, so "Theory"/"Practical" are never confused with
+     "Completed"/"In progress"/the brand teal. */
+  --accent-theory: var(--blue-600);
+  --accent-theory-tint: rgb(61 111 165 / 0.1);
+
+  --accent-practical: var(--orange-600);
+  --accent-practical-tint: rgb(184 118 63 / 0.1);
 
   --code-tag: var(--red-600);
   --code-attr: var(--amber-600);
   --code-string: var(--green-600);
-  --code-keyword: var(--indigo-600);
+  --code-keyword: var(--teal-600);
   --code-comment: var(--text-muted);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-canvas: #100c26;
-    --bg-surface: #181233;
-    --bg-elevated: #1f1940;
-    --bg-sunken: #0c0920;
-    --bg-inverse: var(--indigo-50);
+    --bg-canvas: #0b0f14;
+    --bg-surface: #12161d;
+    --bg-elevated: #171c25;
+    --bg-sunken: #090c11;
+    --bg-inverse: var(--slate-50);
 
-    --text-primary: #ede9fe;
-    --text-secondary: var(--indigo-200);
-    --text-muted: #a5a0c9;
-    --text-dim: #635d8c;
-    --text-inverse: var(--indigo-950);
+    --text-primary: #f1f5f9;
+    --text-secondary: var(--slate-300);
+    --text-muted: #8b96a5;
+    --text-dim: #5c6675;
+    --text-inverse: var(--slate-900);
 
-    --border-color: #2c2555;
-    --border-active: #443b7a;
+    --border-color: #262d38;
+    --border-active: var(--teal-500);
 
-    --accent-primary: var(--indigo-400);
-    --accent-primary-hover: var(--indigo-300);
-    --accent-primary-tint: rgb(129 140 248 / 0.14);
-    --accent-primary-tint-strong: rgb(129 140 248 / 0.22);
+    --accent-primary: var(--teal-400);
+    --accent-primary-hover: var(--teal-300);
+    --accent-primary-tint: rgb(107 184 175 / 0.16);
+    --accent-primary-tint-strong: rgb(107 184 175 / 0.24);
 
     --accent-success: var(--green-400);
     --accent-success-tint: rgb(74 222 128 / 0.14);
@@ -164,12 +186,18 @@
     --accent-danger: var(--red-400);
     --accent-danger-tint: rgb(248 113 113 / 0.14);
 
-    --accent-info: var(--indigo-300);
-    --accent-info-tint: rgb(165 180 252 / 0.14);
+    --accent-info: var(--teal-300);
+    --accent-info-tint: rgb(154 210 203 / 0.16);
+
+    --accent-theory: var(--blue-400);
+    --accent-theory-tint: rgb(127 165 207 / 0.16);
+
+    --accent-practical: var(--orange-400);
+    --accent-practical-tint: rgb(221 170 124 / 0.16);
 
     --code-tag: var(--red-400);
     --code-attr: var(--amber-400);
     --code-string: var(--green-400);
-    --code-keyword: var(--indigo-300);
+    --code-keyword: var(--teal-300);
   }
 }

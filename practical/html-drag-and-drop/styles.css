@@ -4,10 +4,6 @@
   this file only holds the layout and components specific to this activity.
 */
 
-html {
-  font-size: 14px;
-}
-
 body {
   display: flex;
   flex-direction: column;
@@ -45,61 +41,12 @@ body {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(
-    90deg,
-    var(--accent-primary) 0%,
-    var(--accent-primary) 40%,
-    var(--accent-danger) 40%,
-    var(--accent-danger) 70%,
-    var(--accent-warning) 70%,
-    var(--accent-warning) 100%
-  );
+  background: var(--accent-primary);
   z-index: 1;
 }
 
 .sidebar-header {
-  padding: var(--space-5) var(--space-4) var(--space-4);
   border-bottom: 1px solid var(--border-color);
-}
-
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-1);
-}
-
-.sidebar-logo .logo-icon {
-  width: 32px;
-  height: 32px;
-  background: var(--bg-sunken);
-  border: 1px solid var(--accent-primary);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--accent-primary);
-  font-family: var(--font-mono);
-  letter-spacing: -1px;
-  flex-shrink: 0;
-}
-
-.sidebar-logo h1 {
-  font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.3px;
-}
-
-.sidebar-subtitle {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-top: 2px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
 }
 
 /* Progress bar */
@@ -112,15 +59,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-secondary);
   margin-bottom: var(--space-2);
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
 }
 
 .progress-label span:last-child {
-  color: var(--accent-warning);
+  color: var(--accent-primary);
   font-weight: 700;
 }
 
@@ -135,7 +80,7 @@ body {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-primary), var(--accent-danger));
+  background: var(--accent-primary);
   border-radius: 2px;
   transition: width var(--transition-slow);
   width: 0%;
@@ -149,7 +94,7 @@ body {
   top: -3px;
   width: 9px;
   height: 9px;
-  background: var(--accent-warning);
+  background: var(--accent-primary);
   border-radius: 50%;
 }
 
@@ -169,27 +114,21 @@ body {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: color var(--transition-fast);
   border-left: 2px solid var(--accent-primary);
 }
 
 .category-header:hover {
-  color: var(--text-secondary);
-}
-
-.category-header .cat-icon {
-  font-size: 13px;
-  color: var(--accent-primary);
+  color: var(--text-primary);
 }
 
 .category-header .category-count {
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 400;
   color: var(--text-dim);
 }
 
@@ -219,7 +158,7 @@ body {
   align-items: center;
   gap: var(--space-2);
   padding: 7px var(--space-4) 7px 34px;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -300,7 +239,7 @@ body {
 
 .title-bar-left .problem-badge {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 4px;
@@ -311,7 +250,7 @@ body {
 }
 
 .title-bar-left h2 {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -335,19 +274,19 @@ body {
 }
 
 .btn-success {
-  background: var(--accent-danger-tint);
-  border: 1px solid var(--accent-danger-tint);
-  color: var(--accent-danger);
+  background: var(--accent-success-tint);
+  border: 1px solid var(--accent-success-tint);
+  color: var(--accent-success);
 }
 
 .btn-success:hover {
-  border-color: var(--accent-danger);
-  color: var(--accent-danger);
+  border-color: var(--accent-success);
+  color: var(--accent-success);
 }
 
 .shortcut-hint {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   padding: 2px 5px;
   background: var(--bg-sunken);
   border: 1px solid var(--border-color);
@@ -359,46 +298,18 @@ body {
 .workspace {
   flex: 1;
   display: flex;
+  min-height: 0;
   overflow: hidden;
+  padding: var(--space-3);
+  gap: var(--space-3);
 }
 
 .ide-panel {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid var(--border-color);
-  min-width: 0;
 }
 
-.panel-tab {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--border-color);
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-
-.panel-tab .tab-icon {
-  font-size: 14px;
-}
-
-.panel-tab .tab-label {
-  font-weight: 600;
-}
-
-.panel-tab .tab-badge {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  background: var(--bg-sunken);
-  border: 1px solid var(--border-color);
-  padding: 2px 6px;
-  border-radius: 3px;
-  color: var(--text-muted);
-}
+/* .panel, .panel-header, .header-top, .panel-badge are shared components,
+   see assets/css/base.css */
 
 /* Code Block Area */
 .code-area {
@@ -460,7 +371,7 @@ body {
   justify-content: center;
   min-width: 40px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-dim);
   background: var(--bg-sunken);
   border-right: 1px solid var(--border-color);
@@ -486,7 +397,7 @@ body {
 .code-block .code-text {
   flex: 1;
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: var(--text-xs);
   line-height: 1.65;
   padding: var(--space-2) var(--space-3);
   color: var(--text-primary);
@@ -515,9 +426,6 @@ body {
 /* ---------- Preview Panel ---------- */
 .preview-panel {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
 }
 
 .preview-iframe {
@@ -561,7 +469,7 @@ body {
   height: 26px;
   background: var(--bg-sunken);
   border-top: 1px solid var(--border-color);
-  font-size: 10px;
+  font-size: 12px;
   font-family: var(--font-mono);
   color: var(--text-muted);
 }
@@ -633,7 +541,7 @@ body {
 }
 
 .success-title {
-  font-size: 22px;
+  font-size: var(--text-xl);
   font-weight: 800;
   color: var(--accent-warning);
   margin-bottom: var(--space-2);
@@ -641,7 +549,7 @@ body {
 }
 
 .success-subtitle {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-secondary);
   margin-bottom: var(--space-6);
 }
@@ -698,7 +606,7 @@ body {
 }
 
 .welcome-title {
-  font-size: var(--text-2xl);
+  font-size: var(--text-xl);
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -729,7 +637,7 @@ body {
 }
 
 .welcome-stat-label {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
@@ -776,31 +684,7 @@ body {
   border-left: 3px solid var(--accent-warning);
 }
 
-/* ---------- Resize Handle ---------- */
-.resize-handle {
-  width: 4px;
-  cursor: col-resize;
-  background: transparent;
-  transition: background var(--transition-fast);
-  position: relative;
-  z-index: 5;
-}
-
-.resize-handle:hover,
-.resize-handle.active {
-  background: var(--accent-primary);
-}
-
-/* ---------- Keyboard Shortcut Hints ---------- */
-.shortcut-hint {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  padding: 2px 5px;
-  background: var(--bg-sunken);
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
-  color: var(--text-dim);
-}
+/* .resizer is a shared component, see assets/css/base.css */
 
 /* ---------- Block Feedback Flash ---------- */
 .code-block.correct-flash {
@@ -842,12 +726,12 @@ body {
   font-size: 48px;
 }
 .dev-guard-overlay .guard-title {
-  font-size: 20px;
+  font-size: var(--text-xl);
   font-weight: 700;
   color: var(--accent-danger);
 }
 .dev-guard-overlay .guard-text {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-secondary);
   max-width: 360px;
   text-align: center;
@@ -896,12 +780,7 @@ body {
     height: 50%;
   }
 
-  .ide-panel {
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .resize-handle {
+  .resizer {
     display: none;
   }
 

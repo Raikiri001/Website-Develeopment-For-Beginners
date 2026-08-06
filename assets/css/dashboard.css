@@ -8,8 +8,7 @@
 
 .dashboard-header h1 {
   font-size: var(--text-4xl);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 700;
   margin-bottom: var(--space-3);
 }
 
@@ -22,7 +21,7 @@
 .dashboard-content {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 0 var(--space-6) var(--space-24);
+  padding: 0 var(--space-6) var(--space-16);
 }
 
 /* ---------- Overview: ring + stat cards ---------- */

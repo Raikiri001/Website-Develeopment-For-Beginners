@@ -13,8 +13,8 @@
   };
 
   const CATEGORY_DESCRIPTIONS = {
-    theory: "Concepts and how the web works under the bonnet.",
-    practical: "Hands-on exercises you solve by doing.",
+    theory: "Explains one browser or web concept at a time, usually with an interactive diagram.",
+    practical: "A problem to solve directly in the browser, then check against a working solution.",
   };
 
   const STATUS_LABELS = {
@@ -23,12 +23,25 @@
     completed: "Completed",
   };
 
+  // Simple hand-drawn line icons (not from an icon font) so each category
+  // reads visually distinct without relying on emoji.
+  const CATEGORY_ICONS = {
+    theory:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5c1.5-.8 3.2-1.2 5-1.2 1 0 2 .13 3 .4v13.8c-1-.27-2-.4-3-.4-1.8 0-3.5.4-5 1.2V5.5Z"/><path d="M20 5.5c-1.5-.8-3.2-1.2-5-1.2-1 0-2 .13-3 .4v13.8c1-.27 2-.4 3-.4 1.8 0 3.5.4 5 1.2V5.5Z"/></svg>',
+    practical:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l14 6.5-6 2-2 6L5 3Z"/></svg>',
+  };
+
   function createCard(activity) {
     const progress = window.WDFBProgress ? window.WDFBProgress.get(activity.id) : { percent: 0, status: "not-started" };
 
     const card = document.createElement("a");
     card.className = "card";
     card.href = activity.href;
+
+    const icon = document.createElement("div");
+    icon.className = `card-icon icon-${activity.category}`;
+    icon.innerHTML = CATEGORY_ICONS[activity.category] || "";
 
     const top = document.createElement("div");
     top.className = "card-top";
@@ -64,16 +77,29 @@
     progressWrap.appendChild(progressLabel);
     progressWrap.appendChild(track);
 
+    const tags = document.createElement("ul");
+    tags.className = "card-tags";
+    (activity.tags || []).forEach((tag) => {
+      const item = document.createElement("li");
+      item.textContent = tag;
+      tags.appendChild(item);
+    });
+
     const footer = document.createElement("div");
     footer.className = "card-footer";
     const link = document.createElement("span");
     link.className = "card-link";
-    link.textContent = "Open activity ->";
+    const arrow = document.createElement("span");
+    arrow.className = "card-link-arrow";
+    arrow.textContent = "→";
+    link.append("Open activity", arrow);
     footer.appendChild(link);
 
+    card.appendChild(icon);
     card.appendChild(top);
     card.appendChild(title);
     card.appendChild(description);
+    card.appendChild(tags);
     card.appendChild(progressWrap);
     card.appendChild(footer);
     return card;
