@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Read a real CSS snippet, then pick which of five live previews it actually produces. Forty questions across single elements and whole-page layouts, running from obvious to easy to miss."
+    />
+    <title>Match the CSS - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>Match the CSS</h1>
+      <div class="header-desc">
+        Read the <strong>HTML and CSS</strong> on the left, then pick which
+        of the five <strong>live previews</strong> on the right it actually
+        renders. Pick a category in the sidebar: single
+        <strong>HTML elements</strong>, or small <strong>whole-page</strong>
+        layouts.
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="header-top">
+            <span>Categories</span>
+            <span class="panel-badge" id="totalCount">40</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span id="progressCount">0/40</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="category-list" id="categoryList"></div>
+      </aside>
+
+      <div class="main-content panel">
+        <div class="status-bar">
+          <div class="status-left">
+            <span class="panel-badge" id="questionCounter">Question 1 of 30</span>
+            <span class="panel-badge difficulty-badge" id="difficultyBadge">Easy</span>
+          </div>
+          <div class="status-right">
+            <button class="btn btn-primary" id="btnNext" disabled>
+              Next question
+            </button>
+          </div>
+        </div>
+
+        <div class="quiz-grid" id="quizGrid">
+          <div class="panel prompt-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>Prompt</span>
+                <span class="panel-badge difficulty-badge" id="promptDifficultyBadge"
+                  >Easy</span
+                >
+              </div>
+            </div>
+            <div class="prompt-body">
+              <div class="code-block-group">
+                <div class="code-label">HTML</div>
+                <pre class="code-text" id="promptHtml"></pre>
+              </div>
+              <div class="code-block-group">
+                <div class="code-label">CSS</div>
+                <pre class="code-text" id="promptCss"></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel choices-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>Pick the matching preview</span>
+                <span class="panel-badge">5 options</span>
+              </div>
+            </div>
+            <div class="choices-body">
+              <div
+                class="choices-grid"
+                id="choicesGrid"
+                role="group"
+                aria-label="Answer choices"
+              ></div>
+              <div class="feedback-note" id="feedbackNote" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="completion-panel" id="completionPanel">
+          <h2>All done</h2>
+          <p id="completionScoreText"></p>
+          <button class="btn btn-primary" id="btnRestart">Restart all questions</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

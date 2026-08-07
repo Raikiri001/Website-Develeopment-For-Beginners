@@ -14,5 +14,13 @@
     "category": "practical",
     "href": "practical/html-drag-and-drop/",
     "tags": ["HTML", "semantics", "structure"]
+  },
+  {
+    "id": "match-the-css",
+    "title": "Match the CSS",
+    "description": "Read a real CSS snippet, then pick which of five live previews it actually produces. Forty questions across single HTML elements and whole-page layouts, running from obvious to easy to miss.",
+    "category": "practical",
+    "href": "practical/match-the-css/",
+    "tags": ["CSS", "properties", "styling"]
   }
 ]

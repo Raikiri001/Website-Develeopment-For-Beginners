@@ -291,6 +291,142 @@ img {
   background-color: var(--accent-primary);
 }
 
+/* ---------- Sidebar (collapsible category list) ---------- */
+/* A separated, rounded surface for a list of selectable items grouped
+   into collapsible categories (e.g. a problem list or a quiz category
+   picker). Laid out as a sibling of .panel inside a gapped flex
+   container, never flush against whatever sits next to it, see the
+   "Workspace layout" note in CLAUDE.md. */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-width, 280px);
+  min-width: var(--sidebar-width, 280px);
+  flex-shrink: 0;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.sidebar-header {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.category-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-2) 0;
+}
+
+.category-group {
+  margin-bottom: 2px;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  border-left: 2px solid var(--accent-primary);
+}
+
+.category-header:hover {
+  color: var(--text-primary);
+}
+
+.category-header .category-count {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-dim);
+}
+
+.category-header .cat-chevron {
+  margin-left: auto;
+  font-size: 10px;
+  transition: transform var(--transition-fast);
+  color: var(--text-dim);
+}
+
+.category-header.expanded .cat-chevron {
+  transform: rotate(90deg);
+}
+
+.category-problems {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-slow);
+}
+
+.category-problems.open {
+  max-height: 1200px;
+}
+
+.problem-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 7px var(--space-4) 7px 34px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.problem-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  transition: background var(--transition-fast);
+}
+
+.problem-item:hover {
+  background: var(--accent-primary-tint);
+  color: var(--text-primary);
+}
+
+.problem-item.active {
+  background: var(--accent-primary-tint);
+  color: var(--accent-primary);
+}
+
+.problem-item.active::before {
+  background: var(--accent-primary);
+}
+
+.problem-item.solved {
+  color: var(--accent-success);
+}
+
+.problem-item .status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  flex-shrink: 0;
+  transition: background var(--transition-fast);
+}
+
+.problem-item.solved .status-dot {
+  background: var(--accent-success);
+}
+
+.problem-item.active .status-dot {
+  background: var(--accent-primary);
+}
+
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex;
