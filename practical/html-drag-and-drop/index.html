@@ -57,7 +57,7 @@
             <span>Progress</span>
             <span id="progressCount">0/30</span>
           </div>
-          <div class="progress-bar">
+          <div class="progress-track">
             <div class="progress-fill" id="progressFill"></div>
           </div>
         </div>
@@ -70,7 +70,7 @@
       <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
       <!-- ─── Main Content ─── -->
-      <div class="main-content">
+      <div class="main-content panel">
         <!-- Title Bar -->
         <div class="title-bar">
           <div class="title-bar-left">
@@ -81,18 +81,14 @@
             >
               &#9776;
             </button>
-            <span class="problem-badge" id="titleBarBadge">Ready</span>
+            <span class="title-bar-badge" id="titleBarBadge">Ready</span>
             <h2 id="titleBarTitle">Select a Problem</h2>
           </div>
           <div class="title-bar-right">
-            <button class="btn btn-hint" id="btnHint" disabled>
-              Hint
-              <span class="shortcut-hint">&#8984;H</span>
-            </button>
+            <button class="btn btn-warning" id="btnHint" disabled>Hint</button>
             <button class="btn" id="btnReset" disabled>&#8635; Reset</button>
             <button class="btn btn-success" id="btnCheck" disabled>
               &#10003; Check Solution
-              <span class="shortcut-hint">&#8984;&#9166;</span>
             </button>
           </div>
         </div>
@@ -167,22 +163,6 @@
               sandbox="allow-same-origin"
               title="Live HTML Preview"
             ></iframe>
-          </div>
-        </div>
-
-        <!-- Status Bar -->
-        <div class="status-bar">
-          <div class="status-left">
-            <span class="status-item" id="statusCategory">No category</span>
-            <span class="status-item">|</span>
-            <span class="status-item" id="statusProblem"
-              >No problem selected</span
-            >
-          </div>
-          <div class="status-right">
-            <span class="status-item" id="statusBlocks">No blocks yet</span>
-            <span class="status-item">|</span>
-            <span class="status-item">HTML</span>
           </div>
         </div>
       </div>
