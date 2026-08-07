@@ -1,2 +1,9 @@
 node_modules/
 .DS_Store
+
+# Answer-encryption tooling and its plaintext inputs: never committed, since
+# committing either would defeat the point of encrypting solutions/answers
+# in the first place. Re-run scripts/encrypt-answers.js after editing a
+# *.source.js file to regenerate the committed, encrypted answers.json.
+/scripts/
+practical/*/*.source.js

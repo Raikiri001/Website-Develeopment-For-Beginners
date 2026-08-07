@@ -22,5 +22,13 @@
     "category": "practical",
     "href": "practical/match-the-css/",
     "tags": ["CSS", "properties", "styling"]
+  },
+  {
+    "id": "html-debugger",
+    "title": "HTML Debugger",
+    "description": "Click the parts of a broken HTML page where the mistakes are. Thirty problems from Beginner to Expert, mixing in more kinds of mistake as you go.",
+    "category": "practical",
+    "href": "practical/html-debugger/",
+    "tags": ["HTML", "debugging", "validation"]
   }
 ]

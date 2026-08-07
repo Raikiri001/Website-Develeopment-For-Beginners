@@ -26,10 +26,44 @@
   const state = {
     currentCategoryId: null,
     currentQuestionId: null,
+    currentAnswer: null, // decrypted { choices, correctChoiceId } for the loaded question
     locked: false,
     answered: new Set(),
     correct: new Set(),
+    answersMap: null, // loaded from answers.json, still encrypted per question id
   };
+
+  // ── Decryption ───────────────────────────────────────
+  // Key is split to make casual inspection harder. This is obfuscation
+  // against peeking at view-source, not real security (see
+  // html-drag-and-drop/app.js's decryptSolution for the same scheme).
+  const _kp = ["Cs5_", "M@tc", "h_Qz", "9!k2"];
+  const _dk = _kp.join("");
+
+  /** Decrypt a XOR-ciphered, base64-encoded { choices, correctChoiceId }. */
+  function decryptAnswer(encoded) {
+    const bytes = atob(encoded);
+    let result = "";
+    for (let i = 0; i < bytes.length; i++) {
+      result += String.fromCharCode(bytes.charCodeAt(i) ^ _dk.charCodeAt(i % _dk.length));
+    }
+    return JSON.parse(result);
+  }
+
+  function getAnswer(questionId) {
+    if (!state.answersMap || !state.answersMap[questionId]) return null;
+    return decryptAnswer(state.answersMap[questionId]);
+  }
+
+  async function loadAnswers() {
+    try {
+      const resp = await fetch("answers.json");
+      if (!resp.ok) throw new Error("Failed to load answers");
+      state.answersMap = await resp.json();
+    } catch (err) {
+      console.error("Could not load answers:", err);
+    }
+  }
 
   const dom = {
     sidebar: document.getElementById("sidebar"),
@@ -316,8 +350,15 @@
 
   // ── Rendering ────────────────────────────────────────
   function loadQuestion(category, question) {
+    const answer = getAnswer(question.id);
+    if (!answer) {
+      console.error("No answer data available for question", question.id);
+      return;
+    }
+
     state.currentCategoryId = category.id;
     state.currentQuestionId = question.id;
+    state.currentAnswer = answer;
     state.locked = false;
 
     const indexInCategory = category.questions.findIndex((q) => q.id === question.id);
@@ -334,7 +375,7 @@
     dom.btnNext.disabled = true;
     dom.quizGrid.classList.toggle("is-full-page", category.id === "whole-page");
 
-    renderChoices(question, category);
+    renderChoices(question, category, answer.choices);
 
     dom.welcomeState.style.display = "none";
     dom.quizGrid.style.display = "";
@@ -360,12 +401,12 @@
   /** Each choice is a small head row (letter + zoom button, sitting above
    * the preview so neither ever overlaps the page content being judged)
    * plus the actual clickable answer button below it. */
-  function renderChoices(question, category) {
+  function renderChoices(question, category, choices) {
     dom.choicesGrid.innerHTML = "";
     const isFullPage = category.id === "whole-page";
     dom.choicesGrid.classList.toggle("is-full-page", isFullPage);
 
-    const shuffled = shuffleArray(question.choices);
+    const shuffled = shuffleArray(choices);
 
     shuffled.forEach((choice, i) => {
       const letter = CHOICE_LETTERS[i];
@@ -433,11 +474,12 @@
     if (state.locked) return;
     state.locked = true;
 
-    const isCorrect = choiceId === question.correctChoiceId;
+    const correctChoiceId = state.currentAnswer.correctChoiceId;
+    const isCorrect = choiceId === correctChoiceId;
 
     dom.choicesGrid.querySelectorAll(".choice-item").forEach((item) => {
       item.querySelector(".choice-card").disabled = true;
-      if (item.dataset.choiceId === question.correctChoiceId) {
+      if (item.dataset.choiceId === correctChoiceId) {
         item.classList.add("correct");
       }
     });
@@ -530,8 +572,10 @@
   }
 
   // ── Init ─────────────────────────────────────────────
-  function init() {
+  async function init() {
     if (window.WDFBProgress) window.WDFBProgress.markViewed(ACTIVITY_ID);
+
+    await loadAnswers();
 
     loadState();
     dom.totalCount.textContent = getAllQuestionIds().size;

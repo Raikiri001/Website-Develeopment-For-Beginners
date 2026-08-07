@@ -7,18 +7,18 @@
  *
  * html     shared markup, identical across all 5 choices for a question.
  * css      the CORRECT CSS, as { rules: [ { selector, decls: {prop: value} } ] }.
- * choices  exactly 5 entries: { id: "a".."e", overrides?, cssOverride? }.
- *          - overrides: { "<selector>": { prop: value, ... } } shallow-merged
- *            onto css.rules for that selector.
- *          - cssOverride: a raw CSS string that entirely replaces the
- *            generated text for this choice (used for easy-tier decoys too
- *            different to express as overrides). Written in the same
- *            "selector {\n  prop: value;\n}" shape serializeCssRules
- *            produces, so the highlighter and preview stay in sync.
- *          - the correct choice has empty/no overrides.
- * correctChoiceId  which choice.id is correct. Grading compares against
- *          this flag, never generated CSS text.
  * explain  one-sentence note shown after answering.
+ *
+ * The five choices and which one is correct are NOT in this file - they're
+ * encrypted in answers.json (keyed by question id), fetched and decrypted
+ * by app.js at runtime, same scheme as html-drag-and-drop/solutions.json.
+ * This is deliberate: a plaintext `overrides: {}` choice sitting next to
+ * four populated decoys would visually give away the answer on its own,
+ * with or without a separate correctChoiceId field. To edit a question's
+ * choices, edit scripts/encrypt-answers.js's match-the-css builder (it
+ * derives each choice's rendered CSS from the existing decoy data) and
+ * re-run `node scripts/encrypt-answers.js match-the-css` to regenerate
+ * answers.json - see that script for the full explanation.
  *
  * Difficulty tiers, and why hard isn't "spot the pixel":
  * - easy:   2-4 simultaneous changes per decoy, each individually obvious.
@@ -54,27 +54,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      {
-        id: "b",
-        overrides: { ".btn": { background: "#16a34a", "border-radius": "999px" } },
-      },
-      {
-        id: "c",
-        overrides: { ".btn": { background: "#f59e0b", padding: "4px 6px", "font-size": "11px" } },
-      },
-      {
-        id: "d",
-        cssOverride:
-          ".btn {\n  background: transparent;\n  color: #2563eb;\n  padding: 10px 20px;\n  border: 2px solid #2563eb;\n  border-radius: 6px;\n  font-family: sans-serif;\n  font-size: 14px;\n}",
-      },
-      {
-        id: "e",
-        overrides: { ".btn": { background: "#dc2626", color: "#000000", "border-radius": "0" } },
-      },
-    ],
-    correctChoiceId: "a",
     explain:
       "The correct button is solid blue, rounded and comfortably padded, exactly as declared in the CSS above.",
   },
@@ -99,21 +78,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      {
-        id: "b",
-        overrides: { ".badge": { background: "#fef2f2", color: "#b91c1c", "border-radius": "4px" } },
-      },
-      { id: "c", overrides: { ".badge": { padding: "2px 4px", "font-size": "20px" } } },
-      {
-        id: "d",
-        cssOverride:
-          ".badge {\n  background: #1e293b;\n  color: #ffffff;\n  padding: 4px 12px;\n  border-radius: 4px;\n  font-size: 12px;\n  font-weight: 600;\n  border: 1px solid #1e293b;\n}",
-      },
-      { id: "e", overrides: { ".badge": { background: "#fef9c3", color: "#92400e", border: "none" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real badge is a soft green pill with a matching light green border.",
   },
   {
@@ -136,23 +100,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      {
-        id: "b",
-        overrides: {
-          ".alert": { background: "#fef2f2", border: "1px solid #fca5a5", "border-left": "4px solid #dc2626", color: "#7f1d1d" },
-        },
-      },
-      { id: "c", overrides: { ".alert": { padding: "2px 4px", "border-radius": "0" } } },
-      {
-        id: "d",
-        cssOverride:
-          ".alert {\n  background: #f0fdf4;\n  border: 1px solid #86efac;\n  border-left: 4px solid #16a34a;\n  color: #14532d;\n  padding: 12px 16px;\n  border-radius: 8px;\n  font-size: 14px;\n}",
-      },
-      { id: "e", overrides: { ".alert": { "border-left": "12px solid #2563eb", "font-size": "22px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real alert is pale blue with a thin blue accent bar on the left, not red or green.",
   },
   {
@@ -176,21 +123,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      {
-        id: "b",
-        overrides: { ".tab": { background: "#0f172a", color: "#ffffff", "border-bottom": "3px solid #0f172a" } },
-      },
-      { id: "c", overrides: { ".tab": { padding: "2px 6px", "border-radius": "999px" } } },
-      {
-        id: "d",
-        cssOverride:
-          ".tab {\n  display: inline-block;\n  padding: 8px 18px;\n  border-radius: 6px 6px 0 0;\n  background: #ffffff;\n  color: #2563eb;\n  font-weight: 700;\n  border-bottom: 3px solid #2563eb;\n  text-decoration: none;\n}",
-      },
-      { id: "e", overrides: { ".tab": { "font-weight": "400", "border-bottom": "10px solid transparent" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real tab has a light grey background and an invisible (transparent) bottom border, so it looks flat and inactive.",
   },
   {
@@ -216,18 +148,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".avatar": { "border-radius": "8px", background: "#f59e0b" } } },
-      { id: "c", overrides: { ".avatar": { width: "70px", height: "70px", "font-size": "28px" } } },
-      {
-        id: "d",
-        cssOverride:
-          ".avatar {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 44px;\n  height: 44px;\n  border-radius: 50%;\n  background: #ffffff;\n  color: #6366f1;\n  font-weight: 700;\n  font-size: 16px;\n  border: 3px solid #6366f1;\n}",
-      },
-      { id: "e", overrides: { ".avatar": { background: "#0f172a", color: "#22c55e", "border-radius": "0" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real avatar is a small solid-indigo circle, not a square, a giant blob, or an outlined ring.",
   },
   {
@@ -250,18 +170,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".field": { border: "2px solid #ef4444", "border-radius": "0" } } },
-      { id: "c", overrides: { ".field": { padding: "2px 4px", width: "90px" } } },
-      {
-        id: "d",
-        cssOverride:
-          ".field {\n  padding: 10px 14px;\n  border: 1px solid #334155;\n  border-radius: 8px;\n  font-size: 14px;\n  width: 220px;\n  background: #0f172a;\n  color: #f1f5f9;\n}",
-      },
-      { id: "e", overrides: { ".field": { "border-radius": "999px", background: "#f1f5f9" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real field is a plain white box with a thin grey border and slightly rounded corners.",
   },
   {
@@ -284,18 +192,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".link-btn": { border: "2px solid #dc2626", color: "#dc2626" } } },
-      { id: "c", overrides: { ".link-btn": { padding: "2px 6px", "border-radius": "999px" } } },
-      {
-        id: "d",
-        cssOverride:
-          ".link-btn {\n  display: inline-block;\n  padding: 10px 22px;\n  background: #16a34a;\n  border: 2px solid #16a34a;\n  color: #ffffff;\n  border-radius: 6px;\n  font-weight: 600;\n  text-decoration: none;\n}",
-      },
-      { id: "e", overrides: { ".link-btn": { border: "6px solid #16a34a", "font-weight": "400" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real link is an outline-only button: green text and a green border, no fill.",
   },
   {
@@ -311,21 +207,6 @@ const ELEMENTS_QUESTIONS = [
         { selector: ".mini-fill", decls: { width: "65%", height: "100%", background: "#2563eb" } },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".mini-fill": { width: "20%", background: "#dc2626" } } },
-      { id: "c", overrides: { ".mini-bar": { height: "20px", "border-radius": "0" } } },
-      {
-        id: "d",
-        cssOverride:
-          ".mini-bar {\n  width: 160px;\n  height: 8px;\n  background: #e2e8f0;\n  border-radius: 999px;\n  overflow: hidden;\n}\n\n.mini-fill {\n  width: 95%;\n  height: 100%;\n  background: #16a34a;\n}",
-      },
-      {
-        id: "e",
-        overrides: { ".mini-fill": { background: "#f59e0b" }, ".mini-bar": { background: "#fef3c7" } },
-      },
-    ],
-    correctChoiceId: "a",
     explain: "The real bar is filled about two-thirds of the way with blue, on a light grey track.",
   },
   {
@@ -349,18 +230,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".chip": { background: "#fee2e2", color: "#b91c1c" } } },
-      { id: "c", overrides: { ".chip": { "border-radius": "4px", padding: "2px 4px" } } },
-      {
-        id: "d",
-        cssOverride:
-          ".chip {\n  display: inline-flex;\n  align-items: center;\n  padding: 4px 14px;\n  background: transparent;\n  color: #6d28d9;\n  border-radius: 999px;\n  font-size: 13px;\n  font-weight: 600;\n  border: 1px solid #6d28d9;\n}",
-      },
-      { id: "e", overrides: { ".chip": { "font-size": "22px", padding: "10px 26px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real chip is a small solid lavender pill with purple text, no border.",
   },
   {
@@ -381,18 +250,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".box": { background: "#0f172a", color: "#f1f5f9" } } },
-      { id: "c", overrides: { ".box": { "border-radius": "0", "box-shadow": "none" } } },
-      {
-        id: "d",
-        cssOverride:
-          ".box {\n  padding: 20px;\n  background: #ffffff;\n  border: 2px dashed #94a3b8;\n  border-radius: 12px;\n  box-shadow: none;\n}",
-      },
-      { id: "e", overrides: { ".box": { padding: "4px", border: "4px solid #e2e8f0" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real box is a plain white card with a soft shadow and gently rounded corners.",
   },
 
@@ -417,14 +274,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".btn-md": { padding: "10px 26px" } } },
-      { id: "c", overrides: { ".btn-md": { "border-radius": "14px" } } },
-      { id: "d", overrides: { ".btn-md": { background: "#3b82f6" } } },
-      { id: "e", overrides: { ".btn-md": { "font-weight": "700" } } },
-    ],
-    correctChoiceId: "a",
     explain:
       "The real button uses 18px horizontal padding, an 8px radius, #2563eb and 600 weight; every other option changes exactly one of those.",
   },
@@ -446,14 +295,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".note-card": { padding: "16px 26px" } } },
-      { id: "c", overrides: { ".note-card": { "border-radius": "16px" } } },
-      { id: "d", overrides: { ".note-card": { background: "#fef9c3" } } },
-      { id: "e", overrides: { ".note-card": { border: "1px solid #fcd34d" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real card uses a slightly deeper cream background (#fefce8) and a matching #fde68a border.",
   },
   {
@@ -476,14 +317,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".status-pill": { padding: "5px 20px" } } },
-      { id: "c", overrides: { ".status-pill": { color: "#16a34a" } } },
-      { id: "d", overrides: { ".status-pill": { "font-size": "14px" } } },
-      { id: "e", overrides: { ".status-pill": { "font-weight": "600" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real pill keeps padding at 5px 14px, text colour #15803d, 12px text and 700 weight; each decoy nudges just one of those.",
   },
   {
@@ -505,14 +338,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".warn-box": { padding: "12px 22px" } } },
-      { id: "c", overrides: { ".warn-box": { "border-radius": "12px" } } },
-      { id: "d", overrides: { ".warn-box": { border: "1px solid #fbbf24" } } },
-      { id: "e", overrides: { ".warn-box": { color: "#78350f" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real warning box borders in #fcd34d and its text sits at #92400e, both a shade lighter than the decoys.",
   },
   {
@@ -534,14 +359,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".tab-active": { padding: "9px 22px" } } },
-      { id: "c", overrides: { ".tab-active": { "border-bottom": "3px solid #2563eb" } } },
-      { id: "d", overrides: { ".tab-active": { color: "#3b82f6" } } },
-      { id: "e", overrides: { ".tab-active": { "font-weight": "600" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real active tab has a 2px underline, not 3px, and sits at exactly #2563eb.",
   },
   {
@@ -567,14 +384,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".avatar-md": { width: "46px", height: "46px" } } },
-      { id: "c", overrides: { ".avatar-md": { "border-radius": "30%" } } },
-      { id: "d", overrides: { ".avatar-md": { background: "#0e7490" } } },
-      { id: "e", overrides: { ".avatar-md": { "font-size": "16px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real avatar is a full circle (50% radius) at 40px, in #0891b2 exactly.",
   },
   {
@@ -596,14 +405,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".field-active": { border: "3px solid #2563eb" } } },
-      { id: "c", overrides: { ".field-active": { "border-radius": "12px" } } },
-      { id: "d", overrides: { ".field-active": { "box-shadow": "0 0 0 5px rgba(37,99,235,0.15)" } } },
-      { id: "e", overrides: { ".field-active": { border: "2px solid #3b82f6" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real focused field has a 2px border and a 3px soft glow, not 3px/5px.",
   },
   {
@@ -618,14 +419,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".toggle-on": { width: "52px" } } },
-      { id: "c", overrides: { ".toggle-on": { "border-radius": "8px" } } },
-      { id: "d", overrides: { ".toggle-on": { background: "#22c55e" } } },
-      { id: "e", overrides: { ".toggle-on": { height: "30px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real toggle track is 44x24px in #16a34a, a pill shape rather than a rounded rectangle.",
   },
   {
@@ -640,14 +433,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".tooltip": { padding: "6px 18px" } } },
-      { id: "c", overrides: { ".tooltip": { "border-radius": "10px" } } },
-      { id: "d", overrides: { ".tooltip": { background: "#0f172a" } } },
-      { id: "e", overrides: { ".tooltip": { "font-size": "13px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real tooltip keeps padding at 6px 12px, a 6px radius, background #1e293b and 12px text; each decoy nudges just one of those.",
   },
   {
@@ -663,14 +448,6 @@ const ELEMENTS_QUESTIONS = [
         { selector: ".dot", decls: { width: "8px", height: "8px", "border-radius": "50%", background: "#16a34a" } },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".list-row": { gap: "16px" } } },
-      { id: "c", overrides: { ".dot": { width: "12px", height: "12px" } } },
-      { id: "d", overrides: { ".dot": { background: "#22c55e" } } },
-      { id: "e", overrides: { ".list-row": { "font-size": "15px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real row keeps a tight 10px gap and an 8px dot, both smaller than the decoys.",
   },
 
@@ -695,14 +472,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".btn-sm": { padding: "9px 36px" } } },
-      { id: "c", overrides: { ".btn-sm": { "border-radius": "22px" } } },
-      { id: "d", overrides: { ".btn-sm": { background: "#60a5fa" } } },
-      { id: "e", overrides: { ".btn-sm": { "font-size": "22px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real button keeps padding at 9px 16px, a 6px radius, background #1d4ed8 and 14px text; each decoy nudges just one of those.",
   },
   {
@@ -717,14 +486,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".tag-sm": { padding: "3px 26px" } } },
-      { id: "c", overrides: { ".tag-sm": { color: "#7dd3fc" } } },
-      { id: "d", overrides: { ".tag-sm": { "font-size": "19px" } } },
-      { id: "e", overrides: { ".tag-sm": { "border-radius": "6px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real tag keeps padding at 3px 10px, text colour #0369a1, 11px text and a true pill radius; each decoy nudges just one of those.",
   },
   {
@@ -739,14 +500,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".info-box": { padding: "10px 34px" } } },
-      { id: "c", overrides: { ".info-box": { "border-radius": "26px" } } },
-      { id: "d", overrides: { ".info-box": { border: "1px solid #38bdf8" } } },
-      { id: "e", overrides: { ".info-box": { "font-size": "21px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real box keeps padding at 10px 14px, an 8px radius, border colour #bae6fd and 13px text; each decoy nudges just one of those.",
   },
   {
@@ -761,14 +514,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".tab-sm": { padding: "7px 34px" } } },
-      { id: "c", overrides: { ".tab-sm": { color: "#94a3b8" } } },
-      { id: "d", overrides: { ".tab-sm": { "font-weight": "400" } } },
-      { id: "e", overrides: { ".tab-sm": { "text-transform": "uppercase" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real tab keeps padding at 7px 14px, text colour #334155, 600 weight and normal casing; each decoy nudges just one of those.",
   },
   {
@@ -783,14 +528,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".avatar-sm": { width: "54px", height: "54px" } } },
-      { id: "c", overrides: { ".avatar-sm": { background: "#c4b5fd" } } },
-      { id: "d", overrides: { ".avatar-sm": { "font-size": "21px" } } },
-      { id: "e", overrides: { ".avatar-sm": { "border-radius": "20%" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real avatar keeps a 36px circle, background #7c3aed, 13px text and a true 50% radius; each decoy nudges just one of those.",
   },
   {
@@ -805,14 +542,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".field-sm": { padding: "8px 28px" } } },
-      { id: "c", overrides: { ".field-sm": { "border-radius": "20px" } } },
-      { id: "d", overrides: { ".field-sm": { border: "1px solid #64748b" } } },
-      { id: "e", overrides: { ".field-sm": { width: "260px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real field keeps padding at 8px 12px, a 6px radius, a 1px border and a 180px width; each decoy nudges just one of those.",
   },
   {
@@ -827,14 +556,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".tooltip-sm": { padding: "5px 28px" } } },
-      { id: "c", overrides: { ".tooltip-sm": { "border-radius": "22px" } } },
-      { id: "d", overrides: { ".tooltip-sm": { background: "#4b5563" } } },
-      { id: "e", overrides: { ".tooltip-sm": { "font-size": "19px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real tooltip keeps padding at 5px 10px, a 5px radius, background #111827 and 11px text; each decoy nudges just one of those.",
   },
   {
@@ -850,14 +571,6 @@ const ELEMENTS_QUESTIONS = [
         { selector: ".mark", decls: { width: "7px", height: "7px", "border-radius": "50%", background: "#059669" } },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".row-sm": { gap: "26px" } } },
-      { id: "c", overrides: { ".mark": { width: "18px", height: "18px" } } },
-      { id: "d", overrides: { ".mark": { background: "#a7f3d0" } } },
-      { id: "e", overrides: { ".row-sm": { "font-size": "21px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real row keeps an 8px gap, a 7px dot, dot colour #059669 and 13px text; each decoy nudges just one of those.",
   },
   {
@@ -872,14 +585,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".chip-sm": { padding: "3px 28px" } } },
-      { id: "c", overrides: { ".chip-sm": { color: "#fca5a5" } } },
-      { id: "d", overrides: { ".chip-sm": { "border-radius": "6px" } } },
-      { id: "e", overrides: { ".chip-sm": { "font-size": "19px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real chip keeps padding at 3px 10px, text colour #b91c1c, a true pill radius and 11px text; each decoy nudges just one of those.",
   },
   {
@@ -902,14 +607,6 @@ const ELEMENTS_QUESTIONS = [
         },
       ],
     },
-    choices: [
-      { id: "a", overrides: { ".card": { padding: "16px 40px" } } },
-      { id: "b", overrides: { ".card": { "border-radius": "28px" } } },
-      { id: "c", overrides: {} },
-      { id: "d", overrides: { ".card": { border: "1px solid #64748b" } } },
-      { id: "e", overrides: { ".card": { "box-shadow": "0 8px 20px rgba(15,23,42,0.25)" } } },
-    ],
-    correctChoiceId: "c",
     explain:
       "The real card keeps padding at 16px 18px, a 10px radius, border colour #cbd5e1 and a soft 2px shadow; each decoy nudges just one of those.",
   },
@@ -963,36 +660,6 @@ const WHOLE_PAGE_QUESTIONS = [
         { selector: ".site-footer", decls: { padding: "20px 32px", background: "#0f172a", color: "#94a3b8", "text-align": "center", "font-size": "13px" } },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      {
-        id: "b",
-        overrides: { ".hero": { background: "#1d4ed8" }, ".hero p": { color: "#bfdbfe" }, ".site-header .site-logo": { color: "#1d4ed8" } },
-      },
-      {
-        id: "c",
-        overrides: { ".hero": { padding: "8px 12px" }, ".hero h1": { "font-size": "16px" }, ".content": { padding: "8px 12px" } },
-      },
-      {
-        id: "d",
-        overrides: {
-          ".site-header": { background: "#0f172a" },
-          ".site-header .site-logo": { color: "#f87171" },
-          ".site-nav a": { color: "#cbd5e1" },
-          ".hero": { background: "#1c1917" },
-        },
-      },
-      {
-        id: "e",
-        overrides: {
-          ".card-grid": { "flex-direction": "column" },
-          ".card": { background: "#0f172a" },
-          ".card h3": { color: "#f87171" },
-          ".card p": { color: "#94a3b8" },
-        },
-      },
-    ],
-    correctChoiceId: "a",
     explain: "The real page is red and white throughout, with three destination cards sitting side by side, not blue, cramped, dark-header, or stacked-and-inverted.",
   },
   {
@@ -1034,32 +701,6 @@ const WHOLE_PAGE_QUESTIONS = [
         { selector: ".site-footer", decls: { padding: "20px 32px", background: "#1e1b3a", color: "#a5b4fc", "text-align": "center", "font-size": "13px" } },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      {
-        id: "b",
-        overrides: { ".hero": { background: "#166534" }, ".site-header": { background: "#052e16" }, ".card p": { color: "#16a34a" } },
-      },
-      {
-        id: "c",
-        overrides: { ".hero": { padding: "6px 10px" }, ".content": { padding: "6px 10px" }, ".card-grid": { gap: "2px" } },
-      },
-      {
-        id: "d",
-        overrides: {
-          ".site-header": { background: "#ffffff", "border-bottom": "1px solid #e2e8f0" },
-          ".site-header .site-logo": { color: "#1e1b3a" },
-          ".hero": { background: "#ffffff" },
-          ".hero h1": { color: "#1e1b3a" },
-          ".hero p": { color: "#57534e" },
-        },
-      },
-      {
-        id: "e",
-        overrides: { ".card-grid": { "flex-direction": "column" }, ".card": { "border-radius": "999px", "text-align": "center" } },
-      },
-    ],
-    correctChoiceId: "a",
     explain: "The real page is a dark indigo/gold cinema theme with three cards side by side, not green, cramped, a plain white theme, or stacked pills.",
   },
 
@@ -1103,14 +744,6 @@ const WHOLE_PAGE_QUESTIONS = [
         { selector: ".site-footer", decls: { padding: "18px 32px", background: "#134e4a", color: "#99f6e4", "text-align": "center", "font-size": "13px" } },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".hero": { padding: "48px 56px" } } },
-      { id: "c", overrides: { ".city-row": { padding: "14px 30px" } } },
-      { id: "d", overrides: { ".hero": { background: "#0d9488" } } },
-      { id: "e", overrides: { ".section-title": { "font-size": "22px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real page keeps 32px hero padding, 18px row padding, a #0f766e hero and an 18px section title - each option nudges just one of those.",
   },
   {
@@ -1152,14 +785,6 @@ const WHOLE_PAGE_QUESTIONS = [
         { selector: ".site-footer", decls: { padding: "18px 32px", background: "#3f6212", color: "#d9f99d", "text-align": "center", "font-size": "12px" } },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".card": { padding: "30px" } } },
-      { id: "c", overrides: { ".card": { "border-radius": "22px" } } },
-      { id: "d", overrides: { ".hero": { background: "#65a30d" } } },
-      { id: "e", overrides: { ".section-title": { "font-size": "23px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real page keeps compact 18px cards with a 12px radius and a #4d7c0f hero - each option nudges just one of those.",
   },
 
@@ -1203,14 +828,6 @@ const WHOLE_PAGE_QUESTIONS = [
         { selector: ".site-footer", decls: { padding: "18px 32px", background: "#1c1917", color: "#fb923c", "text-align": "center", "font-size": "12px" } },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".shop-row": { padding: "13px 40px" } } },
-      { id: "c", overrides: { ".shop-list": { gap: "16px" } } },
-      { id: "d", overrides: { ".shop-tag": { color: "#fdba74" } } },
-      { id: "e", overrides: { ".hero": { padding: "50px 78px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real page keeps 18px row padding, a 1px list gap, tag colour #c2410c and 32px hero padding; each decoy nudges just one of those.",
   },
   {
@@ -1252,14 +869,6 @@ const WHOLE_PAGE_QUESTIONS = [
         { selector: ".site-footer", decls: { padding: "18px 32px", background: "#fce7f3", color: "#9d174d", "text-align": "center", "font-size": "12px" } },
       ],
     },
-    choices: [
-      { id: "a", overrides: {} },
-      { id: "b", overrides: { ".card": { padding: "44px" } } },
-      { id: "c", overrides: { ".card": { "border-radius": "34px" } } },
-      { id: "d", overrides: { ".card h3": { color: "#f472b6" } } },
-      { id: "e", overrides: { ".card p": { "font-size": "27px" } } },
-    ],
-    correctChoiceId: "a",
     explain: "The real page keeps 20px card padding, a 14px card radius, heading colour #9d174d and 18px bloom-date text; each decoy nudges just one of those.",
   },
 ];
