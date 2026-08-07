@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Click directly on the broken parts of a full HTML page. Thirty problems across six error categories, from a single missing attribute to several hidden mistakes at once."
+    />
+    <title>HTML Debugger - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>HTML Debugger</h1>
+      <div class="header-desc">
+        Each problem is a full <strong>HTML page</strong> with mistakes
+        hiding in it. <strong>Click</strong> directly on the part of the
+        code that's wrong: a correct click <strong>highlights it</strong>
+        and explains the mistake, a miss shows an &#10007;. Work through
+        six categories of mistake, from a single missing attribute to
+        several hidden at once.
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="header-top">
+            <span>Problems</span>
+            <span class="panel-badge" id="totalCount">30</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span id="progressCount">0/30</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="category-list" id="categoryList"></div>
+      </aside>
+
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+      <div class="main-content panel">
+        <div class="title-bar">
+          <div class="title-bar-left">
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle sidebar">
+              &#9776;
+            </button>
+            <span class="title-bar-badge" id="titleBarBadge">Ready</span>
+            <h2 id="titleBarTitle">Select a Problem</h2>
+          </div>
+          <div class="title-bar-right">
+            <button class="btn btn-warning" id="btnHint" disabled>Hint</button>
+            <button class="btn" id="btnReset" disabled>&#8635; Reset</button>
+          </div>
+        </div>
+
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon">&#9633;</div>
+          <h2 class="welcome-title">Select a problem to begin</h2>
+          <p class="welcome-subtitle">
+            Pick a problem from the sidebar. Read the page's HTML and click
+            on the part of the code that's broken, an explanation appears
+            for every mistake you find.
+          </p>
+          <div class="welcome-stats">
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">5 Unclosed Tags</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">5 Mismatched Tags</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">5 Missing Attributes</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">5 Broken Nesting</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">5 Attribute &amp; Quoting Mistakes</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon">&#9670;</div>
+              <div class="welcome-stat-label">5 Accessibility Slips</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="workspace" id="workspaceArea" style="display: none">
+          <div class="code-panel panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>Buggy code</span>
+                <span class="panel-badge difficulty-badge" id="difficultyBadge">Easy</span>
+                <span class="panel-badge" id="foundBadge">0/0 found</span>
+              </div>
+            </div>
+            <div class="code-wrap" id="codeWrap">
+              <pre class="code-text" id="codeText"></pre>
+            </div>
+          </div>
+
+          <div class="findings-panel panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>Findings</span>
+                <span class="panel-badge" id="findingsBadge">0/0</span>
+              </div>
+            </div>
+            <div class="findings-body" id="findingsBody">
+              <p class="findings-empty">Errors you find will appear here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="success-overlay" id="successOverlay">
+      <div class="success-card">
+        <div class="success-icon">&#10003;</div>
+        <h2 class="success-title">All errors found!</h2>
+        <p class="success-subtitle" id="completionText"></p>
+        <div style="display: flex; gap: 10px; justify-content: center">
+          <button class="btn" id="btnStayHere">Stay Here</button>
+          <button class="btn btn-primary" id="btnNextProblem">
+            Next Problem &#8594;
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="problems.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
