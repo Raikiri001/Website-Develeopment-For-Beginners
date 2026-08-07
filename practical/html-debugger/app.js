@@ -1,14 +1,20 @@
 /**
  * HTML Debugger - app logic.
- * PROBLEM_CATEGORIES comes from problems.js (loaded first, global).
+ * PROBLEM_TIERS comes from problems.js (loaded first, global) - plain
+ * metadata only (id/title). The actual page markup and error title/
+ * explanation text is encrypted in answers.json, fetched once at init and
+ * decrypted per problem on demand (same scheme as
+ * html-drag-and-drop/solutions.json - see decryptAnswer below).
  *
- * Rendering deliberately does NOT syntax-highlight the code (unlike
- * html-drag-and-drop's IDE panel): a highlighter that can't fully parse a
- * deliberately-broken tag (e.g. an unquoted attribute value with a space)
- * would leave that tag's brackets uncoloured while every well-formed tag
- * around it is coloured, which gives away exactly which tag is broken
- * before the learner clicks anything. Plain escaped text keeps every
- * error region visually identical to normal code until it's found.
+ * highlightSyntax() colours code like html-drag-and-drop's IDE panel does,
+ * but more permissively: it colours any <...>-shaped span and any
+ * word/quoted-string token inside it without requiring the tag to be
+ * well-formed. A stricter, "must fully parse" highlighter would leave a
+ * deliberately-broken tag (e.g. an unquoted attribute value) visibly
+ * uncoloured while every well-formed tag around it is coloured, which
+ * gives away exactly which tag is broken before the learner clicks
+ * anything. Colouring every token the same way regardless of validity
+ * keeps error regions visually identical to normal code until found.
  */
 (function () {
   "use strict";
@@ -29,7 +35,6 @@
     btnReset: document.getElementById("btnReset"),
     welcomeState: document.getElementById("welcomeState"),
     workspaceArea: document.getElementById("workspaceArea"),
-    difficultyBadge: document.getElementById("difficultyBadge"),
     foundBadge: document.getElementById("foundBadge"),
     codeWrap: document.getElementById("codeWrap"),
     codeText: document.getElementById("codeText"),
@@ -41,18 +46,84 @@
   };
 
   const state = {
-    currentCategory: null,
+    currentTier: null,
     currentProblem: null,
+    currentAnswer: null, // decrypted { html, errors } for the loaded problem
     found: new Set(),
     solved: new Set(),
+    answersMap: null, // loaded from answers.json, still encrypted per problem id
   };
 
   let activeToolbar = null;
+
+  // ── Decryption ───────────────────────────────────────
+  // Key is split to make casual inspection harder. This is obfuscation
+  // against peeking at view-source, not real security (see
+  // html-drag-and-drop/app.js's decryptSolution for the same scheme).
+  const _kp = ["D3_", "buGh", "Unt_", "K3y!"];
+  const _dk = _kp.join("");
+
+  /** Decrypt a XOR-ciphered, base64-encoded { html, errors }. */
+  function decryptAnswer(encoded) {
+    const bytes = atob(encoded);
+    let result = "";
+    for (let i = 0; i < bytes.length; i++) {
+      result += String.fromCharCode(bytes.charCodeAt(i) ^ _dk.charCodeAt(i % _dk.length));
+    }
+    return JSON.parse(result);
+  }
+
+  function getAnswer(problemId) {
+    if (!state.answersMap || !state.answersMap[problemId]) return null;
+    return decryptAnswer(state.answersMap[problemId]);
+  }
+
+  async function loadAnswers() {
+    try {
+      const resp = await fetch("answers.json");
+      if (!resp.ok) throw new Error("Failed to load answers");
+      state.answersMap = await resp.json();
+    } catch (err) {
+      console.error("Could not load answers:", err);
+      showToast("error", "Failed to load problem data. Please refresh.");
+    }
+  }
 
   // ── Escaping ──────────────────────────────────────────
   function escapeHtml(str) {
     const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" };
     return str.replace(/[&<>"']/g, (c) => map[c]);
+  }
+
+  // ── Syntax highlighting (permissive - see file header) ──
+  function highlightSyntax(escaped) {
+    escaped = escaped.replace(
+      /(&lt;!DOCTYPE\s+html&gt;)/gi,
+      '<span class="doctype">$1</span>'
+    );
+
+    // Any <...>-shaped span, matched up to the next &gt; regardless of
+    // whether what's inside it is well-formed.
+    escaped = escaped.replace(
+      /(&lt;\/?)([a-zA-Z][\w-]*)([\s\S]*?)(&gt;)/g,
+      (whole, open, name, rest, close) => {
+        // Colour every quoted string and every bare word token inside the
+        // tag the same way (as .attr unless it's a quoted string), so a
+        // stray unquoted value (the "Attribute & Quoting Mistakes"
+        // category) doesn't stand out as the one uncoloured thing.
+        const styledRest = rest.replace(
+          /(&quot;[\s\S]*?&quot;)|([\w.-]+)(\s*=)?/g,
+          (m, str, word, eq) => {
+            if (str) return `<span class="string">${str}</span>`;
+            if (word) return `<span class="attr">${word}</span>${eq || ""}`;
+            return m;
+          }
+        );
+        return `<span class="tag">${open}${name}</span>${styledRest}<span class="tag">${close}</span>`;
+      }
+    );
+
+    return escaped;
   }
 
   // ── Parse [[id: ...]] markers into clickable spans ───
@@ -62,13 +133,13 @@
     let lastIndex = 0;
     let match;
     while ((match = markerRe.exec(raw))) {
-      html += escapeHtml(raw.slice(lastIndex, match.index));
-      html += `<span class="err-region" data-err="${match[1]}" tabindex="0">${escapeHtml(
-        match[2]
+      html += highlightSyntax(escapeHtml(raw.slice(lastIndex, match.index)));
+      html += `<span class="err-region" data-err="${match[1]}" tabindex="0">${highlightSyntax(
+        escapeHtml(match[2])
       )}</span>`;
       lastIndex = match.index + match[0].length;
     }
-    html += escapeHtml(raw.slice(lastIndex));
+    html += highlightSyntax(escapeHtml(raw.slice(lastIndex)));
     return html;
   }
 
@@ -76,27 +147,27 @@
   function buildSidebar() {
     dom.categoryList.innerHTML = "";
 
-    PROBLEM_CATEGORIES.forEach((cat, catIdx) => {
+    PROBLEM_TIERS.forEach((tier, tierIdx) => {
       const group = document.createElement("div");
       group.className = "category-group";
 
       const header = document.createElement("div");
-      header.className = "category-header" + (catIdx === 0 ? " expanded" : "");
+      header.className = "category-header" + (tierIdx === 0 ? " expanded" : "");
       header.innerHTML = `
-        <span>${cat.name}</span>
-        <span class="category-count">(${cat.problems.length})</span>
+        <span>${tier.name}</span>
+        <span class="category-count">(${tier.problems.length})</span>
         <span class="cat-chevron">&#9656;</span>
       `;
 
       const problemList = document.createElement("div");
-      problemList.className = "category-problems" + (catIdx === 0 ? " open" : "");
+      problemList.className = "category-problems" + (tierIdx === 0 ? " open" : "");
 
-      cat.problems.forEach((prob) => {
+      tier.problems.forEach((prob) => {
         const item = document.createElement("div");
         item.className = "problem-item";
         item.dataset.problemId = prob.id;
         item.innerHTML = `<span class="status-dot"></span><span>${prob.title}</span>`;
-        item.addEventListener("click", () => loadProblem(cat, prob));
+        item.addEventListener("click", () => loadProblem(tier, prob));
         problemList.appendChild(item);
       });
 
@@ -111,18 +182,19 @@
     });
   }
 
-  function setDifficultyBadge(el, difficulty) {
-    el.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
-    el.classList.remove("difficulty-easy", "difficulty-medium", "difficulty-hard");
-    el.classList.add(`difficulty-${difficulty}`);
-  }
-
   // ── Load Problem ──────────────────────────────────────
-  function loadProblem(category, problem) {
+  function loadProblem(tier, problem) {
+    const answer = getAnswer(problem.id);
+    if (!answer) {
+      showToast("error", "Problem data not available for this one.");
+      return;
+    }
+
     closeToolbar();
 
-    state.currentCategory = category;
+    state.currentTier = tier;
     state.currentProblem = problem;
+    state.currentAnswer = answer;
     state.found = new Set();
 
     document.querySelectorAll(".problem-item").forEach((el) => {
@@ -130,13 +202,11 @@
     });
 
     dom.titleBarTitle.textContent = problem.title;
-    dom.titleBarBadge.textContent = category.name;
-    dom.titleBarBadge.style.background = category.color + "22";
-    dom.titleBarBadge.style.color = category.color;
+    dom.titleBarBadge.textContent = tier.name;
+    dom.titleBarBadge.style.background = tier.color + "22";
+    dom.titleBarBadge.style.color = tier.color;
 
-    setDifficultyBadge(dom.difficultyBadge, problem.difficulty);
-
-    dom.codeText.innerHTML = parseCodeMarkup(problem.html);
+    dom.codeText.innerHTML = parseCodeMarkup(answer.html);
     dom.findingsBody.innerHTML = `<p class="findings-empty">Errors you find will appear here.</p>`;
 
     updateFoundBadges();
@@ -151,7 +221,7 @@
 
   // ── Click handling ────────────────────────────────────
   function handleCodeClick(e) {
-    if (!state.currentProblem) return;
+    if (!state.currentAnswer) return;
     const span = e.target.closest(".err-region");
 
     if (!span) {
@@ -160,7 +230,7 @@
     }
 
     const errId = span.dataset.err;
-    const errorData = state.currentProblem.errors.find((er) => er.id === errId);
+    const errorData = state.currentAnswer.errors.find((er) => er.id === errId);
     if (!errorData) return;
 
     if (!state.found.has(errId)) {
@@ -249,14 +319,14 @@
   }
 
   function updateFoundBadges() {
-    const total = state.currentProblem.errors.length;
+    const total = state.currentAnswer.errors.length;
     dom.foundBadge.textContent = `${state.found.size}/${total} found`;
     dom.findingsBadge.textContent = `${state.found.size}/${total}`;
   }
 
   // ── Completion ────────────────────────────────────────
   function checkCompletion() {
-    const total = state.currentProblem.errors.length;
+    const total = state.currentAnswer.errors.length;
     if (state.found.size !== total) return;
 
     state.solved.add(state.currentProblem.id);
@@ -268,7 +338,7 @@
 
   function showSuccess() {
     closeToolbar();
-    const total = state.currentProblem.errors.length;
+    const total = state.currentAnswer.errors.length;
     dom.completionText.textContent = `You found all ${total} error${
       total === 1 ? "" : "s"
     } in "${state.currentProblem.title}".`;
@@ -285,10 +355,10 @@
     let found = false;
     let startLooking = false;
 
-    for (const cat of PROBLEM_CATEGORIES) {
-      for (const prob of cat.problems) {
+    for (const tier of PROBLEM_TIERS) {
+      for (const prob of tier.problems) {
         if (startLooking && !state.solved.has(prob.id)) {
-          loadProblem(cat, prob);
+          loadProblem(tier, prob);
           found = true;
           break;
         }
@@ -298,10 +368,10 @@
     }
 
     if (!found) {
-      for (const cat of PROBLEM_CATEGORIES) {
-        for (const prob of cat.problems) {
+      for (const tier of PROBLEM_TIERS) {
+        for (const prob of tier.problems) {
           if (!state.solved.has(prob.id)) {
-            loadProblem(cat, prob);
+            loadProblem(tier, prob);
             found = true;
             break;
           }
@@ -317,8 +387,8 @@
 
   // ── Hint ──────────────────────────────────────────────
   function showHint() {
-    if (!state.currentProblem) return;
-    const nextError = state.currentProblem.errors.find((er) => !state.found.has(er.id));
+    if (!state.currentAnswer) return;
+    const nextError = state.currentAnswer.errors.find((er) => !state.found.has(er.id));
     if (!nextError) {
       showToast("success", "You've already found every error in this one.");
       return;
@@ -338,7 +408,7 @@
       saveSolvedState();
     }
 
-    loadProblem(state.currentCategory, state.currentProblem);
+    loadProblem(state.currentTier, state.currentProblem);
     showToast("info", "Problem reset. Every error is hidden again.");
   }
 
@@ -350,7 +420,7 @@
   }
 
   function updateProgress() {
-    const total = PROBLEM_CATEGORIES.reduce((sum, cat) => sum + cat.problems.length, 0);
+    const total = PROBLEM_TIERS.reduce((sum, tier) => sum + tier.problems.length, 0);
     const solved = state.solved.size;
     const pct = Math.round((solved / total) * 100);
 
@@ -363,7 +433,7 @@
   // ── Persist solved state to localStorage ─────────────
   function getAllProblemIds() {
     const ids = new Set();
-    PROBLEM_CATEGORIES.forEach((cat) => cat.problems.forEach((p) => ids.add(p.id)));
+    PROBLEM_TIERS.forEach((tier) => tier.problems.forEach((p) => ids.add(p.id)));
     return ids;
   }
 
@@ -446,8 +516,10 @@
   }
 
   // ── Init ─────────────────────────────────────────────
-  function init() {
+  async function init() {
     if (window.WDFBProgress) window.WDFBProgress.markViewed(ACTIVITY_ID);
+
+    await loadAnswers();
 
     buildSidebar();
     initMobileToggle();

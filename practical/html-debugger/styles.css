@@ -59,32 +59,13 @@ body {
 
 /* .title-bar, .title-bar-left, .title-bar-right, .title-bar-badge,
    .btn-warning, .welcome-state (and children) are shared components, see
-   assets/css/base.css. titleBarBadge's per-category colour is set inline
-   by app.js (loadProblem()), since which colour applies depends on
-   problem data. */
-
-/* Difficulty colours, paired with the shared .panel-badge shape (used on
-   the code panel's header, per CLAUDE.md: difficulty lives on a panel
-   header badge, never the title bar). Same class names/values as
-   match-the-css's .difficulty-easy/-medium/-hard, kept in sync by hand
-   since each activity's CSS is self-contained. */
-.difficulty-easy {
-  background-color: var(--accent-success-tint);
-  border-color: var(--accent-success-tint);
-  color: var(--accent-success);
-}
-
-.difficulty-medium {
-  background-color: var(--accent-warning-tint);
-  border-color: var(--accent-warning-tint);
-  color: var(--accent-warning);
-}
-
-.difficulty-hard {
-  background-color: var(--accent-danger-tint);
-  border-color: var(--accent-danger-tint);
-  color: var(--accent-danger);
-}
+   assets/css/base.css. titleBarBadge shows the current problem's
+   difficulty TIER here (Beginner/Intermediate/Advanced/Expert), not a bug
+   category - see problems.js. Its colour is set inline by app.js
+   (loadProblem()), from each tier's own colour in problems.js. There's no
+   separate panel-header difficulty badge: the title bar badge already is
+   the difficulty signal for this activity, so a second one would just be
+   the same information twice. */
 
 /* ---------- Workspace ---------- */
 .workspace {
@@ -127,6 +108,23 @@ body {
   white-space: pre-wrap;
   word-break: break-word;
   cursor: text;
+}
+
+/* Syntax highlighting, reusing the site's shared --code-* tokens (same
+   scheme as html-drag-and-drop's IDE panel). highlightSyntax() in app.js
+   colours every tag/attribute/string the same way whether or not the tag
+   is well-formed, so a deliberately broken tag never stands out. */
+.code-text .tag {
+  color: var(--code-tag);
+}
+.code-text .attr {
+  color: var(--code-attr);
+}
+.code-text .string {
+  color: var(--code-string);
+}
+.code-text .doctype {
+  color: var(--code-keyword);
 }
 
 /* Clickable error region. Visually identical to plain code until found,
