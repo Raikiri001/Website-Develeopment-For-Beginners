@@ -88,9 +88,6 @@
     titleBarBadge: document.getElementById("titleBarBadge"),
     descText: document.getElementById("descText"),
     blockCount: document.getElementById("blockCount"),
-    statusProblem: document.getElementById("statusProblem"),
-    statusCategory: document.getElementById("statusCategory"),
-    statusBlocks: document.getElementById("statusBlocks"),
     progressFill: document.getElementById("progressFill"),
     progressCount: document.getElementById("progressCount"),
     successOverlay: document.getElementById("successOverlay"),
@@ -254,11 +251,6 @@
     dom.titleBarBadge.style.color = category.color;
     dom.descText.textContent = problem.description;
     dom.blockCount.textContent = `${solution.length} blocks`;
-
-    // Update status bar
-    dom.statusProblem.textContent = problem.title;
-    dom.statusCategory.textContent = category.name;
-    dom.statusBlocks.textContent = `${solution.length} blocks`;
 
     // Show workspace, hide welcome
     dom.welcomeState.style.display = "none";
@@ -809,14 +801,6 @@
   // ── Keyboard Shortcuts ───────────────────────────────
   function initKeyboard() {
     document.addEventListener("keydown", (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-        e.preventDefault();
-        checkSolution();
-      }
-      if ((e.ctrlKey || e.metaKey) && e.key === "h") {
-        e.preventDefault();
-        showHint();
-      }
       if (e.key === "Escape") {
         hideSuccess();
       }

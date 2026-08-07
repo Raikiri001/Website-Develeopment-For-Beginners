@@ -37,18 +37,24 @@
     totalCount: document.getElementById("totalCount"),
     progressCount: document.getElementById("progressCount"),
     progressFill: document.getElementById("progressFill"),
-    questionCounter: document.getElementById("questionCounter"),
-    difficultyBadge: document.getElementById("difficultyBadge"),
+    titleBarBadge: document.getElementById("titleBarBadge"),
+    titleBarTitle: document.getElementById("titleBarTitle"),
     promptDifficultyBadge: document.getElementById("promptDifficultyBadge"),
     btnNext: document.getElementById("btnNext"),
     promptHtml: document.getElementById("promptHtml"),
     promptCss: document.getElementById("promptCss"),
     choicesGrid: document.getElementById("choicesGrid"),
     feedbackNote: document.getElementById("feedbackNote"),
+    welcomeState: document.getElementById("welcomeState"),
+    welcomeStats: document.getElementById("welcomeStats"),
     quizGrid: document.getElementById("quizGrid"),
     completionPanel: document.getElementById("completionPanel"),
     completionScoreText: document.getElementById("completionScoreText"),
     btnRestart: document.getElementById("btnRestart"),
+    zoomModal: document.getElementById("zoomModal"),
+    zoomFrame: document.getElementById("zoomFrame"),
+    zoomModalLabel: document.getElementById("zoomModalLabel"),
+    btnZoomClose: document.getElementById("btnZoomClose"),
   };
 
   // ── Pure helpers ─────────────────────────────────────
@@ -240,6 +246,17 @@
     return null;
   }
 
+  function buildWelcomeStats() {
+    dom.welcomeStats.innerHTML = MATCH_CSS_CATEGORIES.map(
+      (category) => `
+        <div class="welcome-stat">
+          <div class="welcome-stat-icon">&#9670;</div>
+          <div class="welcome-stat-label">${category.questions.length} ${category.name}</div>
+        </div>
+      `
+    ).join("");
+  }
+
   // ── Sidebar ──────────────────────────────────────────
   function buildSidebar() {
     dom.categoryList.innerHTML = "";
@@ -304,8 +321,10 @@
     state.locked = false;
 
     const indexInCategory = category.questions.findIndex((q) => q.id === question.id);
-    dom.questionCounter.textContent = `Question ${indexInCategory + 1} of ${category.questions.length}`;
-    setDifficultyBadge(dom.difficultyBadge, question.difficulty);
+    dom.titleBarBadge.textContent = category.name;
+    dom.titleBarBadge.style.background = category.color + "22";
+    dom.titleBarBadge.style.color = category.color;
+    dom.titleBarTitle.textContent = `Question ${indexInCategory + 1}`;
     setDifficultyBadge(dom.promptDifficultyBadge, question.difficulty);
 
     dom.promptHtml.innerHTML = highlightHtml(question.html);
@@ -317,6 +336,7 @@
 
     renderChoices(question, category);
 
+    dom.welcomeState.style.display = "none";
     dom.quizGrid.style.display = "";
     dom.completionPanel.classList.remove("is-visible");
 
@@ -324,9 +344,12 @@
   }
 
   /** Render the iframe at a real desktop size, then scale the whole thing
-   * down so the card shows an exact thumbnail of the full page. */
-  function applyFullPageSizing(card, iframe) {
+   * down so the card shows an exact thumbnail of the full page. Sizes the
+   * whole .choice-item (head row + card), not just the card, so the head
+   * row lines up at the same width. */
+  function applyFullPageSizing(item, card, iframe) {
     const scale = FULL_PAGE_THUMB_WIDTH / FULL_PAGE_VIEWPORT.width;
+    item.style.width = `${FULL_PAGE_THUMB_WIDTH}px`;
     card.style.width = `${FULL_PAGE_THUMB_WIDTH}px`;
     card.style.height = `${Math.round(FULL_PAGE_VIEWPORT.height * scale)}px`;
     iframe.style.width = `${FULL_PAGE_VIEWPORT.width}px`;
@@ -334,6 +357,9 @@
     iframe.style.transform = `scale(${scale})`;
   }
 
+  /** Each choice is a small head row (letter + zoom button, sitting above
+   * the preview so neither ever overlaps the page content being judged)
+   * plus the actual clickable answer button below it. */
   function renderChoices(question, category) {
     dom.choicesGrid.innerHTML = "";
     const isFullPage = category.id === "whole-page";
@@ -345,45 +371,78 @@
       const letter = CHOICE_LETTERS[i];
       const cssText = cssTextForChoice(question, choice);
 
+      const item = document.createElement("div");
+      item.className = "choice-item";
+      item.dataset.choiceId = choice.id;
+
+      const head = document.createElement("div");
+      head.className = "choice-item-head";
+
+      const label = document.createElement("span");
+      label.className = "choice-label";
+      label.textContent = `Option ${letter}`;
+
+      const zoomBtn = document.createElement("button");
+      zoomBtn.type = "button";
+      zoomBtn.className = "choice-zoom-btn";
+      zoomBtn.setAttribute("aria-label", `Zoom in on option ${letter}`);
+      zoomBtn.innerHTML = "&#128269; Zoom";
+      zoomBtn.addEventListener("click", () => openZoomModal(question, choice, letter, isFullPage));
+
+      head.appendChild(label);
+      head.appendChild(zoomBtn);
+
       const card = document.createElement("button");
       card.type = "button";
       card.className = "choice-card";
-      card.dataset.choiceId = choice.id;
-      card.setAttribute("aria-label", `Option ${letter}`);
+      card.setAttribute("aria-label", `Select option ${letter}`);
 
       const iframe = document.createElement("iframe");
       iframe.setAttribute("sandbox", "");
       iframe.title = `Preview ${letter}`;
       iframe.srcdoc = buildSrcdoc(question.html, cssText, isFullPage);
-      if (isFullPage) applyFullPageSizing(card, iframe);
-
-      const label = document.createElement("span");
-      label.className = "choice-label";
-      label.textContent = letter;
+      if (isFullPage) applyFullPageSizing(item, card, iframe);
 
       card.appendChild(iframe);
-      card.appendChild(label);
-      card.addEventListener("click", () => handleChoiceClick(card, choice.id, question));
+      card.addEventListener("click", () => handleChoiceClick(item, choice.id, question));
 
-      dom.choicesGrid.appendChild(card);
+      item.appendChild(head);
+      item.appendChild(card);
+      dom.choicesGrid.appendChild(item);
     });
   }
 
+  /** Show one choice at (near) real size in a modal, since the thumbnail
+   * grid deliberately shrinks pages down and a 10px difference at that
+   * scale can be genuinely hard to judge - zooming in shows it at 1:1. */
+  function openZoomModal(question, choice, letter, isFullPage) {
+    const cssText = cssTextForChoice(question, choice);
+    dom.zoomFrame.srcdoc = buildSrcdoc(question.html, cssText, isFullPage);
+    dom.zoomModal.classList.toggle("is-full-page", isFullPage);
+    dom.zoomModalLabel.textContent = `Option ${letter}`;
+    dom.zoomModal.classList.add("is-open");
+  }
+
+  function closeZoomModal() {
+    dom.zoomModal.classList.remove("is-open");
+    dom.zoomFrame.srcdoc = "";
+  }
+
   // ── Grading ──────────────────────────────────────────
-  function handleChoiceClick(cardEl, choiceId, question) {
+  function handleChoiceClick(itemEl, choiceId, question) {
     if (state.locked) return;
     state.locked = true;
 
     const isCorrect = choiceId === question.correctChoiceId;
 
-    dom.choicesGrid.querySelectorAll(".choice-card").forEach((card) => {
-      card.disabled = true;
-      if (card.dataset.choiceId === question.correctChoiceId) {
-        card.classList.add("correct");
+    dom.choicesGrid.querySelectorAll(".choice-item").forEach((item) => {
+      item.querySelector(".choice-card").disabled = true;
+      if (item.dataset.choiceId === question.correctChoiceId) {
+        item.classList.add("correct");
       }
     });
 
-    if (!isCorrect) cardEl.classList.add("incorrect");
+    if (!isCorrect) itemEl.classList.add("incorrect");
 
     state.answered.add(question.id);
     if (isCorrect) state.correct.add(question.id);
@@ -477,17 +536,23 @@
     loadState();
     dom.totalCount.textContent = getAllQuestionIds().size;
     buildSidebar();
+    buildWelcomeStats();
     updateProgress();
 
     dom.btnNext.addEventListener("click", handleNextClick);
     dom.btnRestart.addEventListener("click", restartQuiz);
+    dom.btnZoomClose.addEventListener("click", closeZoomModal);
+    dom.zoomModal.addEventListener("click", (e) => {
+      if (e.target === dom.zoomModal) closeZoomModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && dom.zoomModal.classList.contains("is-open")) {
+        closeZoomModal();
+      }
+    });
 
-    const first = findFirstUnanswered();
-    if (first) {
-      loadQuestion(first.category, first.question);
-    } else {
-      showCompletion();
-    }
+    // Mirrors the HTML Structure Trainer: never auto-load a problem, even
+    // a partly-solved learner still picks where to start from the sidebar.
   }
 
   if (document.readyState === "loading") {

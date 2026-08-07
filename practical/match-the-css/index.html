@@ -35,7 +35,7 @@
       <div class="header-desc">
         Read the <strong>HTML and CSS</strong> on the left, then pick which
         of the five <strong>live previews</strong> on the right it actually
-        renders. Pick a category in the sidebar: single
+        renders. Pick a problem in the sidebar: single
         <strong>HTML elements</strong>, or small <strong>whole-page</strong>
         layouts.
       </div>
@@ -45,7 +45,7 @@
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
           <div class="header-top">
-            <span>Categories</span>
+            <span>Problems</span>
             <span class="panel-badge" id="totalCount">40</span>
           </div>
         </div>
@@ -64,19 +64,30 @@
       </aside>
 
       <div class="main-content panel">
-        <div class="status-bar">
-          <div class="status-left">
-            <span class="panel-badge" id="questionCounter">Question 1 of 30</span>
-            <span class="panel-badge difficulty-badge" id="difficultyBadge">Easy</span>
+        <div class="title-bar">
+          <div class="title-bar-left">
+            <span class="title-bar-badge" id="titleBarBadge">Ready</span>
+            <h2 id="titleBarTitle">Select a Problem</h2>
           </div>
-          <div class="status-right">
+          <div class="title-bar-right">
             <button class="btn btn-primary" id="btnNext" disabled>
               Next question
             </button>
           </div>
         </div>
 
-        <div class="quiz-grid" id="quizGrid">
+        <!-- Welcome State (shown until a problem is selected) -->
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon">&#9633;</div>
+          <h2 class="welcome-title">Select a problem to begin</h2>
+          <p class="welcome-subtitle">
+            Pick a problem from the sidebar. Read its HTML and CSS, then pick
+            which of the five live previews that code actually renders.
+          </p>
+          <div class="welcome-stats" id="welcomeStats"></div>
+        </div>
+
+        <div class="quiz-grid" id="quizGrid" style="display: none">
           <div class="panel prompt-panel">
             <div class="panel-header">
               <div class="header-top">
@@ -121,6 +132,21 @@
           <h2>All done</h2>
           <p id="completionScoreText"></p>
           <button class="btn btn-primary" id="btnRestart">Restart all questions</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zoom modal: inspect one choice at full/real size -->
+    <div class="zoom-modal" id="zoomModal">
+      <div class="zoom-modal-card">
+        <div class="zoom-modal-header">
+          <span id="zoomModalLabel">Option A</span>
+          <button class="btn" id="btnZoomClose" aria-label="Close zoomed view">
+            &#10005; Close
+          </button>
+        </div>
+        <div class="zoom-modal-body">
+          <iframe id="zoomFrame" sandbox="" title="Zoomed preview"></iframe>
         </div>
       </div>
     </div>
