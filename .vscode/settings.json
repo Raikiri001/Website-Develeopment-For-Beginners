@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "Dashboard",
-        "UI"
+        "UI",
+        "HTML Structure Trainer"
     ]
 }

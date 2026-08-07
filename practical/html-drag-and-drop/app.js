@@ -648,7 +648,11 @@
     }
 
     if (!found) {
-      showToast("success", "Amazing! You've solved all 30 problems.");
+      const total = PROBLEM_CATEGORIES.reduce(
+        (sum, cat) => sum + cat.problems.length,
+        0
+      );
+      showToast("success", `Amazing! You've solved all ${total} problems.`);
     }
   }
 

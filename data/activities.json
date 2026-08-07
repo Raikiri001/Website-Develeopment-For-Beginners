@@ -10,7 +10,7 @@
   {
     "id": "html-drag-and-drop",
     "title": "HTML Structure Trainer",
-    "description": "Thirty drag-and-drop problems that train you to arrange HTML elements in the correct order, from your first heading to a full semantic page layout.",
+    "description": "Forty-three drag-and-drop problems that train you to arrange HTML elements in the correct order, following the same path as the class: boilerplate, tags, text, lists, links and images, then semantic layout.",
     "category": "practical",
     "href": "practical/html-drag-and-drop/",
     "tags": ["HTML", "semantics", "structure"]
