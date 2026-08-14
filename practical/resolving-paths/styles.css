@@ -1,0 +1,305 @@
+/*
+  Resolving Paths - activity styles.
+  Colours, fonts, radii and shadows all come from ../../assets/css/tokens.css;
+  this file only holds the layout and components specific to this activity.
+*/
+
+/* Fixed to the viewport, like the other multi-problem activities: the sidebar
+   and main panel both stretch to fill it and scroll their own contents
+   internally (.category-list, .tree-body, .code-panel), so expanding every
+   category at once can never grow the sidebar, or the page, past the
+   viewport. */
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-shell {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+/* .sidebar, .sidebar-header, .category-list, .category-group,
+   .category-header, .category-problems, .problem-item are shared
+   components (a separated, rounded surface, per CLAUDE.md's "Workspace
+   layout" note), see assets/css/base.css. */
+
+/* Progress bar: shared .progress-track/.progress-fill (see base.css)
+   drive the fill; this is just the sidebar-specific label row above it. */
+.progress-container {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.progress-label span:last-child {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+/* ---------- Main content ---------- */
+/* .panel (shared, see base.css) supplies the separated, rounded surface;
+   this sizes it as a flex child of .app-shell, stacks its own children,
+   and clips to that height so only the workspace scrolls below. */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* .title-bar, .title-bar-left, .title-bar-right, .title-bar-badge,
+   .panel-header, .panel-badge, .welcome-state and its children are all
+   shared components, see assets/css/base.css. */
+
+/* Two work areas side by side, each its own rounded surface with a gap
+   between them rather than a shared edge. */
+.workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+.workspace[hidden] {
+  display: none;
+}
+
+/* ---------- Project tree ---------- */
+/* Wide enough for a path a few folders deep to sit on one line, and fixed
+   rather than flexible so the code panel beside it never squeezes it. */
+.tree-panel {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tree-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--space-3) 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 3px var(--space-4) 3px var(--space-3);
+  white-space: nowrap;
+  color: var(--text-secondary);
+}
+
+.tree-glyph {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.tree-folder .tree-name {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.tree-root {
+  padding-left: var(--space-3);
+}
+
+/* The file the snippet comes from. Every path in the problem is measured
+   from this row, so it is the one thing in the tree that has to be findable
+   at a glance. */
+.tree-row.is-editing {
+  background-color: var(--accent-primary-tint);
+  border-left: 3px solid var(--accent-primary);
+  padding-left: calc(var(--space-3) - 3px);
+}
+
+.tree-row.is-editing .tree-name,
+.tree-row.is-editing .tree-glyph {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.tree-tag {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+
+.tree-legend {
+  flex-shrink: 0;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-color);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: var(--leading-normal);
+}
+
+/* ---------- Code panel ---------- */
+.code-panel {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.code-panel .panel-header code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-practical);
+}
+
+.brief-text {
+  flex-shrink: 0;
+  padding: var(--space-4) var(--space-5) 0;
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+
+.code-body {
+  flex-shrink: 0;
+  margin: var(--space-4) var(--space-5);
+  padding: var(--space-4);
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.code-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-2) 0;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+}
+
+/* The blank itself: an input sitting inline in the code, set in the same
+   face and size as the code around it so what the learner types reads as
+   part of the line rather than as a form field bolted onto it. */
+.blank {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--accent-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  padding: 2px var(--space-2);
+}
+
+.blank:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.blank.is-correct {
+  border-color: var(--accent-success);
+  color: var(--accent-success);
+  background-color: var(--accent-success-tint);
+}
+
+.blank.is-wrong {
+  border-color: var(--accent-danger);
+  color: var(--accent-danger);
+  background-color: var(--accent-danger-tint);
+}
+
+/* ---------- Feedback ---------- */
+.feedback-list {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-5) var(--space-5);
+}
+
+.feedback-list:empty {
+  display: none;
+}
+
+.feedback-summary {
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.feedback-summary.is-correct {
+  color: var(--accent-success);
+}
+
+.feedback-summary.is-wrong {
+  color: var(--text-secondary);
+}
+
+/* One row per blank, so a learner with three blanks and one mistake is told
+   which one, rather than that the answer as a whole is wrong. */
+.feedback-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-sunken);
+  border-left: 3px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+}
+
+.feedback-row.is-correct {
+  border-left-color: var(--accent-success);
+}
+
+.feedback-row.is-wrong {
+  border-left-color: var(--accent-danger);
+}
+
+.feedback-row.is-hint {
+  border-left-color: var(--accent-warning);
+}
+
+.feedback-name {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ---------- Narrow screens ---------- */
+@media (max-width: 900px) {
+  .workspace {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .tree-panel {
+    flex: 0 0 auto;
+    max-height: 40vh;
+  }
+}
