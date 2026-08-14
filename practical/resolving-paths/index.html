@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Read a project's folder tree and type the paths that reach the files. Twenty problems where the src, href and alt values are blank and you fill them in, from a single flat folder to structures several levels deep."
+    />
+    <title>Resolving Paths - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>Resolving Paths</h1>
+      <div class="header-desc">
+        Each problem gives you a <strong>project folder</strong> and one file
+        inside it that you are editing. The snippet from that file has its
+        <strong>src</strong>, <strong>href</strong> and <strong>alt</strong>
+        values left blank. Read the tree, work out how to get from the file you
+        are in to the file you want, and type the path.
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="header-top">
+            <span>Problems</span>
+            <span class="panel-badge" id="problemCount">20</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Solved</span>
+            <span id="progressCount">0/20</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="category-list" id="categoryList"></div>
+      </aside>
+
+      <div class="main-content panel">
+        <div class="title-bar">
+          <div class="title-bar-left">
+            <span class="title-bar-badge" id="titleBarBadge">Ready</span>
+            <h2 id="titleBarTitle">Select a Problem</h2>
+          </div>
+          <div class="title-bar-right">
+            <button class="btn btn-warning" id="btnHint" hidden>Hint</button>
+            <button class="btn" id="btnReset" hidden>Reset</button>
+            <button class="btn btn-success" id="btnCheck" hidden>
+              Check Solution
+            </button>
+            <button class="btn btn-primary" id="btnNext" hidden>
+              Next problem
+            </button>
+          </div>
+        </div>
+
+        <!-- Welcome State (shown until a problem is selected) -->
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon">&#9633;</div>
+          <h2 class="welcome-title">Select a problem to begin</h2>
+          <p class="welcome-subtitle">
+            Pick a problem from the sidebar. You will see a project folder on
+            the left and, on the right, a snippet from one file inside it with
+            its paths blanked out. Type the path that gets from the file you
+            are editing to the file the tree shows, then check it. Paths are
+            worked out exactly the way a browser does it, so any route that
+            lands on the right file counts.
+          </p>
+          <div class="welcome-stats" id="welcomeStats"></div>
+        </div>
+
+        <div class="workspace" id="workspace" hidden>
+          <div class="panel tree-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>Project structure</span>
+                <span class="panel-badge" id="treeBadge">3 files</span>
+              </div>
+            </div>
+            <div class="tree-body" id="treeBody"></div>
+            <p class="tree-legend">
+              The highlighted file is the one you are editing. Every path you
+              type is worked out from the folder it sits in.
+            </p>
+          </div>
+
+          <div class="panel code-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>Editing <code id="editingPath">index.html</code></span>
+                <span class="panel-badge" id="blankBadge">3 blanks</span>
+              </div>
+            </div>
+            <p class="brief-text" id="briefText"></p>
+            <div class="code-body" id="codeBody"></div>
+            <div class="feedback-list" id="feedbackList" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="problems.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
