@@ -70,22 +70,24 @@
   }
 
   /**
-   * Record a headline number an activity wants shown on the dashboard, such
-   * as a quiz's high score. Stats are free-form label/value pairs kept
-   * alongside the percent, so the dashboard can render them without knowing
-   * anything about the activity that produced them. Setting a stat does not
-   * touch percent or status.
+   * Record the headline numbers an activity wants shown on the dashboard,
+   * such as a quiz's high scores, as a `{ label: value }` map. Stats are
+   * free-form label/value pairs kept alongside the percent, so the dashboard
+   * can render them without knowing anything about the activity that
+   * produced them. Setting them does not touch percent or status.
+   *
+   * The whole map is replaced rather than merged, deliberately: labels are
+   * display text and get reworded, and merging would leave the old wording
+   * stranded on the dashboard forever with no way to clear it.
    */
-  function setStat(id, label, value) {
+  function setStats(id, stats) {
     const all = readAll();
     const existing = all[id] || { percent: 0, status: "not-started" };
-    const stats = existing.stats || {};
-    stats[label] = value;
 
     all[id] = {
       percent: existing.percent || 0,
       status: existing.status || "not-started",
-      stats: stats,
+      stats: stats || {},
       updatedAt: new Date().toISOString(),
     };
     writeAll(all);
@@ -108,5 +110,5 @@
     return all[id];
   }
 
-  global.WDFBProgress = { get, getAll, setPercent, setStat, markViewed };
+  global.WDFBProgress = { get, getAll, setPercent, setStats, markViewed };
 })(window);

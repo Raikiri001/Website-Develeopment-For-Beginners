@@ -48,9 +48,14 @@
   // register. Untimed runs don't auto-advance at all.
   const FLASH_MS = 550;
 
+  /*
+    Mode ids stay as they are even though the labels are worded in minutes:
+    the id is the key a learner's high score is stored under, so renaming one
+    would silently wipe a best score they had already set.
+  */
   const TIMED_MODES = [
-    { id: "timed-60", label: "60 second sprint", desc: "One minute, as many as you can", seconds: 60 },
-    { id: "timed-120", label: "120 second sprint", desc: "Two minutes, the longer run", seconds: 120 },
+    { id: "timed-60", label: "1 minute sprint", desc: "As many as you can in one minute", seconds: 60 },
+    { id: "timed-120", label: "2 minute sprint", desc: "Twice the time, twice the tags", seconds: 120 },
     { id: "timed-180", label: "3 minute run", desc: "Long enough for the whole bank", seconds: 180 },
   ];
 
@@ -154,11 +159,12 @@
     return minutes + ":" + String(seconds).padStart(2, "0");
   }
 
-  // "60 seconds" reads fine, "180 seconds" does not.
+  // Every mode is described in minutes, so "1 minute" and "3 minutes" read
+  // as the same kind of thing rather than one being in seconds.
   function describeDuration(seconds) {
-    if (seconds < 120) return seconds + " seconds";
     const minutes = seconds / 60;
-    return (Number.isInteger(minutes) ? minutes : minutes.toFixed(1)) + " minutes";
+    if (!Number.isInteger(minutes)) return seconds + " seconds";
+    return minutes === 1 ? "1 minute" : minutes + " minutes";
   }
 
   function tagMarkup(tag) {
@@ -838,17 +844,16 @@
     learner has seen every tag, and the progress bar has to keep meaning that.
   */
   function reportBestScores() {
-    if (!window.WDFBProgress || !window.WDFBProgress.setStat) return;
+    if (!window.WDFBProgress || !window.WDFBProgress.setStats) return;
+    const stats = {};
     TIMED_MODES.forEach(function (mode) {
       const best = state.best[mode.id];
       if (best) {
-        window.WDFBProgress.setStat(
-          ACTIVITY_ID,
-          "Best, " + mode.seconds + "s",
-          best.toLocaleString("en-AU")
-        );
+        stats["Best, " + describeDuration(mode.seconds)] =
+          best.toLocaleString("en-AU");
       }
     });
+    window.WDFBProgress.setStats(ACTIVITY_ID, stats);
   }
 
   // ── Storage ─────────────────────────────────────────────────────────────
