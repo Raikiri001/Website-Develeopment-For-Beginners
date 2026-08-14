@@ -44,7 +44,7 @@
 
   function get(id) {
     const all = readAll();
-    return all[id] || { percent: 0, status: "not-started", updatedAt: null };
+    return all[id] || { percent: 0, status: "not-started", stats: {}, updatedAt: null };
   }
 
   function getAll() {
@@ -59,7 +59,35 @@
     const nextPercent = Math.max(clamped, existing.percent || 0);
     const nextStatus = mergeStatus(existing.status, statusFromPercent(nextPercent));
 
-    all[id] = { percent: nextPercent, status: nextStatus, updatedAt: new Date().toISOString() };
+    all[id] = {
+      percent: nextPercent,
+      status: nextStatus,
+      stats: existing.stats || {},
+      updatedAt: new Date().toISOString(),
+    };
+    writeAll(all);
+    return all[id];
+  }
+
+  /**
+   * Record a headline number an activity wants shown on the dashboard, such
+   * as a quiz's high score. Stats are free-form label/value pairs kept
+   * alongside the percent, so the dashboard can render them without knowing
+   * anything about the activity that produced them. Setting a stat does not
+   * touch percent or status.
+   */
+  function setStat(id, label, value) {
+    const all = readAll();
+    const existing = all[id] || { percent: 0, status: "not-started" };
+    const stats = existing.stats || {};
+    stats[label] = value;
+
+    all[id] = {
+      percent: existing.percent || 0,
+      status: existing.status || "not-started",
+      stats: stats,
+      updatedAt: new Date().toISOString(),
+    };
     writeAll(all);
     return all[id];
   }
@@ -70,10 +98,15 @@
     const existing = all[id] || { percent: 0, status: "not-started" };
     const nextStatus = mergeStatus(existing.status, "in-progress");
 
-    all[id] = { percent: existing.percent || 0, status: nextStatus, updatedAt: new Date().toISOString() };
+    all[id] = {
+      percent: existing.percent || 0,
+      status: nextStatus,
+      stats: existing.stats || {},
+      updatedAt: new Date().toISOString(),
+    };
     writeAll(all);
     return all[id];
   }
 
-  global.WDFBProgress = { get, getAll, setPercent, markViewed };
+  global.WDFBProgress = { get, getAll, setPercent, setStat, markViewed };
 })(window);

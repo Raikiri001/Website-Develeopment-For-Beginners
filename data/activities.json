@@ -30,5 +30,13 @@
     "category": "practical",
     "href": "practical/html-debugger/",
     "tags": ["HTML", "debugging", "validation"]
+  },
+  {
+    "id": "understanding-tags",
+    "title": "Understanding Tags",
+    "description": "A definition or a use case, four tags, one right answer. Sixty-four tags from the everyday ones to the genuinely niche. Race a 60 or 120 second clock for a high score, or work through the whole bank untimed.",
+    "category": "quiz",
+    "href": "quiz/understanding-tags/",
+    "tags": ["HTML", "tags", "recall"]
   }
 ]

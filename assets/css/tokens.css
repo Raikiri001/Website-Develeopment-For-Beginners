@@ -6,8 +6,8 @@
 
   Palette: neutral slate for all chrome (text, borders, surfaces) with colour
   reserved for meaning: a muted teal brand accent (links, primary buttons,
-  focus rings), blue/orange category colours, and green/amber/red status
-  colours. No hue in the neutral scale, so nothing reads as "tinted violet"
+  focus rings), blue/orange/violet category colours, and green/amber/red
+  status colours. No hue in the neutral scale, so nothing reads as "tinted"
   the way an indigo-based neutral scale does. JetBrains Mono for headings
   (the same face used for code elsewhere on the site, so a heading and a
   code sample look like they belong to the same product) and IBM Plex Sans
@@ -36,6 +36,12 @@
   --orange-400: #ddaa7c;
   --orange-100: #f3e3d3;
   --orange-50: #f9f0e6;
+
+  --violet-600: #7d5ca8;
+  --violet-500: #9478bc;
+  --violet-400: #ab95cf;
+  --violet-100: #e6dff1;
+  --violet-50: #f3eff8;
 
   --slate-950: #0b1120;
   --slate-900: #0f172a;
@@ -140,13 +146,16 @@
   --accent-info-tint: var(--teal-50);
 
   /* Category accents: distinct from both the brand accent and the semantic
-     status colours above, so "Theory"/"Practical" are never confused with
-     "Completed"/"In progress"/the brand teal. */
+     status colours above, so "Theory"/"Practical"/"Quizzes" are never
+     confused with "Completed"/"In progress"/the brand teal. */
   --accent-theory: var(--blue-600);
   --accent-theory-tint: rgb(61 111 165 / 0.1);
 
   --accent-practical: var(--orange-600);
   --accent-practical-tint: rgb(184 118 63 / 0.1);
+
+  --accent-quiz: var(--violet-600);
+  --accent-quiz-tint: rgb(125 92 168 / 0.1);
 
   --code-tag: var(--red-600);
   --code-attr: var(--amber-600);
@@ -194,6 +203,9 @@
 
     --accent-practical: var(--orange-400);
     --accent-practical-tint: rgb(221 170 124 / 0.16);
+
+    --accent-quiz: var(--violet-400);
+    --accent-quiz-tint: rgb(171 149 207 / 0.16);
 
     --code-tag: var(--red-400);
     --code-attr: var(--amber-400);

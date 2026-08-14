@@ -31,7 +31,7 @@
     completed: "Review",
   };
 
-  const CATEGORY_LABELS = { theory: "Theory", practical: "Practical activities" };
+  const CATEGORY_LABELS = { theory: "Theory", practical: "Practical activities", quiz: "Quizzes" };
 
   let allRows = [];
   let currentFilter = "all";
@@ -161,6 +161,23 @@
       main.appendChild(top);
       main.appendChild(title);
       main.appendChild(description);
+
+      // Headline numbers an activity has chosen to surface (a quiz's high
+      // score, for example), reported via WDFBProgress.setStat. Activities
+      // without any just don't get the row.
+      const statLabels = Object.keys(progress.stats || {});
+      if (statLabels.length) {
+        const statRow = document.createElement("div");
+        statRow.className = "activity-stats";
+        statRow.innerHTML = statLabels
+          .map(
+            (label) =>
+              `<span class="activity-stat"><span class="activity-stat-label">${label}</span><span class="activity-stat-value">${progress.stats[label]}</span></span>`
+          )
+          .join("");
+        main.appendChild(statRow);
+      }
+
       main.appendChild(progressWrap);
 
       const action = document.createElement("a");

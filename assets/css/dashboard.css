@@ -149,6 +149,37 @@
   margin-top: var(--space-2);
 }
 
+/* Headline numbers an activity reports for itself (see setStat in
+   assets/js/progress.js), such as a quiz's high score. */
+.activity-row .activity-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.activity-row .activity-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: 4px 12px;
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+}
+
+.activity-row .activity-stat-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.activity-row .activity-stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
 .empty-state {
   padding: var(--space-8);
   text-align: center;

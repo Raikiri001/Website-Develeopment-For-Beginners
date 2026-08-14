@@ -1,0 +1,629 @@
+/*
+  Understanding Tags - activity styles.
+  Colours, fonts, radii and shadows all come from ../../assets/css/tokens.css;
+  this file only holds the layout and components specific to this activity.
+*/
+
+/* Fixed to the viewport, like Match the CSS and the HTML Structure Trainer:
+   the sidebar and main panel both stretch to fill it and scroll their own
+   contents internally (.category-list, .quiz-panel, .results-panel), so
+   expanding a mode group can never grow the sidebar - or the page - past
+   the viewport. */
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-shell {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+/* .sidebar, .sidebar-header, .category-list, .category-group,
+   .category-header, .category-problems, .problem-item are shared
+   components (a separated, rounded surface, per CLAUDE.md's "Workspace
+   layout" note), see assets/css/base.css. */
+
+/* Progress bar: shared .progress-track/.progress-fill (see base.css)
+   drive the fill; this is just the sidebar-specific label row above it. */
+.progress-container {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.progress-label span:last-child {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+/* A mode's description line, under its name in the sidebar. Modes are a
+   short list rather than 48 numbered problems, so there is room to say what
+   each one does rather than making the learner guess from a label. */
+.mode-item {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.mode-item-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.mode-item-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding-left: 18px;
+}
+
+/* ---------- Main content ---------- */
+/* .panel (shared, see base.css) supplies the separated, rounded surface;
+   this sizes it as a flex child of .app-shell, stacks its own children,
+   and clips to that height so only the quiz/results areas scroll below. */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* .title-bar, .title-bar-left, .title-bar-right, .title-bar-badge,
+   .panel-header, .panel-badge, .welcome-state and its children are all
+   shared components, see assets/css/base.css. */
+
+/* Difficulty badge on the prompt panel header. Semantic status colours are
+   used here on purpose: this is difficulty, not category. The tier's own
+   name sits on the title bar in the quiz category colour instead, so the
+   two never share a colour. */
+.difficulty-easy {
+  background-color: var(--accent-success-tint);
+  border-color: var(--accent-success-tint);
+  color: var(--accent-success);
+}
+
+.difficulty-medium {
+  background-color: var(--accent-warning-tint);
+  border-color: var(--accent-warning-tint);
+  color: var(--accent-warning);
+}
+
+.difficulty-hard {
+  background-color: var(--accent-danger-tint);
+  border-color: var(--accent-danger-tint);
+  color: var(--accent-danger);
+}
+
+/* Expert is the fourth tier and has to read as beyond "hard" without
+   introducing a fifth hue, so it reuses the danger colour as a solid fill. */
+.difficulty-expert {
+  background-color: var(--accent-danger);
+  border-color: var(--accent-danger);
+  color: var(--white);
+}
+
+/* ---------- Run stats (timer, score, streak) ---------- */
+/* Lives in the title bar rather than a bottom status bar, per CLAUDE.md. */
+.run-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-right: var(--space-4);
+}
+
+/* display: flex would otherwise beat the hidden attribute, leaving a stale
+   clock on screen after a run ends. */
+.run-stats[hidden] {
+  display: none;
+}
+
+.run-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+
+/* Same reason as .run-stats above: the timer readout is hidden outright in
+   untimed mode rather than showing a clock that never moves. */
+.run-stat[hidden] {
+  display: none;
+}
+
+.run-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.run-stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The score is the headline number of a timed run, so it outsizes the
+   readouts either side of it rather than sitting in a uniform row. */
+.run-stat-score .run-stat-value {
+  font-size: var(--text-2xl);
+  color: var(--accent-primary);
+}
+
+/* Warning and danger used semantically: the clock really is running out. */
+.run-stat-value.is-low {
+  color: var(--accent-warning);
+}
+
+.run-stat-value.is-critical {
+  color: var(--accent-danger);
+}
+
+/* Only lit once the multiplier is actually above 1x, so it reads as a state
+   the learner has earned rather than permanent decoration. */
+.run-stat-value.is-hot {
+  color: var(--accent-primary);
+}
+
+/* At the 5x cap there is nothing further to earn, so it gets a solid pill to
+   mark the ceiling rather than another colour. */
+.run-stat-value.is-max {
+  color: var(--white);
+  background-color: var(--accent-primary);
+  border-radius: var(--radius-sm);
+  padding: 0 6px;
+}
+
+/* ---------- Ready panel (timed modes only) ---------- */
+/* Stands between picking a timed mode and the clock starting, so a sprint is
+   never already running while the learner is still reading the rules. */
+.ready-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+}
+
+.ready-panel[hidden] {
+  display: none;
+}
+
+.ready-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--accent-quiz);
+  background-color: var(--accent-quiz-tint);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+
+/* The score to beat is the hero of this screen: it is the reason to press
+   Start, so it outranks the mode name, the rules and the button itself. */
+.ready-best-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.ready-best {
+  font-family: var(--font-mono);
+  font-size: var(--text-5xl);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ready-subtitle {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  max-width: 52ch;
+  line-height: var(--leading-relaxed);
+}
+
+/* The rules sit below the button as reference, not as the thing being read
+   first. Muted so they never compete with the score above them. */
+.ready-rules {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.ready-rule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 150px;
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.ready-rule-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.ready-rule-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  max-width: 18ch;
+  line-height: var(--leading-normal);
+}
+
+.ready-note {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 52ch;
+}
+
+.btn-start {
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-8);
+}
+
+/* ---------- Quiz panel ---------- */
+.quiz-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.quiz-panel[hidden] {
+  display: none;
+}
+
+.prompt-panel {
+  flex-shrink: 0;
+}
+
+.prompt-body {
+  padding: var(--space-6) var(--space-5);
+}
+
+/* Runs the full width of the panel rather than wrapping at a reading measure:
+   a quiz prompt is one sentence read at speed, not a paragraph of body copy,
+   and wrapping it halfway across a wide screen just adds a line to scan. */
+.prompt-text {
+  font-size: var(--text-xl);
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
+}
+
+.options-panel {
+  flex-shrink: 0;
+}
+
+.options-body {
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* The points won on the last answer, rising out of the score readout and
+   fading. Anchored to the score rather than floating over the options, which
+   would cover an answer the learner is still reading. Purely a reward
+   signal, so it is aria-hidden and never the only place points are shown. */
+.run-stat-score {
+  position: relative;
+}
+
+.points-pop {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--accent-success);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.points-pop.is-visible {
+  animation: points-rise 0.9s ease-out forwards;
+}
+
+@keyframes points-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.85);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-26px) scale(1);
+  }
+}
+
+/* Respects a reduced-motion preference: the points still appear and fade,
+   they just don't fly. */
+@media (prefers-reduced-motion: reduce) {
+  .points-pop.is-visible {
+    animation: points-fade 0.9s ease-out forwards;
+  }
+
+  @keyframes points-fade {
+    0%,
+    60% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+
+/* Each option is the tag itself, set in the code face at a size that reads
+   from a distance, since a timed run is skimmed rather than studied. */
+.option-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-4);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.12s ease, background-color 0.12s ease,
+    transform 0.12s ease;
+}
+
+.option-card:hover:not(:disabled) {
+  border-color: var(--accent-primary);
+  background-color: var(--accent-primary-tint);
+}
+
+.option-card:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.option-card:disabled {
+  cursor: default;
+}
+
+.option-card.correct {
+  border-color: var(--accent-success);
+  background-color: var(--accent-success-tint);
+  color: var(--accent-success);
+}
+
+.option-card.incorrect {
+  border-color: var(--accent-danger);
+  background-color: var(--accent-danger-tint);
+  color: var(--accent-danger);
+}
+
+/* Dims the options the learner did not pick once an answer is locked in, so
+   the correct/incorrect pair is what the eye lands on during the short
+   flash before the next question. */
+.option-card.is-muted {
+  opacity: 0.45;
+}
+
+.feedback-note {
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-sunken);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.feedback-note:empty {
+  display: none;
+}
+
+/* A wrong answer's explanation is the one the learner most needs to read, so
+   it is marked out from the confirming note shown after a correct one. */
+.feedback-note.is-wrong {
+  border-left-color: var(--accent-danger);
+}
+
+/* ---------- Results panel ---------- */
+.results-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.results-panel[hidden] {
+  display: none;
+}
+
+.results-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.results-header h2 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+.results-score {
+  font-family: var(--font-mono);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.results-best {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.results-best:empty {
+  display: none;
+}
+
+.results-streak-rule {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* Untimed runs report nothing here, so the line collapses rather than
+   leaving a gap under the correct count. */
+.results-streak-rule:empty {
+  display: none;
+}
+
+.results-best.is-new-best {
+  color: var(--accent-success);
+  font-weight: 700;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.results-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-left-width: 3px;
+  border-radius: var(--radius-md);
+}
+
+.results-row.is-correct {
+  border-left-color: var(--accent-success);
+}
+
+.results-row.is-wrong {
+  border-left-color: var(--accent-danger);
+}
+
+.results-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.results-row-prompt {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+
+.results-row-answer {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.results-row-answer code {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.results-row-answer .answer-right {
+  color: var(--accent-success);
+}
+
+.results-row-answer .answer-wrong {
+  color: var(--accent-danger);
+  text-decoration: line-through;
+}
+
+.results-row-points {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--accent-success);
+}
+
+.results-row-explain {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: var(--leading-normal);
+}
+
+.results-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+}
+
+/* ---------- Narrow screens ---------- */
+@media (max-width: 900px) {
+  .run-stats {
+    gap: var(--space-3);
+    margin-right: var(--space-2);
+  }
+
+  .prompt-text {
+    font-size: var(--text-lg);
+  }
+}

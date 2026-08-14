@@ -447,6 +447,12 @@ img {
   white-space: nowrap;
 }
 
+/* display: inline-flex above would otherwise beat the hidden attribute,
+   leaving a button on screen that markup has explicitly hidden. */
+.btn[hidden] {
+  display: none;
+}
+
 .btn:hover {
   border-color: var(--border-active);
   color: var(--text-primary);
@@ -636,6 +642,11 @@ img {
   color: var(--accent-practical);
 }
 
+.badge-quiz {
+  background-color: var(--accent-quiz-tint);
+  color: var(--accent-quiz);
+}
+
 /* Progress/completion status badges, shared by homepage cards and the dashboard */
 .status-badge {
   display: inline-flex;
@@ -737,6 +748,11 @@ img {
 .card-icon.icon-practical {
   background-color: var(--accent-practical-tint);
   color: var(--accent-practical);
+}
+
+.card-icon.icon-quiz {
+  background-color: var(--accent-quiz-tint);
+  color: var(--accent-quiz);
 }
 
 .card .card-footer {

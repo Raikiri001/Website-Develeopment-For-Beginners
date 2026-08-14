@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A definition or a use case, four tags, one right answer. Sixty-four tags from the everyday ones to the genuinely niche. Race a 60 or 120 second clock for a high score, or work through the whole bank untimed."
+    />
+    <title>Understanding Tags - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>Understanding Tags</h1>
+      <div class="header-desc">
+        Each question gives a <strong>definition</strong> or a
+        <strong>use case</strong>, and you pick the tag it describes from four
+        options. Questions run from the tags you use every day through to ones
+        you may not have met yet. Pick a <strong>mode</strong> in the sidebar:
+        race a clock for a score, or work through a tier with no timer.
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="header-top">
+            <span>Modes</span>
+            <span class="panel-badge" id="modeCount">6</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Tags mastered</span>
+            <span id="progressCount">0/64</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="category-list" id="categoryList"></div>
+      </aside>
+
+      <div class="main-content panel">
+        <div class="title-bar">
+          <div class="title-bar-left">
+            <span class="title-bar-badge" id="titleBarBadge">Ready</span>
+            <h2 id="titleBarTitle">Select a Mode</h2>
+          </div>
+          <div class="title-bar-right">
+            <div class="run-stats" id="runStats" hidden>
+              <div class="run-stat" id="timerStat">
+                <span class="run-stat-label">Time</span>
+                <span class="run-stat-value" id="timerValue">1:00</span>
+              </div>
+              <!-- Untimed runs are practice, not a game: they report how many
+                   are right and nothing else. Scoring belongs to the clock. -->
+              <div class="run-stat run-stat-score" id="correctStat" hidden>
+                <span class="run-stat-label">Correct</span>
+                <span class="run-stat-value" id="correctValue">0</span>
+              </div>
+              <div class="run-stat run-stat-score" id="scoreStat">
+                <span class="run-stat-label">Score</span>
+                <span class="run-stat-value" id="scoreValue">0</span>
+                <!-- Points won on the last answer, rising out of the score
+                     itself so a big multiplier is felt, not just tallied. -->
+                <span class="points-pop" id="pointsPop" aria-hidden="true"></span>
+              </div>
+              <div class="run-stat" id="comboStat">
+                <span class="run-stat-label">Combo</span>
+                <span class="run-stat-value" id="streakValue">0</span>
+              </div>
+              <div class="run-stat" id="multiplierStat">
+                <span class="run-stat-label">Multiplier</span>
+                <span class="run-stat-value" id="multiplierValue">1x</span>
+              </div>
+            </div>
+            <button class="btn btn-primary" id="btnNext" hidden>
+              Next question
+            </button>
+            <button class="btn" id="btnQuit" disabled>End run</button>
+          </div>
+        </div>
+
+        <!-- Welcome State (shown until a mode is selected) -->
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon">&#9633;</div>
+          <h2 class="welcome-title">Select a mode to begin</h2>
+          <p class="welcome-subtitle">
+            Pick a mode from the sidebar. Every question describes one HTML tag
+            and gives you four to choose from, starting with everyday tags and
+            working up to less common ones. In a timed mode you score 100
+            points times your combo, which climbs 0.1x each time you get one
+            right and doubles that step every ten in a row, and one wrong
+            answer drops it back to 1x. Untimed modes are not scored, they
+            just count how many you get right.
+          </p>
+          <div class="welcome-stats" id="welcomeStats"></div>
+        </div>
+
+        <!-- Ready screen: a timed run never starts the clock on its own, the
+             learner presses Start when they are actually ready to play. -->
+        <div class="ready-panel" id="readyPanel" hidden>
+          <span class="ready-eyebrow" id="readyMode">60 second sprint</span>
+          <p class="ready-best-label" id="readyBestLabel">Your best on this mode</p>
+          <p class="ready-best" id="readyBest">0</p>
+          <p class="ready-subtitle" id="readySubtitle"></p>
+          <button class="btn btn-success btn-start" id="btnStart">
+            Start the clock
+          </button>
+          <div class="ready-rules">
+            <div class="ready-rule">
+              <span class="ready-rule-value">100</span>
+              <span class="ready-rule-label">points per correct answer</span>
+            </div>
+            <div class="ready-rule">
+              <span class="ready-rule-value">+0.1x</span>
+              <span class="ready-rule-label">to the combo for each one right</span>
+            </div>
+            <div class="ready-rule">
+              <span class="ready-rule-value">every 10</span>
+              <span class="ready-rule-label">in a row, that step doubles</span>
+            </div>
+          </div>
+          <p class="ready-note">
+            So ten in a row is 2x, twenty is 4x, thirty is 8x. One wrong answer
+            drops the combo back to 1x. Answers are marked as you go, and the
+            explanations wait until the clock stops.
+          </p>
+        </div>
+
+        <div class="quiz-panel" id="quizPanel" hidden>
+          <div class="panel prompt-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span id="promptKindLabel">Definition</span>
+                <span class="panel-badge difficulty-badge" id="promptDifficultyBadge"
+                  >Easy</span
+                >
+              </div>
+            </div>
+            <div class="prompt-body">
+              <p class="prompt-text" id="promptText"></p>
+            </div>
+          </div>
+
+          <div class="panel options-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>Pick the matching tag</span>
+                <span class="panel-badge">4 options</span>
+              </div>
+            </div>
+            <div class="options-body">
+              <div
+                class="options-grid"
+                id="optionsGrid"
+                role="group"
+                aria-label="Answer choices"
+              ></div>
+              <div class="feedback-note" id="feedbackNote" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-panel" id="resultsPanel" hidden>
+          <div class="results-header">
+            <h2 id="resultsTitle">Run finished</h2>
+            <p class="results-score" id="resultsScore"></p>
+            <p class="results-best" id="resultsBest"></p>
+            <p class="results-streak-rule" id="resultsStreakRule"></p>
+          </div>
+          <div class="results-list" id="resultsList"></div>
+          <div class="results-actions">
+            <button class="btn btn-primary" id="btnRunAgain">Run again</button>
+            <button class="btn" id="btnBackToModes">Back to modes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

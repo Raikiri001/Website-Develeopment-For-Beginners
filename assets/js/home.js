@@ -10,11 +10,13 @@
   const CATEGORY_LABELS = {
     theory: "Theory",
     practical: "Practical activities",
+    quiz: "Quizzes",
   };
 
   const CATEGORY_DESCRIPTIONS = {
     theory: "Explains one browser or web concept at a time, usually with an interactive diagram.",
     practical: "A problem to solve directly in the browser, then check against a working solution.",
+    quiz: "Recall practice against a bank of questions, scored so a run is worth repeating.",
   };
 
   const STATUS_LABELS = {
@@ -30,6 +32,8 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5c1.5-.8 3.2-1.2 5-1.2 1 0 2 .13 3 .4v13.8c-1-.27-2-.4-3-.4-1.8 0-3.5.4-5 1.2V5.5Z"/><path d="M20 5.5c-1.5-.8-3.2-1.2-5-1.2-1 0-2 .13-3 .4v13.8c1-.27 2-.4 3-.4 1.8 0 3.5.4 5 1.2V5.5Z"/></svg>',
     practical:
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l14 6.5-6 2-2 6L5 3Z"/></svg>',
+    quiz:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10.5v3.5l2.2 1.6"/><path d="M9.5 2.5h5"/><path d="M18.8 5.4l1.5-1.5"/></svg>',
   };
 
   function createCard(activity) {
@@ -144,7 +148,7 @@
       if (!response.ok) throw new Error("Failed to load activities");
       const activities = await response.json();
 
-      const order = ["theory", "practical"];
+      const order = ["theory", "practical", "quiz"];
       order.forEach((category) => {
         const inCategory = activities.filter((a) => a.category === category);
         content.appendChild(renderSection(category, inCategory));
