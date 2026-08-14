@@ -38,5 +38,13 @@
     "category": "quiz",
     "href": "quiz/understanding-tags/",
     "tags": ["HTML", "tags", "recall"]
+  },
+  {
+    "id": "match-the-attribute",
+    "title": "Match the Attribute",
+    "description": "One tag, one job, four versions of it. Sixty-four questions on the attributes that make a tag do what you want, from href and src to radio groups, colspan and scope. Race a clock for a high score, or work through the bank untimed.",
+    "category": "quiz",
+    "href": "quiz/match-the-attribute/",
+    "tags": ["HTML", "attributes", "forms"]
   }
 ]
