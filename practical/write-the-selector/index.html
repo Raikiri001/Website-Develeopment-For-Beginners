@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Read a page of HTML, then write the CSS selector that reaches exactly the right elements. Thirty problems across basic selectors, combinators, pseudo-classes and attributes."
+    />
+    <title>Write the Selector - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>Write the Selector</h1>
+      <div class="header-desc">
+        The CSS is written for you, but the <strong>selector</strong> is
+        missing. Read the brief and the HTML, then write a selector that
+        reaches <strong>exactly</strong> the outlined elements. Any selector
+        that hits the right ones counts, and the styling only appears once
+        it does.
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="header-top">
+            <span>Problems</span>
+            <span class="panel-badge" id="totalCount">30</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span id="progressCount">0/30</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="category-list" id="categoryList"></div>
+      </aside>
+
+      <div class="main-content panel">
+        <div class="title-bar">
+          <div class="title-bar-left">
+            <span class="title-bar-badge" id="titleBarBadge">Ready</span>
+            <h2 id="titleBarTitle">Select a Problem</h2>
+          </div>
+          <div class="title-bar-right">
+            <button class="btn" id="btnReset" disabled>Reset</button>
+            <button class="btn btn-warning" id="btnHint" disabled>Hint</button>
+            <button class="btn btn-success" id="btnCheck" disabled>
+              Check Solution
+            </button>
+            <button class="btn btn-primary" id="btnNext" hidden>
+              Next question
+            </button>
+          </div>
+        </div>
+
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon">&#9633;</div>
+          <h2 class="welcome-title">Select a problem to begin</h2>
+          <p class="welcome-subtitle">
+            Pick a problem from the sidebar. The elements you have to reach
+            are outlined in the preview. Write a selector that matches those
+            and nothing else, and the CSS will take effect.
+          </p>
+          <div class="welcome-stats" id="welcomeStats"></div>
+        </div>
+
+        <div class="workspace" id="workspace" hidden>
+          <div class="panel brief-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>The brief</span>
+                <span
+                  class="panel-badge difficulty-badge"
+                  id="promptDifficultyBadge"
+                  >Easy</span
+                >
+              </div>
+            </div>
+            <p class="brief-body" id="briefBody"></p>
+          </div>
+
+          <div class="work-grid">
+            <div class="panel code-panel">
+              <div class="panel-header">
+                <div class="header-top">
+                  <span>Write the selector</span>
+                  <span class="panel-badge" id="targetCountBadge">1 target</span>
+                </div>
+              </div>
+              <div class="code-body">
+                <div class="code-block-group">
+                  <div class="code-label">CSS</div>
+                  <div class="code-text code-editable" id="cssEditor">
+                    <div class="code-line">
+                      <input
+                        type="text"
+                        id="selectorInput"
+                        class="blank"
+                        placeholder="selector"
+                        autocomplete="off"
+                        spellcheck="false"
+                        aria-label="CSS selector"
+                      />
+                      <span class="brace"> {</span>
+                    </div>
+                    <div id="declLines"></div>
+                    <div class="code-line"><span class="brace">}</span></div>
+                  </div>
+                </div>
+                <div class="code-block-group">
+                  <div class="code-label">HTML (given, do not change)</div>
+                  <pre class="code-text" id="promptHtml"></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel preview-panel">
+              <div class="panel-header">
+                <div class="header-top">
+                  <span>Preview</span>
+                  <span class="panel-badge" id="previewStateBadge"
+                    >Targets outlined</span
+                  >
+                </div>
+              </div>
+              <div class="preview-body">
+                <!-- Preview host; app.js attaches a shadow root here. -->
+                <div class="preview-stage" id="previewStage"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="feedback-note" id="feedbackNote" aria-live="polite"></div>
+        </div>
+
+        <div class="completion-panel" id="completionPanel">
+          <h2>All done</h2>
+          <p id="completionScoreText"></p>
+          <button class="btn btn-primary" id="btnRestart">
+            Restart all problems
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
