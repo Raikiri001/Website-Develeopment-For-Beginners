@@ -33,6 +33,8 @@ const METHODS = [
 }`,
       },
     ],
+    keyPoint:
+      "Change the file once and <strong>every page linking it changes</strong>. That is the whole reason external CSS is the default choice for a real site.",
     meta: {
       "Where it lives": "A .css file",
       Reach: "Every page that links the file",
@@ -75,6 +77,8 @@ const METHODS = [
 </body>`,
       },
     ],
+    keyPoint:
+      "It reaches <strong>this page and no other</strong>. A second page needs its own copy, and now there are two that have to be kept in step.",
     meta: {
       "Where it lives": "A <style> block in <head>",
       Reach: "This one page",
@@ -113,6 +117,8 @@ const METHODS = [
 </body>`,
       },
     ],
+    keyPoint:
+      "No selector and no curly brackets, because the attribute is <strong>already on the element it styles</strong>. For the same reason it cannot be shared with anything else.",
     meta: {
       "Where it lives": "A style attribute",
       Reach: "That one element",

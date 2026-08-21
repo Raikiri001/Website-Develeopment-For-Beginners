@@ -29,6 +29,8 @@ const PARTS = [
 }`,
       },
     ],
+    keyPoint:
+      "If the browser does not understand a property name or a value, it <strong>throws away that one declaration and carries on</strong>. There is no error message, so a typo simply does nothing.",
     meta: {
       "What it is": "One named setting on an element",
       "Written as": "property: value;",
@@ -80,11 +82,23 @@ const PARTS = [
 }`,
       },
     ],
+    keyPoint:
+      "A number that is not zero almost always needs a unit, <strong>joined on with no space</strong>. <code>16px</code> works; <code>16 px</code> is thrown away.",
     meta: {
       "What it is": "The part of a declaration after the colon",
       "Written as": "A keyword, number, colour or list",
       "Why it matters": "It decides what the property actually does",
     },
+    examples: [
+      { syntax: "<number>px", label: "Absolute length", code: "16px", meaning: "A fixed size. Nothing around it changes what it measures." },
+      { syntax: "<number>em", label: "Relative to parent", code: "1.5em", meaning: "1.5 times the <strong>parent's</strong> font size, so it compounds when nested." },
+      { syntax: "<number>rem", label: "Relative to root", code: "1.5rem", meaning: "1.5 times the <strong>root</strong> font size. Does not compound." },
+      { syntax: "<number>%", label: "Percentage", code: "50%", meaning: "Measured against the parent. What exactly depends on the property." },
+      { syntax: "<number>", label: "Unitless", code: "1.5", meaning: "Only where the property allows it, such as <code>line-height</code>." },
+      { syntax: "keyword", label: "Keyword", code: "block", meaning: "One of a fixed list that property accepts. Anything else is ignored." },
+      { syntax: "#rrggbb", label: "Colour", code: "#0d9488", meaning: "Red, green and blue as hex. Also <code>rgb()</code> and named colours." },
+      { syntax: "a, b, c", label: "List", code: "Arial, sans-serif", meaning: "Tried in order. The first one available is used." },
+    ],
     notes: {
       "How it works":
         "Every property defines which values it accepts. <code>display</code> takes a keyword from a fixed list, <code>width</code> takes a length, and giving one the other kind is simply ignored.",
@@ -128,11 +142,22 @@ const PARTS = [
 }`,
       },
     ],
+    keyPoint:
+      "A shorthand sets <strong>every</strong> property it covers, including the ones you did not mention. Those are quietly reset to their defaults.",
     meta: {
       "What it is": "One property that sets several at once",
       "Written as": "border: 2px solid #94a3b8;",
       "Why it matters": "It is shorter, but it resets what you omit",
     },
+    exampleHeadings: ["Written", "Expands to", "Example", "What it sets"],
+    examples: [
+      { syntax: "margin: A", label: "One value", code: "margin: 10px", meaning: "All four sides at once." },
+      { syntax: "margin: A B", label: "Two values", code: "margin: 10px 20px", meaning: "Top and bottom, then left and right." },
+      { syntax: "margin: A B C D", label: "Four values", code: "margin: 1px 2px 3px 4px", meaning: "Clockwise from the top: top, right, bottom, left." },
+      { syntax: "border: W S C", label: "Width, style, colour", code: "border: 2px solid #000", meaning: "All three. Leave the style out and nothing is drawn." },
+      { syntax: "background: ...", label: "Several at once", code: "background: red", meaning: "Also clears any background image already set." },
+      { syntax: "font: ...", label: "Several at once", code: "font: 16px Arial", meaning: "Resets line-height, weight and style back to their defaults too." },
+    ],
     notes: {
       "How it works":
         "A shorthand expands into the individual properties behind it. Some read positionally, so <code>margin: 10px 20px</code> means top and bottom, then left and right; others read by kind, so <code>border</code> works out which part is the width and which is the colour.",
@@ -182,18 +207,29 @@ const PARTS = [
 }`,
       },
     ],
+    keyPoint:
+      "<strong>Text properties inherit, box properties do not.</strong> That one split explains most styling that seems to appear from nowhere.",
     meta: {
       "What it is": "The value a property has when unset",
       "Written as": "inherit, initial, unset",
       "Why it matters": "It explains styling you never wrote",
     },
+    exampleHeadings: ["Written", "Kind", "Example", "What it does"],
+    examples: [
+      { syntax: "inherit", label: "CSS-wide keyword", code: "color: inherit", meaning: "Takes the parent's computed value, even for a property that never inherits." },
+      { syntax: "initial", label: "CSS-wide keyword", code: "color: initial", meaning: "The value in the CSS specification, which is <strong>not</strong> the browser's default." },
+      { syntax: "unset", label: "CSS-wide keyword", code: "color: unset", meaning: "<code>inherit</code> if the property inherits, <code>initial</code> if it does not." },
+      { syntax: "revert", label: "CSS-wide keyword", code: "all: revert", meaning: "Back to the browser's own stylesheet, undoing your CSS rather than the spec's." },
+      { syntax: "color", label: "Inherits", code: ".box { color: red }", meaning: "Children get it without being told. Most text properties behave this way." },
+      { syntax: "padding", label: "Does not inherit", code: ".box { padding: 8px }", meaning: "Children get the initial value instead, which for padding is zero." },
+    ],
     notes: {
       "How it works":
         "Properties about text tend to inherit, so setting <code>color</code> on a container passes it down to everything inside. Properties about the box, such as <code>padding</code> and <code>border</code>, do not.",
       "What to watch for":
         "Before any of your CSS runs, the browser has already applied its own default stylesheet. Headings are large and bold, and lists have bullets, because of that, not because nothing is set.",
       "Worth remembering":
-        "The keywords <code>inherit</code>, <code>initial</code> and <code>unset</code> work on any property, so you can always ask for the parent's value or reset back to the default explicitly.",
+        "The keywords <code>inherit</code>, <code>initial</code>, <code>unset</code> and <code>revert</code> work on any property, so you can always ask for the parent's value or reset explicitly. Note <code>initial</code> is the CSS specification's value, not the browser's, which is what <code>revert</code> gets you. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Inheritance\" target=\"_blank\" rel=\"noopener\">MDN's inheritance guide</a>.",
     },
     demo: {
       editorLabel: "styles.css",
@@ -231,11 +267,20 @@ const PARTS = [
 }`,
       },
     ],
+    keyPoint:
+      "Two dashes make the name yours. This is the <strong>one place CSS lets you invent a property name</strong>, and the value is read back with <code>var()</code>.",
     meta: {
       "What it is": "A property you define yourself",
       "Written as": "--name: value;",
       "Why it matters": "One value, changed in one place",
     },
+    exampleHeadings: ["Written", "Kind", "Example", "What it does"],
+    examples: [
+      { syntax: "--name: value;", label: "Declare it", code: "--brand: #0d9488;", meaning: "Defines the value. The name is yours, and it is case sensitive." },
+      { syntax: "var(--name)", label: "Read it back", code: "color: var(--brand)", meaning: "Uses whatever that property holds now, not a copy taken earlier." },
+      { syntax: "var(--name, fallback)", label: "With a fallback", code: "var(--line, #ccc)", meaning: "The fallback is used when the custom property is not defined." },
+      { syntax: ":root { --name: v }", label: "Make it global", code: ":root { --brand: teal }", meaning: "Custom properties inherit, so the whole page can read it." },
+    ],
     notes: {
       "How it works":
         "A custom property is declared on a selector like any other, and read back with <code>var()</code>. Change the declaration and every <code>var()</code> reading it updates, because it is genuinely the same value rather than a copy.",
@@ -259,6 +304,7 @@ const LESSON = {
   id: "css-properties",
   metaKeys: METAKEYS,
   noteLabels: ["How it works", "What to watch for", "Worth remembering"],
+  exampleHeadings: ["Syntax", "Kind", "Example", "What it means"],
   demoHint: "Edit the CSS and watch what each declaration does",
   sections: PARTS,
   comparison: {

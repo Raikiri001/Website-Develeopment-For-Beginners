@@ -29,11 +29,19 @@ const PARTS = [
 <img src="photo.jpg" alt="A description" />`,
       },
     ],
+    keyPoint:
+      "Tag names are a <strong>fixed vocabulary</strong>. The browser gives an element meaning and defaults only because it already knows the name, so an invented one does nothing.",
     meta: {
       "What it is": "One piece of content, named by its tag",
       "Written as": "<name>content</name>",
       "Why it matters": "The name is what gives content meaning",
     },
+    examples: [
+      { syntax: "<tag>content</tag>", label: "Normal element", code: "<p>Some text.</p>", meaning: "Opening tag, content, closing tag. The usual shape." },
+      { syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "No content, so nothing to close. Also <code>br</code>, <code>input</code>, <code>meta</code>." },
+      { syntax: '<tag name="value">', label: "With an attribute", code: '<a href="x.html">Link</a>', meaning: "Attributes go in the opening tag, never the closing one." },
+      { syntax: "<!-- text -->", label: "Comment", code: "<!-- a note -->", meaning: "Ignored by the browser, but still visible in view-source." },
+    ],
     notes: {
       "How it works":
         "The browser reads the tag name and applies its own defaults for that name, which is why a heading is already large and bold before you write any CSS at all.",
@@ -78,11 +86,20 @@ const PARTS = [
 <p><strong>Wrong nesting.</p></strong>`,
       },
     ],
+    keyPoint:
+      "Tags must close in the <strong>reverse order they were opened</strong>. Cross them over and the browser repairs the markup by guessing, which is how a page stops matching the HTML you wrote.",
     meta: {
       "What it is": "Elements placed inside other elements",
       "Written as": "Indented, opened and closed in order",
       "Why it matters": "It builds the tree the page is made of",
     },
+    exampleHeadings: ["Shape", "Relationship", "Example", "What it means"],
+    examples: [
+      { syntax: "<A><B></B></A>", label: "Parent and child", code: "<ul><li></li></ul>", meaning: "<code>li</code> is a direct child of <code>ul</code>, one level down." },
+      { syntax: "<A><B></B><B></B></A>", label: "Siblings", code: "<li></li><li></li>", meaning: "Two elements sharing the same parent." },
+      { syntax: "<A><B><C></C></B></A>", label: "Descendant", code: "<div><p><strong>", meaning: "<code>strong</code> is a descendant of <code>div</code>, but not its child." },
+      { syntax: "<A><B></A></B>", label: "Crossed over", code: "<p><strong>x</p></strong>", meaning: "Invalid. The browser will repair it, and may not repair it your way." },
+    ],
     notes: {
       "How it works":
         "An element inside another is its child, and the whole page is one tree of these relationships. Indentation is only for humans, but the nesting itself is real structure.",
@@ -131,11 +148,22 @@ const PARTS = [
 </html>`,
       },
     ],
+    keyPoint:
+      "Without the doctype the browser drops into a compatibility mode built for 1990s pages, and layouts start behaving in ways <strong>no amount of CSS will explain</strong>.",
     meta: {
       "What it is": "The fixed outer shape of every page",
       "Written as": "<!DOCTYPE html> then html, head, body",
       "Why it matters": "Leaving it out changes how the page is read",
     },
+    exampleHeadings: ["Written", "Part", "Where", "What it does"],
+    examples: [
+      { syntax: "<!DOCTYPE html>", label: "Doctype", code: "The first line", meaning: "Not a tag. Tells the browser to use modern standards mode." },
+      { syntax: '<html lang="en">', label: "Root element", code: "Wraps everything", meaning: "<code>lang</code> helps screen readers and translation tools." },
+      { syntax: "<head>", label: "Page information", code: "Inside html", meaning: "Never displayed. Holds the title, charset and links to CSS." },
+      { syntax: "<title>", label: "Tab title", code: "Inside head", meaning: "Shown in the browser tab and as the search result heading." },
+      { syntax: '<meta charset="UTF-8">', label: "Character set", code: "Inside head", meaning: "Without it, accented and non-English characters can break." },
+      { syntax: "<body>", label: "Visible page", code: "Inside html", meaning: "Everything a visitor actually sees lives here." },
+    ],
     notes: {
       "How it works":
         "The doctype tells the browser to use modern standards, <code>head</code> holds information about the page, and <code>body</code> holds everything a visitor actually sees.",
@@ -180,11 +208,22 @@ const PARTS = [
 <input type="checkbox" checked />`,
       },
     ],
+    keyPoint:
+      "Leaving out a required attribute produces <strong>no error, just an element that quietly does not work</strong>. A link with no <code>href</code> still looks like a link.",
     meta: {
       "What it is": "A setting written inside the opening tag",
       "Written as": 'name="value"',
       "Why it matters": "It carries what the tag name cannot",
     },
+    exampleHeadings: ["Written", "Kind", "Example", "What it does"],
+    examples: [
+      { syntax: 'class="name"', label: "Global", code: 'class="card"', meaning: "A hook for CSS and JavaScript. Any number of elements may share it." },
+      { syntax: 'id="name"', label: "Global", code: 'id="main"', meaning: "Also a hook, but meant to appear once on the page." },
+      { syntax: 'href="url"', label: "Element specific", code: '<a href="p.html">', meaning: "Where a link goes. Without it, the element is not a link at all." },
+      { syntax: 'src="url"', label: "Element specific", code: '<img src="a.jpg">', meaning: "What to load. Required for the element to show anything." },
+      { syntax: 'alt="text"', label: "Element specific", code: '<img alt="A dog">', meaning: "Read out, or shown, when the image cannot be." },
+      { syntax: "checked", label: "Boolean", code: "<input checked>", meaning: "Present means on. There is no value to give it." },
+    ],
     notes: {
       "How it works":
         "Each attribute is a name, an equals sign, and a value in quotes. Some are global and work on any element, such as <code>class</code> and <code>id</code>; others only mean something on particular elements.",
@@ -228,11 +267,21 @@ const PARTS = [
 <!-- CSS can change which one an element behaves as.  -->`,
       },
     ],
+    keyPoint:
+      "<strong>Width and height do nothing on an inline element.</strong> If sizing is being ignored, check whether the element is inline before checking your CSS.",
     meta: {
       "What it is": "Whether an element takes a whole line",
       "Written as": "Not written; it is the tag's default",
       "Why it matters": "It decides whether sizing works at all",
     },
+    exampleHeadings: ["Written", "Kind", "Example", "What it does"],
+    examples: [
+      { syntax: "block", label: "Default for", code: "div, p, h1, ul, li", meaning: "Starts on a new line and fills the width available." },
+      { syntax: "inline", label: "Default for", code: "a, strong, em, img", meaning: "Sits inside a line, only as wide as its content." },
+      { syntax: "display: block", label: "Change it", code: "span { display: block }", meaning: "Makes an inline element behave as a block." },
+      { syntax: "display: inline-block", label: "Change it", code: "a { display: inline-block }", meaning: "Flows inline, but accepts width, height and vertical padding." },
+      { syntax: "display: none", label: "Change it", code: ".old { display: none }", meaning: "Removed from the layout entirely, leaving no gap." },
+    ],
     notes: {
       "How it works":
         "A block element starts on a new line and stretches to fill its container. An inline element sits inside a line of text and is only as wide as the content it holds.",
@@ -278,11 +327,23 @@ const PARTS = [
 <div class="layout-wrapper">...</div>`,
       },
     ],
+    keyPoint:
+      "Choosing the right tag <strong>rarely changes how a page looks</strong>, so nothing on screen tells you when you have chosen badly. That is exactly why it gets skipped.",
     meta: {
       "What it is": "Choosing a tag for its meaning",
       "Written as": "<h1> rather than <div class=\"big\">",
       "Why it matters": "Meaning is read by more than just eyes",
     },
+    exampleHeadings: ["Written", "Kind", "Used for", "What it adds"],
+    examples: [
+      { syntax: "<header>", label: "Semantic", code: "Top of a page or section", meaning: "Lays out like a div, but says what it is." },
+      { syntax: "<nav>", label: "Semantic", code: "A set of links", meaning: "A screen reader can jump straight to it." },
+      { syntax: "<main>", label: "Semantic", code: "The main content", meaning: "One per page. Skip links target it." },
+      { syntax: "<footer>", label: "Semantic", code: "End of a page or section", meaning: "Says what it is rather than where it sits." },
+      { syntax: "<article>", label: "Semantic", code: "A self-contained piece", meaning: "Makes sense on its own, out of context." },
+      { syntax: "<div>", label: "Generic", code: "A layout wrapper", meaning: "Means nothing, on purpose. Use when there is no meaning." },
+      { syntax: "<span>", label: "Generic", code: "An inline wrapper", meaning: "The inline equivalent of a div. Also means nothing." },
+    ],
     notes: {
       "How it works":
         "The browser exposes the meaning of your tags to other software. A screen reader can list every heading on a page, but only finds the ones marked up as headings.",
@@ -308,6 +369,7 @@ const LESSON = {
   id: "html-tags-and-attributes",
   metaKeys: METAKEYS,
   noteLabels: ["How it works", "What to watch for", "Worth remembering"],
+  exampleHeadings: ["Syntax", "Kind", "Example", "What it does"],
   demoHint: "Edit the HTML and watch the page rebuild",
   sections: PARTS,
   comparison: {
