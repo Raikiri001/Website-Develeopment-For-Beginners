@@ -24,7 +24,7 @@ const PARTS = [
       },
     ],
     keyPoint:
-      "A wrong path fails <strong>silently for CSS</strong>: the page simply loads unstyled. Nothing warns you, so an unstyled page is almost always a broken path rather than broken CSS.",
+      "<strong>Nothing checks a path until something tries to follow it.</strong> How the failure looks then depends on what needed the file: a broken image shows a placeholder, a broken stylesheet leaves the page unstyled, and a broken script does nothing visible at all.",
     exampleHeadings: ["Written in", "Attribute", "Example", "What it points at"],
     examples: [
       { syntax: "<link>", label: "href", code: 'href="css/styles.css"', meaning: "A stylesheet to load and apply to this page." },
@@ -42,7 +42,7 @@ const PARTS = [
       "How it works":
         "The browser reads the path, works out which file it points at, and requests that file. If nothing is there, the request fails and whatever depended on it does not appear.",
       "What to watch for":
-        "A broken image usually shows a placeholder, but a broken stylesheet shows nothing at all. The page just renders with browser defaults, which looks like the CSS is at fault when the path is.",
+        "Only images announce themselves when they fail. A stylesheet, a script or a link that points nowhere gives you no marker on the page, so the symptom you see is unstyled text, a dead button, or a click that goes to a missing page, rather than anything naming the path.",
       "Worth remembering":
         "Paths are case sensitive on most web servers, even where they are not on your own computer, so <code>Logo.png</code> and <code>logo.png</code> become different files once the site is published. Note also that a path in a URL no longer has to match real folders on the server: MDN describes it as <a href=\"https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_URL\" target=\"_blank\" rel=\"noopener\">mostly an abstraction</a> the server handles however it likes.",
     },
@@ -309,7 +309,7 @@ const PARTS = [
       },
     ],
     keyPoint:
-      "A <code>url()</code> in a stylesheet is resolved from <strong>the stylesheet's folder</strong>, not the page's. Move a CSS file into a subfolder and every <code>url()</code> inside it needs rewriting.",
+      "A path is resolved from <strong>the file it is written in</strong>, not the page being viewed. That makes no difference until a file links another file, and then a <code>url()</code> in a stylesheet counts from the stylesheet's folder rather than the page's.",
     tree: {
       label: "index.html links css/styles.css, and both want images/logo.png",
       lines: [
