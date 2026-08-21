@@ -5,6 +5,11 @@
 /* Each method sets --accent inline from content.js, and the spines, numbers
    and file labels below all read from it. */
 
+:root {
+  /* Height of the sticky site header, used by every anchor target below. */
+  --header-height: 72px;
+}
+
 /* Reading position, pinned to the very top of the window. */
 .read-progress {
   position: fixed;
@@ -18,9 +23,121 @@
 }
 
 .lesson {
-  max-width: 820px;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 232px minmax(0, 820px);
+  justify-content: center;
+  gap: var(--space-10);
   padding: var(--space-16) var(--space-6) var(--space-24);
+}
+
+.lesson-body {
+  min-width: 0;
+}
+
+/* ---------- Contents rail ---------- */
+/* Sticks beside the reading column and says which part you are in, rather
+   than only where you could jump to. */
+.lesson-toc {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-6));
+  align-self: start;
+  max-height: calc(100vh - var(--header-height) - var(--space-12));
+  overflow-y: auto;
+  padding-right: var(--space-2);
+}
+
+.toc-title {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.toc-list,
+.toc-subs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc-item {
+  border-left: 2px solid var(--border-color);
+}
+
+.toc-link {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  /* Dimmed until this is the part being read, or the pointer is on it. */
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.toc-num {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  flex-shrink: 0;
+}
+
+.toc-item:hover > .toc-link {
+  color: var(--text-secondary);
+}
+
+.toc-item.is-current {
+  border-left-color: var(--accent, var(--accent-primary));
+}
+
+.toc-item.is-current > .toc-link {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.toc-item.is-current .toc-num {
+  color: var(--accent, var(--accent-primary));
+}
+
+/* Subheadings stay closed until you are reading that part, or hover it. */
+.toc-subs {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-medium);
+}
+
+.toc-item.is-current .toc-subs,
+.toc-item:hover .toc-subs {
+  grid-template-rows: 1fr;
+}
+
+.toc-subs > li {
+  overflow: hidden;
+}
+
+.toc-subs a {
+  display: block;
+  padding: 3px var(--space-4) 3px var(--space-8);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.toc-subs a:hover {
+  color: var(--accent-primary);
+}
+
+/* Notes are anchor targets for the rail, so they clear the sticky header. */
+.note {
+  scroll-margin-top: calc(var(--header-height) + var(--space-6));
+}
+
+.section-head {
+  scroll-margin-top: calc(var(--header-height) + var(--space-6));
 }
 
 /* ---------- Hero ---------- */
@@ -56,41 +173,6 @@
   color: var(--text-primary);
 }
 
-/* Three shortcut chips, each in its method's colour. */
-.lesson-jump {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
-
-.lesson-jump a {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-color);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-sm);
-  background-color: var(--bg-surface);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-}
-
-.lesson-jump a:hover {
-  color: var(--text-primary);
-  border-color: var(--accent);
-  transform: translateY(-1px);
-}
-
-.jump-num {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--accent);
-}
-
 /* ---------- A method ---------- */
 /* The coloured spine down the left is what separates the three at a glance. */
 .method {
@@ -98,7 +180,9 @@
   padding-left: var(--space-6);
   border-left: 2px solid var(--accent);
   margin-bottom: var(--space-20);
-  scroll-margin-top: var(--space-6);
+  /* The site header is sticky, so an anchor jump has to clear it or the
+     heading lands underneath and looks cut off. */
+  scroll-margin-top: calc(var(--header-height) + var(--space-6));
 }
 
 .method-head {
@@ -354,6 +438,18 @@
 }
 
 /* ---------- Responsive ---------- */
+/* Below this the rail has nowhere to sit, so the page returns to one column. */
+@media (max-width: 1080px) {
+  .lesson {
+    grid-template-columns: minmax(0, 820px);
+    justify-content: center;
+  }
+
+  .lesson-toc {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
   .lesson {
     padding: var(--space-10) var(--space-4) var(--space-16);
@@ -742,6 +838,12 @@
   color: var(--text-primary);
 }
 
+/* One flex child, so a <strong> inside the sentence stays inline. */
+.key-point-text {
+  flex: 1;
+  min-width: 0;
+}
+
 .key-point-label {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -775,7 +877,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: var(--text-sm);
-  min-width: 520px;
+  min-width: 680px;
 }
 
 .ref-table th,
@@ -801,13 +903,25 @@
   border-bottom: none;
 }
 
-/* The syntax is the thing being looked up, so it carries the emphasis. */
-.ref-code code {
+/* The formula is what you look up, so it carries the strongest emphasis. */
+.ref-syntax code {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   font-weight: 700;
   white-space: nowrap;
   color: var(--accent);
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+}
+
+/* A real instance of that formula, quieter than the formula itself. */
+.ref-code code {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  color: var(--text-primary);
   background-color: var(--bg-sunken);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);

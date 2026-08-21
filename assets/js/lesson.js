@@ -64,15 +64,94 @@
   }
 
   // ── Rendering ────────────────────────────────────────
-  function renderJump(host, sections) {
-    host.innerHTML = sections
+  /* A contents rail listing every section, with its notes nested underneath.
+     Only the section being read is expanded; the rest stay collapsed and
+     dimmed, so the rail says where you are rather than just where you could
+     go. Hovering a collapsed section previews it without moving the page. */
+  function buildToc(host, lesson) {
+    if (!host) return;
+
+    const extra = Array.prototype.slice
+      .call(document.querySelectorAll("main .section-head h2"))
+      .map(function (h) {
+        const section = h.closest("section");
+        if (section && !section.id) section.id = "section-" + Math.random().toString(36).slice(2, 7);
+        return { id: section ? section.id : "", name: h.textContent, number: "", subs: [] };
+      });
+
+    const items = lesson.sections
       .map(function (s) {
-        return (
-          '<a href="#' + s.id + '" style="--accent:' + s.accent + '">' +
-          '<span class="jump-num">' + s.number + "</span><span>" + s.name + "</span></a>"
-        );
+        return {
+          id: s.id,
+          name: s.name,
+          number: s.number,
+          accent: s.accent,
+          subs: lesson.noteLabels.map(function (label, i) {
+            return { id: s.id + "-note-" + i, name: label };
+          }),
+        };
       })
-      .join("");
+      .concat(extra);
+
+    host.innerHTML =
+      '<p class="toc-title">On this page</p>' +
+      '<ul class="toc-list">' +
+      items
+        .map(function (it) {
+          const subs = it.subs.length
+            ? '<ul class="toc-subs">' +
+              it.subs
+                .map(function (sub) {
+                  return '<li><a href="#' + sub.id + '">' + escapeHtml(sub.name) + "</a></li>";
+                })
+                .join("") +
+              "</ul>"
+            : "";
+          return (
+            '<li class="toc-item" data-target="' + it.id + '"' +
+            (it.accent ? ' style="--accent:' + it.accent + '"' : "") + ">" +
+            '<a class="toc-link" href="#' + it.id + '">' +
+            (it.number ? '<span class="toc-num">' + it.number + "</span>" : "") +
+            "<span>" + escapeHtml(it.name) + "</span></a>" +
+            subs +
+            "</li>"
+          );
+        })
+        .join("") +
+      "</ul>";
+
+    trackScroll(host, items);
+  }
+
+  /* Marks whichever section currently owns the top of the viewport. */
+  function trackScroll(host, items) {
+    const entries = items
+      .map(function (it) {
+        return { el: document.getElementById(it.id), li: host.querySelector('[data-target="' + it.id + '"]') };
+      })
+      .filter(function (e) {
+        return e.el && e.li;
+      });
+    if (!entries.length) return;
+
+    let current = null;
+
+    function update() {
+      const line = window.scrollY + window.innerHeight * 0.25;
+      let active = entries[0];
+      entries.forEach(function (e) {
+        if (e.el.offsetTop <= line) active = e;
+      });
+      if (active === current) return;
+      current = active;
+      entries.forEach(function (e) {
+        e.li.classList.toggle("is-current", e === active);
+      });
+    }
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
   }
 
   function renderSections(host, lesson) {
@@ -98,25 +177,29 @@
 
         // Same questions, same order, labelled so they can be read across.
         const notes = lesson.noteLabels
-          .map(function (label) {
+          .map(function (label, i) {
             return (
-              '<p><strong class="note-label">' + escapeHtml(label) + ".</strong> " +
+              '<p class="note" id="' + s.id + "-note-" + i + '">' +
+              '<strong class="note-label">' + escapeHtml(label) + ".</strong> " +
               s.notes[label] + "</p>"
             );
           })
           .join("");
 
         /* The one line someone skimming has to come away with. */
+        /* The text is wrapped so the flex row has exactly two children. Left
+           bare, any <strong> inside it becomes its own flex item and the
+           sentence breaks apart mid-line. */
         const keyPoint = s.keyPoint
           ? '<p class="key-point"><span class="key-point-label">Key point</span>' +
-            s.keyPoint + "</p>"
+            '<span class="key-point-text">' + s.keyPoint + "</span></p>"
           : "";
 
         /* A scannable line per item, so the section works as a reference as
            well as an explanation. */
         const examples = s.examples
           ? '<div class="ref-scroll"><table class="ref-table"><thead><tr>' +
-            (lesson.exampleHeadings || ["Written", "Name", "Matches"])
+            (s.exampleHeadings || lesson.exampleHeadings || ["Syntax", "Kind", "Example", "What it matches"])
               .map(function (h) {
                 return "<th>" + escapeHtml(h) + "</th>";
               })
@@ -125,8 +208,9 @@
             s.examples
               .map(function (ex) {
                 return (
-                  '<tr><td class="ref-code"><code>' + escapeHtml(ex.code) + "</code></td>" +
+                  '<tr><td class="ref-syntax"><code>' + escapeHtml(ex.syntax) + "</code></td>" +
                   '<td class="ref-name">' + escapeHtml(ex.label) + "</td>" +
+                  '<td class="ref-code"><code>' + escapeHtml(ex.code) + "</code></td>" +
                   '<td class="ref-meaning">' + ex.meaning + "</td></tr>"
                 );
               })
@@ -327,11 +411,11 @@
     if (window.WDFBProgress) window.WDFBProgress.markViewed(LESSON.id);
 
     const sectionHost = document.getElementById("sections");
-    renderJump(document.getElementById("lessonJump"), LESSON.sections);
     renderSections(sectionHost, LESSON);
     buildDemos(sectionHost, LESSON);
     renderComparison(document.getElementById("comparison"), LESSON);
     renderLadder(document.getElementById("ladder"), LESSON);
+    buildToc(document.getElementById("lessonToc"), LESSON);
     setupProgress(document.getElementById("readProgress"), LESSON.id);
 
     // A lesson with a bespoke widget hangs it off this hook.
