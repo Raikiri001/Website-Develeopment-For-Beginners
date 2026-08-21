@@ -1,252 +1,261 @@
-/* CSS Properties - lesson content. Every group answers the same questions, in the same order, in the same words, so the four can be read across and compared. */
+/* CSS Properties - lesson content. Explains what a property is and how properties behave in general, so it holds up whatever properties an activity happens to drill. */
 
-const PANE = '<h1 class="title">Sunrise Bakery</h1>\n<p class="blurb">Baked fresh every morning.</p>\n<button class="cta">Order now</button>';
+const PANE =
+  '<div class="box">\n  <h1 class="heading">A heading</h1>\n  <p class="text">Some text inside a box.</p>\n</div>';
 
-const GROUPS = [
+const PARTS = [
   {
-    id: "text",
+    id: "declaration",
     number: "01",
-    name: "Text and Colour",
-    tagline: "How the words look",
+    name: "The Declaration",
+    tagline: "One setting and its value",
     accent: "#2563eb",
     lead:
-      "These properties change <strong>how the text itself looks</strong>: its colour, its size, its weight and the space between its lines. They do not change the size or the position of the box the text sits in.",
+      "A <strong>property</strong> is a single named setting on an element, and a <strong>declaration</strong> is that property paired with a value. Every CSS rule is a list of declarations, and each one changes exactly one thing.",
     blocks: [
       {
         label: "styles.css",
         lang: "css",
-        code: `.title {
-  /* The colour of the letters, not the box behind them. */
+        code: `.box {
+  /* property : value ;   That is the whole shape. */
   color: #0d9488;
+/*  ^^^^^   ^^^^^^^                                */
+/*  what     how it       */
+/*  to set   should be    */
 
-  /* A number and a unit, joined with no space. */
-  font-size: 32px;
-
-  /* bold, or the number 700. They mean the same thing. */
-  font-weight: bold;
-}
-
-.blurb {
-  /* No unit: this multiplies the element's own font-size. */
-  line-height: 1.5;
+  /* One declaration per setting. They do not combine. */
+  font-size: 18px;
+  padding: 12px;
 }`,
       },
     ],
     meta: {
-      "What it changes": "The look of the text",
-      "Key properties": "color, font-size, font-weight",
-      "Common mistake": "Using color for the box behind",
+      "What it is": "One named setting on an element",
+      "Written as": "property: value;",
+      "Why it matters": "It is the unit every rule is built from",
     },
     notes: {
       "How it works":
-        "Each property takes one value and changes one thing about the text. Most of them are inherited, so setting <code>color</code> on a container passes it down to everything inside it.",
+        "The property name says what to change, the value says what to change it to, and the semicolon ends the declaration. The browser reads each one on its own and applies what it understands.",
       "What to watch for":
-        "<code>color</code> is the text and <code>background-color</code> is the box behind it. They are easy to confuse because both sound like they set 'the colour'.",
+        "If the browser does not understand a property name or a value, it silently throws that one declaration away and carries on. There is no error message, so a typo simply does nothing.",
       "Worth remembering":
-        "CSS uses the American spelling, so it is <code>color</code> and <code>center</code>, never <code>colour</code> or <code>centre</code>.",
+        "Property names are a fixed vocabulary defined by the CSS specification. You cannot invent one, and a made-up name is exactly as invisible as a misspelled one.",
     },
     demo: {
       editorLabel: "styles.css",
-      value: ".title {\n  color: #0d9488;\n  font-size: 28px;\n}",
-      result: "Only the look of the text changes. The boxes stay exactly where they were.",
-      panes: [{ label: "index.html", html: PANE, applies: true }],
+      value: ".heading {\n  color: #0d9488;\n  font-size: 26px;\n}",
+      result: "Each declaration changes one thing. Misspell a property name and that line quietly does nothing.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
     },
   },
 
   {
-    id: "box",
+    id: "values",
     number: "02",
-    name: "The Box Model",
-    tagline: "How big the box is",
+    name: "Values and Units",
+    tagline: "What you are allowed to write",
     accent: "#d97706",
     lead:
-      "These properties change <strong>the size of the box and the space around it</strong>. Every element is a rectangle, and these decide how wide it is, how much room its content gets, and how far it sits from its neighbours.",
+      "The <strong>value</strong> is the part after the colon, and each property only accepts certain kinds. A value is usually a keyword, a number with a unit, a colour, or a list of several values in a set order.",
     blocks: [
       {
         label: "styles.css",
         lang: "css",
-        code: `.card {
-  /* Space INSIDE the border, between border and content. */
-  padding: 20px;
+        code: `.box {
+  /* A keyword: one of a fixed list this property allows. */
+  display: block;
 
-  /* Space OUTSIDE the border, pushing neighbours away. */
-  margin: 24px;
-
-  /* By default this measures the CONTENT only. */
+  /* A number and a unit, joined with no space between. */
   width: 300px;
 
-  /* So this 20px padding is added on top: 340px on screen. */
-  border: 1px solid #94a3b8;
+  /* A relative unit, measured against something else. */
+  font-size: 1.5em;   /* 1.5 times the parent's size */
 
-  /* Unless you say the width should cover the lot. */
-  box-sizing: border-box;
+  /* A colour, as a hex code, a name, or rgb(). */
+  color: #334155;
+
+  /* A list, where the order is part of the meaning. */
+  margin: 10px 20px;  /* top and bottom, then sides */
 }`,
       },
     ],
     meta: {
-      "What it changes": "The size of the box and its spacing",
-      "Key properties": "padding, margin, width, border",
-      "Common mistake": "Mixing up padding and margin",
+      "What it is": "The part of a declaration after the colon",
+      "Written as": "A keyword, number, colour or list",
+      "Why it matters": "It decides what the property actually does",
     },
     notes: {
       "How it works":
-        "Working outwards, a box is content, then padding, then border, then margin. One value applies to all four sides, two values are top-and-bottom then left-and-right.",
+        "Every property defines which values it accepts. <code>display</code> takes a keyword from a fixed list, <code>width</code> takes a length, and giving one the other kind is simply ignored.",
       "What to watch for":
-        "<code>width</code> measures only the content by default, so padding and border make the box bigger than the number you wrote. <code>box-sizing: border-box</code> makes the number mean the whole box.",
+        "A number that is not zero almost always needs a unit, and the unit is joined on with no space: <code>16px</code>, never <code>16 px</code>. A few properties take a bare number on purpose, such as <code>line-height</code> and <code>font-weight</code>.",
       "Worth remembering":
-        "Padding is inside the border and margin is outside it. If you want space between two elements you want margin; if you want the text to stop touching the edge you want padding.",
+        "Absolute units like <code>px</code> stay the same size whatever happens around them. Relative units like <code>em</code>, <code>rem</code> and <code>%</code> are measured against something else, so they change when that thing does.",
     },
     demo: {
       editorLabel: "styles.css",
-      value: ".title {\n  padding: 12px;\n  background-color: #dbeafe;\n}",
-      result: "The box grows and the neighbours move. The text itself is unchanged.",
-      panes: [{ label: "index.html", html: PANE, applies: true }],
+      value: ".box {\n  width: 60%;\n  padding: 10px 20px;\n  background-color: #f1f5f9;\n}",
+      result: "Change the unit and the same number behaves completely differently.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
     },
   },
 
   {
-    id: "surface",
+    id: "shorthand",
     number: "03",
-    name: "Backgrounds and Borders",
-    tagline: "How the box is painted",
+    name: "Shorthand Properties",
+    tagline: "Several settings in one",
     accent: "#0d9488",
     lead:
-      "These properties change <strong>the surface of the box</strong>: what fills it, what outlines it, and how sharp its corners are. They paint the box that the box model already sized.",
+      "A <strong>shorthand</strong> is one property that sets several related properties at once. It saves typing, but it also quietly resets every part you leave out, which is the trap most beginners meet.",
     blocks: [
       {
         label: "styles.css",
         lang: "css",
-        code: `.card {
-  /* Fills the box behind the content. */
-  background-color: #fef3c7;
+        code: `.box {
+  /* The long way: four separate properties. */
+  border-width: 2px;
+  border-style: solid;
+  border-color: #94a3b8;
 
-  /* Width, style and colour in one value, separated by spaces. */
-  border: 2px solid #f59e0b;
+  /* The shorthand: the same three, in one declaration. */
+  border: 2px solid #94a3b8;
 
-  /* Rounds every corner, and clips the background to match. */
-  border-radius: 8px;
-
-  /* Sideways, down, blur, then colour. */
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+  /* Values are separated by SPACES, not commas. */
+  /* Anything you leave out is reset to its default. */
+  margin: 0 auto;   /* also sets top and bottom to 0 */
 }`,
       },
     ],
     meta: {
-      "What it changes": "The surface of the box",
-      "Key properties": "background-color, border, border-radius",
-      "Common mistake": "A border with a width but no style",
+      "What it is": "One property that sets several at once",
+      "Written as": "border: 2px solid #94a3b8;",
+      "Why it matters": "It is shorter, but it resets what you omit",
     },
     notes: {
       "How it works":
-        "The fill sits behind the content, the border is drawn on the edge, and <code>border-radius</code> rounds both together. Shorthand properties pack several values into one, separated by spaces.",
+        "A shorthand expands into the individual properties behind it. Some read positionally, so <code>margin: 10px 20px</code> means top and bottom, then left and right; others read by kind, so <code>border</code> works out which part is the width and which is the colour.",
       "What to watch for":
-        "<code>border-style</code> defaults to <code>none</code>, so a border with a width and a colour but no style is invisible. That is why <code>border</code> takes all three at once.",
+        "A shorthand sets <em>every</em> property it covers, including the ones you did not mention, which get their default back. Writing <code>background: red</code> after setting a background image throws the image away.",
       "Worth remembering":
-        "Shorthands use spaces, never commas. <code>1px solid #f59e0b</code> is valid; <code>1px, solid, #f59e0b</code> is thrown away entirely.",
+        "Values inside a shorthand are separated by spaces. Commas mean something different in CSS, and using them here makes the whole declaration invalid.",
     },
     demo: {
       editorLabel: "styles.css",
-      value: ".title {\n  background-color: #fef3c7;\n  border-radius: 8px;\n  padding: 8px;\n}",
-      result: "Only the surface changes. The box is the same size it was before.",
-      panes: [{ label: "index.html", html: PANE, applies: true }],
+      value: ".box {\n  border: 2px solid #94a3b8;\n  padding: 12px;\n}",
+      result: "One declaration doing the work of several. Remove a part and its default comes back.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
     },
   },
 
   {
-    id: "layout",
+    id: "inheritance",
     number: "04",
-    name: "Layout with Flexbox",
-    tagline: "Where the boxes sit",
+    name: "Inheritance and Defaults",
+    tagline: "What happens when you say nothing",
     accent: "#db2777",
     lead:
-      "These properties change <strong>where a box's children sit inside it</strong>. They go on the container, not on the children, and they decide whether things sit in a row or a column and how the spare space is shared out.",
+      "Every property has a value even when you never set one. Some properties <strong>inherit</strong> theirs from the parent element, and the rest fall back to a <strong>default</strong> defined by CSS itself.",
     blocks: [
       {
         label: "styles.css",
         lang: "css",
-        code: `.row {
-  /* Goes on the PARENT. The children need nothing. */
-  display: flex;
+        code: `.box {
+  /* Text properties inherit: children get this too. */
+  color: #334155;
+  font-family: sans-serif;
+}
 
-  /* Along the row: where the items sit left to right. */
-  justify-content: space-between;
+.heading {
+  /* Box properties do NOT inherit. This affects */
+  /* only .heading, never anything inside it.    */
+  padding: 8px;
+}
 
-  /* Across the row: where they sit top to bottom. */
-  align-items: center;
+.text {
+  /* Ask for the parent's value explicitly. */
+  color: inherit;
 
-  /* Space between the items, but not at the ends. */
-  gap: 16px;
+  /* Or throw everything away and start from the default. */
+  all: initial;
 }`,
       },
     ],
     meta: {
-      "What it changes": "Where the children sit",
-      "Key properties": "display, justify-content, align-items",
-      "Common mistake": "Putting flex on the child, not the parent",
+      "What it is": "The value a property has when unset",
+      "Written as": "inherit, initial, unset",
+      "Why it matters": "It explains styling you never wrote",
     },
     notes: {
       "How it works":
-        "<code>display: flex</code> turns an element into a flex container and lays its direct children in a row. <code>justify-content</code> works along that row and <code>align-items</code> works across it.",
+        "Properties about text tend to inherit, so setting <code>color</code> on a container passes it down to everything inside. Properties about the box, such as <code>padding</code> and <code>border</code>, do not.",
       "What to watch for":
-        "Setting <code>flex-direction: column</code> swaps the two axes over, so <code>align-items</code> then controls left-to-right position rather than top-to-bottom.",
+        "Before any of your CSS runs, the browser has already applied its own default stylesheet. Headings are large and bold, and lists have bullets, because of that, not because nothing is set.",
       "Worth remembering":
-        "These properties belong on the parent. If a child is not moving, check you have styled the container and not the thing inside it.",
+        "The keywords <code>inherit</code>, <code>initial</code> and <code>unset</code> work on any property, so you can always ask for the parent's value or reset back to the default explicitly.",
     },
     demo: {
       editorLabel: "styles.css",
-      value: "body {\n  display: flex;\n  gap: 12px;\n  align-items: center;\n}",
-      result: "Nothing about the boxes changes, only where they sit relative to each other.",
-      panes: [{ label: "index.html", html: PANE, applies: true }],
+      value: ".box {\n  color: #7c3aed;\n  padding: 10px;\n}",
+      result: "Colour reaches the text inside. Padding does not, because it never inherits.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
     },
   },
 ];
 
 const LESSON = {
   id: "css-properties",
-  metaKeys: ["What it changes", "Key properties", "Common mistake"],
+  metaKeys: ["What it is", "Written as", "Why it matters"],
   noteLabels: ["How it works", "What to watch for", "Worth remembering"],
-  demoHint: "Edit the CSS and watch which part of the page responds",
-  sections: GROUPS,
+  demoHint: "Edit the CSS and watch what each declaration does",
+  sections: PARTS,
   comparison: {
-    columns: ["text", "box", "surface", "layout"],
+    columns: ["declaration", "values", "shorthand", "inheritance"],
     rows: [
       {
-        label: "What it changes",
+        label: "What it is",
         values: [
-          "The look of the text",
-          "The size of the box and its spacing",
-          "The surface of the box",
-          "Where the children sit",
+          "One named setting on an element",
+          "The part of a declaration after the colon",
+          "One property that sets several at once",
+          "The value a property has when unset",
         ],
       },
       {
-        label: "Key properties",
+        label: "Written as",
         values: [
-          "color, font-size, font-weight",
-          "padding, margin, width, border",
-          "background-color, border, border-radius",
-          "display, justify-content, align-items",
+          "property: value;",
+          "A keyword, number, colour or list",
+          "border: 2px solid #94a3b8;",
+          "inherit, initial, unset",
         ],
       },
       {
-        label: "Goes on",
-        values: ["The element itself", "The element itself", "The element itself", "The parent"],
-      },
-      {
-        label: "Moves other elements",
-        values: ["No", "Yes", "No", "Yes"],
-      },
-      {
-        label: "Units it takes",
-        values: ["px, pt, em, plain numbers", "px, %, or none for zero", "px, and colour values", "Mostly keywords, gap takes px"],
-      },
-      {
-        label: "Common mistake",
+        label: "Why it matters",
         values: [
-          "Using color for the box behind",
-          "Mixing up padding and margin",
-          "A border with a width but no style",
-          "Putting flex on the child, not the parent",
+          "It is the unit every rule is built from",
+          "It decides what the property actually does",
+          "It is shorter, but it resets what you omit",
+          "It explains styling you never wrote",
+        ],
+      },
+      {
+        label: "Where you see it",
+        values: [
+          "Inside every rule",
+          "After every colon",
+          "In place of several declarations",
+          "Nowhere, until something surprises you",
+        ],
+      },
+      {
+        label: "Get it wrong and",
+        values: [
+          "That one line is silently ignored",
+          "The property does nothing",
+          "Something you set earlier is reset",
+          "Styling appears from nowhere",
         ],
       },
     ],

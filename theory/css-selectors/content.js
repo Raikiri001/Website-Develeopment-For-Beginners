@@ -1,183 +1,251 @@
-/* CSS Selectors - lesson content. Every kind answers the same questions, in the same order, in the same words, so the three can be read across and compared. */
+/* CSS Selectors - lesson content. Explains what a selector is and how matching and specificity work in general, so it holds up whatever selectors an activity happens to drill. */
 
-const PANE = '<ul class="menu">\n  <li class="item" id="first">Flat white</li>\n  <li class="item sold-out">Long black</li>\n  <li class="item">Mocha</li>\n</ul>\n<p>Prices include GST.</p>';
+const PANE =
+  '<ul class="list">\n  <li class="item" id="first">First item</li>\n  <li class="item">Second item</li>\n  <li class="item">Third item</li>\n</ul>\n<p class="note">A paragraph outside the list.</p>';
 
-const KINDS = [
+const PARTS = [
   {
-    id: "basic",
+    id: "what",
     number: "01",
-    name: "Basic Selectors",
-    tagline: "Match by name, class or id",
+    name: "What a Selector Is",
+    tagline: "The pattern before the braces",
     accent: "#2563eb",
     lead:
-      "These selectors match <strong>one element at a time by what it is called</strong>: its tag name, a class it carries, or its id. They are the three you will write most often.",
+      "A <strong>selector</strong> is the part of a rule before the curly brackets. It is a <strong>pattern</strong>, and the browser tests every element on the page against it, applying the declarations to each one that matches.",
     blocks: [
       {
         label: "styles.css",
         lang: "css",
-        code: `/* By tag name: every <li> on the page. */
-li { color: #b45309; }
+        code: `/* selector { declarations }   That is the whole shape. */
 
-/* By class, with a full stop. Any number can share it. */
-.sold-out { text-decoration: line-through; }
+.item {
+  color: #0d9488;
+}
+/* ^^^^^                                          */
+/* the pattern. Every element matching it is      */
+/* styled. That may be none, one, or a hundred.   */
 
-/* By id, with a hash. Meant to appear once per page. */
-#first { font-weight: bold; }
-
-/* Joined with no space: BOTH must be true of one element. */
-li.sold-out { opacity: 0.5; }
-
-/* Separated by a comma: EITHER one matches. */
-li, p { font-family: sans-serif; }`,
+/* A rule that matches nothing is not an error. */
+/* It simply does nothing at all.               */
+.does-not-exist {
+  color: red;
+}`,
       },
     ],
     meta: {
-      "What it matches": "Elements by tag, class or id",
-      "Written as": "li, .class, #id",
-      Specificity: "id beats class beats tag",
+      "What it is": "A pattern that picks out elements",
+      "Written as": "The part before the { brackets",
+      "Why it matters": "It decides who a rule applies to",
     },
     notes: {
       "How it works":
-        "A tag name matches every element of that type. A full stop matches a class, a hash matches an id. Joining them with no space demands all of them on the same element.",
+        "The browser checks every element against the pattern and collects the ones that match. The declarations are then applied to all of them, however many that turns out to be.",
       "What to watch for":
-        "A space and a comma mean completely different things. <code>li .item</code> means an item inside an li; <code>li, .item</code> means either one.",
-      "When to use it":
-        "Reach for a class nearly every time. Tag selectors are broad and ids are meant to be unique, so classes are what real stylesheets are built from.",
+        "A selector that matches nothing is perfectly valid CSS, so nothing warns you. If a rule seems to do nothing, the selector is usually wrong before the declarations are.",
+      "Worth remembering":
+        "Selectors describe elements, not content. You cannot select an element because of the words inside it, only because of what it is, where it sits, or what it carries.",
     },
     demo: {
       editorLabel: "styles.css",
-      value: ".sold-out {\n  text-decoration: line-through;\n  color: #dc2626;\n}",
-      result: "Only the elements carrying that class respond.",
-      panes: [{ label: "index.html", html: PANE, applies: true }],
+      value: ".item {\n  color: #0d9488;\n}",
+      result: "Everything matching the pattern responds. Change the pattern and a different set responds.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
     },
   },
 
   {
-    id: "combinators",
+    id: "simple",
     number: "02",
-    name: "Combinators",
-    tagline: "Match by where it sits",
+    name: "Simple Selectors",
+    tagline: "Matching one element on its own",
     accent: "#d97706",
     lead:
-      "These selectors match <strong>an element by its position relative to another</strong>: inside it, directly inside it, or next to it. They join two selectors with a symbol between them.",
+      "A <strong>simple selector</strong> matches an element by something about the element itself: its tag name, a class it carries, its id, an attribute, or nothing at all in the case of the universal selector.",
     blocks: [
       {
         label: "styles.css",
         lang: "css",
-        code: `/* A space: anywhere inside, at any depth. */
-.menu li { padding: 4px; }
+        code: `/* By tag name: every element of that type. */
+li { }
 
-/* A > : a DIRECT child only, one level down. */
-.menu > li { border-left: 3px solid #2563eb; }
+/* By class, marked with a full stop. */
+/* Any number of elements may share one class. */
+.item { }
 
-/* A + : the very next sibling, and only that one. */
-h2 + p { font-weight: bold; }
+/* By id, marked with a hash. */
+/* An id is meant to appear once on a page. */
+#first { }
 
-/* A ~ : every later sibling that matches. */
-h2 ~ p { color: #64748b; }`,
+/* By attribute, in square brackets. */
+[href] { }
+
+/* Everything, marked with an asterisk. */
+* { }`,
       },
     ],
     meta: {
-      "What it matches": "Elements by position relative to another",
-      "Written as": "a b, a > b, a + b, a ~ b",
-      Specificity: "The sum of both sides",
+      "What it is": "A match on the element itself",
+      "Written as": "li, .class, #id, [attr], *",
+      "Why it matters": "It is the building block of every selector",
     },
     notes: {
       "How it works":
-        "The symbol between two selectors says how they must be related. A space means a descendant at any depth, and <code>&gt;</code> narrows that to a direct child.",
+        "Each kind reads one thing about the element. The marker character tells you which: a full stop means a class, a hash means an id, square brackets mean an attribute, and a bare word means a tag name.",
       "What to watch for":
-        "A space is the easiest thing in CSS to add or drop by accident, and it silently changes the meaning rather than causing an error.",
-      "When to use it":
-        "Use one when the element you want has no useful class of its own, and its position is the only reliable way to describe it.",
+        "Classes and ids do nothing on their own. They exist purely so CSS has something to select by, which is why you add a class to an element you intend to style.",
+      "Worth remembering":
+        "Classes are what real stylesheets are built from. Tag selectors are too broad to control, and ids are too specific to override comfortably.",
     },
     demo: {
       editorLabel: "styles.css",
-      value: ".menu > li {\n  border-left: 3px solid #2563eb;\n  padding-left: 8px;\n}",
-      result: "Only elements in the described position respond.",
-      panes: [{ label: "index.html", html: PANE, applies: true }],
+      value: "#first {\n  font-weight: bold;\n  color: #b45309;\n}",
+      result: "Swap the marker character and you are matching on something completely different.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
     },
   },
 
   {
-    id: "pseudo",
+    id: "combining",
     number: "03",
-    name: "Pseudo-classes and Attributes",
-    tagline: "Match by state or attribute",
+    name: "Combining Selectors",
+    tagline: "Matching on more than one thing",
     accent: "#0d9488",
     lead:
-      "These selectors match <strong>an element by something other than its name</strong>: which number child it is, whether it is being hovered, or what its attributes say. They describe a condition rather than a label.",
+      "Simple selectors can be joined together, and <strong>what sits between them changes the meaning entirely</strong>. Nothing means both at once, a comma means either, and a space or symbol means a relationship between two elements.",
     blocks: [
       {
         label: "styles.css",
         lang: "css",
-        code: `/* A colon: a position among its siblings. */
-li:first-child { font-weight: bold; }
+        code: `/* Joined with NOTHING: one element that is both. */
+li.item { }
 
-/* Counting starts at 1, and takes even, odd or a formula. */
-li:nth-child(even) { background-color: #f1f5f9; }
+/* Joined with a COMMA: either one, matched separately. */
+li, .item { }
 
-/* Inverts whatever is inside it. */
-li:not(.sold-out) { color: #16a34a; }
+/* Joined with a SPACE: an .item somewhere inside a ul. */
+ul .item { }
 
-/* Square brackets: match on an attribute. */
-[href] { text-decoration: underline; }
+/* Joined with > : a DIRECT child, one level down only. */
+ul > .item { }
 
-/* ^= starts with. There is also $= ends with, *= contains. */
-a[href^="https"] { color: #db2777; }`,
+/* Joined with + : the very next sibling. */
+/* Joined with ~ : any later sibling.     */
+h1 + p { }`,
       },
     ],
     meta: {
-      "What it matches": "Elements by state, position or attribute",
-      "Written as": ":first-child, [href]",
-      Specificity: "Counts the same as a class",
+      "What it is": "Two or more selectors joined together",
+      "Written as": "ab, a b, a, b, a > b, a + b",
+      "Why it matters": "The join changes the meaning completely",
     },
     notes: {
       "How it works":
-        "A colon introduces a pseudo-class, which describes a condition the element is in. Square brackets test an attribute, either that it exists at all or that its value matches.",
+        "With no separator, all parts must be true of the same element. With a separator, the parts describe different elements and the separator says how they must be related.",
       "What to watch for":
-        "<code>:nth-child</code> counts from 1, not 0, which catches out anyone coming from programming. It also counts all siblings, not just the ones matching your selector.",
-      "When to use it":
-        "Use one when what you want to match cannot be written into the HTML, such as striped rows, the first item in a list, or every external link.",
+        "A space is the easiest character in CSS to add or lose by accident, and it changes the meaning without ever causing an error. <code>li.item</code> and <code>li .item</code> match completely different things.",
+      "Worth remembering":
+        "Combining is how you reach an element that has nothing useful of its own to select by. If it has a class, use the class; combine only when it does not.",
     },
     demo: {
       editorLabel: "styles.css",
-      value: "li:nth-child(even) {\n  background-color: #f1f5f9;\n}",
-      result: "Only elements meeting the condition respond.",
-      panes: [{ label: "index.html", html: PANE, applies: true }],
+      value: "ul > .item {\n  border-left: 3px solid #0d9488;\n  padding-left: 8px;\n}",
+      result: "Remove the space, or change the symbol, and the set of matched elements changes.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
+    },
+  },
+
+  {
+    id: "specificity",
+    number: "04",
+    name: "Specificity",
+    tagline: "When two rules both match",
+    accent: "#db2777",
+    lead:
+      "Two rules can match the same element and set the same property. <strong>Specificity</strong> is how the browser decides between them, by counting what the selectors are made of rather than which one looks more important.",
+    blocks: [
+      {
+        label: "styles.css",
+        lang: "css",
+        code: `/* All three match the same element. Only one wins. */
+
+li { color: blue; }
+/* One tag name. The weakest of the three. */
+
+.item { color: green; }
+/* One class. Beats any number of tag names. */
+
+#first { color: red; }
+/* One id. Beats any number of classes. */
+
+/* A tie is settled by order: the later one wins. */
+.item { color: teal; }   /* this beats the green above */`,
+      },
+    ],
+    meta: {
+      "What it is": "How a conflict between rules is settled",
+      "Written as": "Not written; it is counted",
+      "Why it matters": "It explains why a rule you wrote is ignored",
+    },
+    notes: {
+      "How it works":
+        "The browser counts ids, then classes and attributes and pseudo-classes, then tag names. A higher count in an earlier group wins outright, so one id beats any number of classes.",
+      "What to watch for":
+        "Position in the file only breaks a tie. A rule further down does not win if the rule above it is more specific, which is why moving a rule often fails to fix anything.",
+      "Worth remembering":
+        "The way out of a specificity fight is a simpler selector, not a stronger one. Escalating with ids or <code>!important</code> only makes the next override harder.",
+    },
+    demo: {
+      editorLabel: "styles.css",
+      value: "li { color: #2563eb; }\n.item { color: #16a34a; }\n#first { color: #db2777; }",
+      result: "The first item obeys the id, the rest obey the class. The tag selector never wins.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
     },
   },
 ];
 
 const LESSON = {
   id: "css-selectors",
-  metaKeys: ["What it matches", "Written as", "Specificity"],
-  noteLabels: ["How it works", "What to watch for", "When to use it"],
+  metaKeys: ["What it is", "Written as", "Why it matters"],
+  noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   demoHint: "Edit the selector and watch which elements respond",
-  sections: KINDS,
+  sections: PARTS,
   comparison: {
-    columns: ["basic", "combinators", "pseudo"],
+    columns: ["what", "simple", "combining", "specificity"],
     rows: [
       {
-        label: "What it matches",
+        label: "What it is",
         values: [
-          "Elements by tag, class or id",
-          "Elements by position relative to another",
-          "Elements by state, position or attribute",
+          "A pattern that picks out elements",
+          "A match on the element itself",
+          "Two or more selectors joined together",
+          "How a conflict between rules is settled",
         ],
       },
-      { label: "Written as", values: ["li, .class, #id", "a b, a > b, a + b, a ~ b", ":first-child, [href]"] },
-      { label: "Marker character", values: ["A full stop or a hash", "A space, >, + or ~", "A colon or square brackets"] },
-      { label: "Specificity", values: ["id beats class beats tag", "The sum of both sides", "Counts the same as a class"] },
       {
-        label: "Needs help from the HTML",
-        values: ["Yes, a class or id", "No, position is enough", "No, the condition is enough"],
+        label: "Written as",
+        values: [
+          "The part before the { brackets",
+          "li, .class, #id, [attr], *",
+          "ab, a b, a, b, a > b, a + b",
+          "Not written; it is counted",
+        ],
       },
       {
-        label: "Use it for",
+        label: "Why it matters",
         values: [
-          "Nearly everything, via classes",
-          "Elements with no class of their own",
-          "Things the HTML cannot say",
+          "It decides who a rule applies to",
+          "It is the building block of every selector",
+          "The join changes the meaning completely",
+          "It explains why a rule you wrote is ignored",
+        ],
+      },
+      {
+        label: "Get it wrong and",
+        values: [
+          "The rule matches nothing, silently",
+          "You match far more or far less than you meant",
+          "You match the wrong elements entirely",
+          "Your rule is overridden by an older one",
         ],
       },
     ],
@@ -185,27 +253,27 @@ const LESSON = {
   ladder: [
     {
       rank: "1",
-      title: "An id beats everything below it",
-      body: "One id in a selector outranks any number of classes. This is why ids are awkward to override and why stylesheets lean on classes instead.",
-      code: "#first { color: red; }",
+      title: "Count the ids",
+      body: "Every id in the selector counts once. More ids wins, whatever else either selector contains.",
+      code: "#first        beats  .item.item.item",
     },
     {
       rank: "2",
       title: "Then classes, attributes and pseudo-classes",
-      body: "These three all count the same amount, and more of them beats fewer. <code>li.item.sold-out</code> outranks <code>li.item</code>.",
-      code: ".item.sold-out { color: red; }",
+      body: "All three count the same amount. If the id counts tie, whichever selector has more of these wins.",
+      code: ".list .item   beats  .item",
     },
     {
       rank: "3",
       title: "Then tag names",
-      body: "The weakest of the three. Any single class beats any number of tag names, so <code>.item</code> outranks <code>ul li</code>.",
-      code: "ul li { color: red; }",
+      body: "The weakest group. Any single class beats any number of tag names, however long the selector looks.",
+      code: ".item         beats  ul li span",
     },
     {
       rank: "4",
-      title: "If they tie, the later one wins",
-      body: "Two selectors of equal specificity are settled by order alone: whichever is written further down the stylesheet takes effect.",
-      code: ".item { color: blue; }\n.item { color: red; }  /* this one */",
+      title: "Only then, position in the file",
+      body: "If every count ties, the rule written later wins. This is the only point at which order matters at all.",
+      code: ".item { color: blue; }\n.item { color: red; }   /* this one */",
     },
   ],
 };

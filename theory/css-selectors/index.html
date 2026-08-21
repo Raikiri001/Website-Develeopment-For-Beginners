@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="The three kinds of CSS selector: basic selectors that match by name, combinators that match by position, and pseudo-classes and attributes that match by condition. Plus how specificity decides which one wins." />
+    <meta name="description" content="What a CSS selector actually is: a pattern that picks out elements, how simple selectors combine, and how specificity settles a conflict between two rules." />
     <title>CSS Selectors - Web Dev For Beginners</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -33,7 +33,7 @@
       <header class="lesson-hero">
         <p class="lesson-eyebrow">Theory</p>
         <h1>CSS Selectors</h1>
-        <p class="lesson-standfirst">A CSS rule needs a <strong>selector</strong> to say which elements it applies to. There are three kinds, and they differ in <strong>what they match on</strong>: what an element is called, where it sits, or what condition it is in.</p>
+        <p class="lesson-standfirst">A CSS rule needs a <strong>selector</strong> to say who it applies to. A selector is a pattern, and the browser tests every element against it. This is how that pattern is built, and what happens when two of them match the same element.</p>
         <nav class="lesson-jump" id="lessonJump" aria-label="Jump to a section"></nav>
       </header>
 
@@ -42,7 +42,7 @@
       <section class="compare-section" id="compare">
         <header class="section-head">
           <p class="section-eyebrow">Side by side</p>
-          <h2>The three kinds, compared</h2>
+          <h2>The four parts, compared</h2>
           <p class="section-lead">
             Every row asks the same question of all of them, so you can read
             straight across to see what actually differs.
@@ -55,15 +55,15 @@
 
       <section class="cascade-section" id="ladder-section">
         <header class="section-head">
-          <p class="section-eyebrow">When two match</p>
-          <h2>Which selector wins?</h2>
-          <p class="section-lead">Two rules can both match the same element and set the same property. Specificity decides between them, counted in this order.</p>
+          <p class="section-eyebrow">How a conflict is settled</p>
+          <h2>Counting specificity</h2>
+          <p class="section-lead">When two rules match the same element and set the same property, the browser counts what each selector is made of, in this order. It only looks at the next group if the one above ties.</p>
         </header>
         <ol class="ladder" id="ladder"></ol>
       </section>
 
       <footer class="lesson-end">
-        <p>Three ways to describe an element: by its name, by where it sits, or by what is true of it. When two rules both match, the more specific selector wins, and a tie goes to whichever was written last.</p>
+        <p>A selector is a pattern, built from simple parts, joined in ways that change its meaning, and weighed against any other selector that matches the same element. Learn the shape and any selector you meet later reads the same way.</p>
       </footer>
     </main>
 

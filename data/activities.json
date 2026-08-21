@@ -2,7 +2,7 @@
   {
     "id": "html-tags-and-attributes",
     "title": "HTML Tags and Attributes",
-    "description": "What a tag is, what an attribute adds to it, and why choosing a semantic tag matters even when it changes nothing on screen. Three parts, each with editable HTML and a live page.",
+    "description": "What an HTML element actually is: the shape of a tag, how nesting builds the page as a tree, what attributes add, and why the tag you choose carries meaning beyond how it looks.",
     "category": "theory",
     "topic": "html",
     "order": 1,
@@ -100,7 +100,7 @@
   {
     "id": "css-properties",
     "title": "CSS Properties",
-    "description": "The four groups of property a beginner meets first: text and colour, the box model, backgrounds and borders, and layout. What each group changes, and what it leaves alone.",
+    "description": "What a CSS property actually is: the shape of a declaration, the kinds of value it accepts, how shorthands expand, and what happens to properties you never set.",
     "category": "theory",
     "topic": "css",
     "order": 2,
@@ -142,7 +142,7 @@
   {
     "id": "css-selectors",
     "title": "CSS Selectors",
-    "description": "The three kinds of selector, what each matches on, and how specificity decides which rule wins when two of them match the same element.",
+    "description": "What a CSS selector actually is: a pattern that picks out elements, how simple selectors combine, and how specificity settles a conflict between two rules.",
     "category": "theory",
     "topic": "css",
     "order": 5,
