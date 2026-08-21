@@ -40,6 +40,14 @@
     "tags": ["CSS", "properties", "values"]
   },
   {
+    "id": "write-the-selector",
+    "title": "Write the Selector",
+    "description": "The CSS is written for you but the selector is missing. Read the page, then write a selector that reaches exactly the outlined elements. Thirty problems across basic selectors, combinators, pseudo-classes and attributes.",
+    "category": "practical",
+    "href": "practical/write-the-selector/",
+    "tags": ["CSS", "selectors", "combinators"]
+  },
+  {
     "id": "html-debugger",
     "title": "HTML Debugger",
     "description": "Click the parts of a broken HTML page where the mistakes are. Thirty problems from Beginner to Expert, mixing in more kinds of mistake as you go.",
