@@ -8,6 +8,14 @@
     "tags": ["DOM", "CSSOM", "rendering"]
   },
   {
+    "id": "inline-internal-external",
+    "title": "Inline, Internal, External",
+    "description": "The three places CSS can live, side by side and all editable. Six guided steps that have you write real CSS in a file, a style block and a style attribute, with a cascade panel showing which declaration actually wins.",
+    "category": "theory",
+    "href": "theory/inline-internal-external/",
+    "tags": ["CSS", "cascade", "stylesheets"]
+  },
+  {
     "id": "html-drag-and-drop",
     "title": "HTML Structure Trainer",
     "description": "Forty-three drag-and-drop problems that train you to arrange HTML elements in the correct order, following the same path as the class: boilerplate, tags, text, lists, links and images, then semantic layout.",

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="The three places CSS can live. Write real CSS in an external file, a style block and a style attribute at the same time, and watch a cascade panel show which declaration actually wins."
+    />
+    <title>Inline, Internal, External - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>Inline, Internal, External</h1>
+      <div class="header-desc">
+        The three places CSS can live, side by side and all editable. Write
+        real CSS in each, see the page change as you type, and watch the
+        <strong>cascade panel</strong> work out which declaration actually
+        wins when they disagree.
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="header-top">
+            <span>Steps</span>
+            <span class="panel-badge" id="totalCount">6</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span id="progressCount">0/6</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="category-list" id="stepList"></div>
+      </aside>
+
+      <div class="main-content panel">
+        <div class="title-bar">
+          <div class="title-bar-left">
+            <span class="title-bar-badge" id="titleBarBadge">Ready</span>
+            <h2 id="titleBarTitle">Select a step</h2>
+          </div>
+          <div class="title-bar-right">
+            <button class="btn" id="btnReset" disabled>Reset step</button>
+            <button class="btn btn-success" id="btnCheck" hidden>
+              Check my work
+            </button>
+            <button class="btn btn-primary" id="btnNext" hidden>Next step</button>
+          </div>
+        </div>
+
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon">&#9633;</div>
+          <h2 class="welcome-title">Select a step to begin</h2>
+          <p class="welcome-subtitle">
+            Six steps, each one explaining a place CSS can live and then
+            asking you to write some. The page on the right is real, and it
+            updates as you type in any of the three editors.
+          </p>
+          <div class="welcome-stats" id="welcomeStats"></div>
+        </div>
+
+        <div class="workspace" id="workspace" hidden>
+          <div class="panel teach-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>How it works</span>
+                <span class="panel-badge" id="stepCounter">Step 1 of 6</span>
+              </div>
+            </div>
+            <div class="teach-body" id="teachBody"></div>
+          </div>
+
+          <div class="work-grid">
+            <div class="panel editor-panel">
+              <div class="panel-header">
+                <div class="header-top">
+                  <span>Where the CSS lives</span>
+                  <span class="panel-badge" id="activeCountBadge">1 editable</span>
+                </div>
+              </div>
+              <div class="editor-tabs" role="tablist" id="editorTabs">
+                <button class="editor-tab" data-origin="external" role="tab">
+                  styles.css
+                </button>
+                <button class="editor-tab" data-origin="internal" role="tab">
+                  &lt;style&gt;
+                </button>
+                <button class="editor-tab" data-origin="inline" role="tab">
+                  style=""
+                </button>
+              </div>
+              <div class="editor-body">
+                <p class="editor-note" id="editorNote"></p>
+                <textarea
+                  class="code-editor"
+                  id="codeEditor"
+                  spellcheck="false"
+                  autocomplete="off"
+                  aria-label="CSS editor"
+                ></textarea>
+                <p class="editor-locked" id="editorLocked" hidden>
+                  This step does not use this one yet.
+                </p>
+              </div>
+            </div>
+
+            <div class="right-column">
+              <div class="panel preview-panel">
+                <div class="panel-header">
+                  <div class="header-top">
+                    <span>Live preview</span>
+                    <span class="panel-badge">Updates as you type</span>
+                  </div>
+                </div>
+                <div class="preview-body">
+                  <!-- Preview host; app.js attaches a shadow root here. -->
+                  <div class="preview-stage" id="previewStage"></div>
+                </div>
+              </div>
+
+              <div class="panel cascade-panel">
+                <div class="panel-header">
+                  <div class="header-top">
+                    <span>Which one wins?</span>
+                    <span class="panel-badge" id="cascadeTargetBadge"
+                      >.title color</span
+                    >
+                  </div>
+                </div>
+                <div class="cascade-body" id="cascadeBody"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel task-panel" id="taskPanel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>Your turn</span>
+                <span class="panel-badge" id="taskStateBadge">Not done</span>
+              </div>
+            </div>
+            <div class="task-body">
+              <p class="task-text" id="taskText"></p>
+              <div class="task-choices" id="taskChoices"></div>
+            </div>
+          </div>
+
+          <div class="feedback-note" id="feedbackNote" aria-live="polite"></div>
+        </div>
+
+        <div class="completion-panel" id="completionPanel">
+          <h2>Lesson complete</h2>
+          <p id="completionText"></p>
+          <button class="btn btn-primary" id="btnRestart">Start again</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="steps.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
