@@ -9,10 +9,10 @@
     lessonJump: document.getElementById("lessonJump"),
     methods: document.getElementById("methods"),
     ladder: document.getElementById("ladder"),
-    chooseGrid: document.getElementById("chooseGrid"),
     playgroundControls: document.getElementById("playgroundControls"),
     playgroundPreview: document.getElementById("playgroundPreview"),
     playgroundRanking: document.getElementById("playgroundRanking"),
+    comparison: document.getElementById("comparison"),
   };
 
   function escapeHtml(str) {
@@ -88,11 +88,10 @@
 
   function renderMethods() {
     dom.methods.innerHTML = CSS_METHODS.map(function (m) {
-      const meta = Object.keys(m.meta)
-        .map(function (k) {
-          return "<div><dt>" + escapeHtml(k) + "</dt><dd>" + escapeHtml(m.meta[k]) + "</dd></div>";
-        })
-        .join("");
+      // Fixed order, so the same question sits in the same place in all three.
+      const meta = META_KEYS.map(function (k) {
+        return "<div><dt>" + escapeHtml(k) + "</dt><dd>" + escapeHtml(m.meta[k]) + "</dd></div>";
+      }).join("");
 
       const code = m.blocks
         .map(function (b) {
@@ -107,11 +106,13 @@
         })
         .join("");
 
-      const notes = m.notes
-        .map(function (n) {
-          return "<p>" + n + "</p>";
-        })
-        .join("");
+      // Same three questions, same order, labelled so they can be read across.
+      const notes = NOTE_LABELS.map(function (label) {
+        return (
+          '<p><strong class="note-label">' + escapeHtml(label) + ".</strong> " +
+          m.notes[label] + "</p>"
+        );
+      }).join("");
 
       return (
         '<section class="method" id="' + m.id + '" style="--accent:' + m.accent + '">' +
@@ -137,39 +138,33 @@
     }).join("");
   }
 
-  function renderChoosing() {
-    const accents = {};
-    CSS_METHODS.forEach(function (m) {
-      accents[m.id] = m.accent;
-    });
-    dom.chooseGrid.innerHTML = CHOOSING.map(function (c) {
-      return (
-        '<div class="choose-card" style="--accent:' + (accents[c.id] || "var(--accent-primary)") + '">' +
-        "<h3>" + escapeHtml(c.verdict) + "</h3><p>" + escapeHtml(c.when) + "</p></div>"
-      );
-    }).join("");
-  }
-
   // ── Live demo under each method ──────────────────────
   const DEMO_BASE =
     ":host { display: block; }" +
-    "h1 { font-size: 22px; margin: 0 0 8px; font-family: inherit; }" +
+    "h1 { font-size: 19px; margin: 0 0 6px; font-family: inherit; }" +
     "h1:last-child { margin-bottom: 0; }";
 
-  /** Attach a shadow root to a preview box and return its style node. */
-  function makePreview(box) {
+  /** One mini page as its own shadow root, so its CSS cannot leak into the other. */
+  function makePage(box, headings) {
     const root = box.attachShadow({ mode: "open" });
     const base = document.createElement("style");
     base.textContent = DEMO_BASE;
     root.appendChild(base);
     const sheet = document.createElement("style");
     root.appendChild(sheet);
-    const holder = document.createElement("div");
-    holder.innerHTML = DEMO_MARKUP;
-    while (holder.firstChild) root.appendChild(holder.firstChild);
+    headings.forEach(function (text, i) {
+      const h = document.createElement("h1");
+      h.className = "title";
+      if (i === 0) h.id = "headline";
+      h.textContent = text;
+      root.appendChild(h);
+    });
     return { root: root, sheet: sheet };
   }
 
+  /* Every method gets the identical demo: the same editor, the same two
+     pages, the same two headings each. Only the result differs, which is
+     what makes the three comparable. */
   function buildDemos() {
     CSS_METHODS.forEach(function (m) {
       const demo = METHOD_DEMOS[m.id];
@@ -178,43 +173,82 @@
 
       host.innerHTML =
         '<div class="tryit-head"><span class="tryit-label">Try it</span>' +
-        (demo.toggle
-          ? '<label class="tryit-toggle"><input type="checkbox" data-role="disable" /><span>' +
-            demo.toggle.label +
-            "</span></label>"
-          : "") +
-        "</div>" +
+        '<span class="tryit-hint">Edit the CSS and watch how far it reaches</span></div>' +
         '<div class="tryit-grid"><div class="tryit-editor">' +
         '<div class="tryit-editor-label">' + escapeHtml(demo.editorLabel) + "</div>" +
         '<textarea data-role="editor" spellcheck="false" aria-label="Editable CSS"></textarea>' +
-        '</div><div class="tryit-preview" data-role="preview"></div></div>' +
-        '<p class="tryit-note" data-role="note"></p>';
+        "</div>" +
+        '<div class="tryit-pages">' +
+        DEMO_PAGES.map(function (pg, i) {
+          return (
+            '<div class="demo-page"><div class="demo-page-label">' +
+            escapeHtml(pg.file) + "</div>" +
+            '<div class="demo-page-body" data-role="page" data-index="' + i + '"></div></div>'
+          );
+        }).join("") +
+        "</div></div>" +
+        '<p class="tryit-note"><strong>Result:</strong> ' + escapeHtml(demo.result) + "</p>";
 
       const editor = host.querySelector('[data-role="editor"]');
-      const note = host.querySelector('[data-role="note"]');
-      const disable = host.querySelector('[data-role="disable"]');
-      const preview = makePreview(host.querySelector('[data-role="preview"]'));
       editor.value = demo.value;
 
+      const pages = Array.prototype.slice
+        .call(host.querySelectorAll('[data-role="page"]'))
+        .map(function (box, i) {
+          return makePage(box, DEMO_PAGES[i].headings);
+        });
+
       function paint() {
-        const off = disable && disable.checked;
-        const text = off ? "" : editor.value;
-        if (demo.mode === "inline") {
-          preview.sheet.textContent = "";
-          const first = preview.root.querySelector(".title");
-          if (first) first.setAttribute("style", text);
-        } else {
-          preview.sheet.textContent = text;
-        }
-        editor.disabled = !!off;
-        host.classList.toggle("is-off", !!off);
-        note.innerHTML = off ? demo.toggle.on : demo.note;
+        const text = editor.value;
+        pages.forEach(function (page, i) {
+          // external reaches both pages, internal only the first, inline neither.
+          page.sheet.textContent = demo.mode === "external" || (demo.mode === "internal" && i === 0)
+            ? text
+            : "";
+          const first = page.root.querySelector(".title");
+          if (first) first.setAttribute("style", demo.mode === "inline" && i === 0 ? text : "");
+        });
       }
 
       editor.addEventListener("input", paint);
-      if (disable) disable.addEventListener("change", paint);
       paint();
     });
+  }
+
+  // ── Side by side ─────────────────────────────────────
+  function renderComparison() {
+    const names = {};
+    CSS_METHODS.forEach(function (m) {
+      names[m.id] = { name: m.name, accent: m.accent };
+    });
+
+    const head =
+      "<thead><tr><th></th>" +
+      COMPARISON.columns
+        .map(function (id) {
+          return '<th style="--accent:' + names[id].accent + '">' + escapeHtml(names[id].name) + "</th>";
+        })
+        .join("") +
+      "</tr></thead>";
+
+    const body =
+      "<tbody>" +
+      COMPARISON.rows
+        .map(function (row) {
+          return (
+            "<tr><th scope=\"row\">" + escapeHtml(row.label) + "</th>" +
+            row.values
+              .map(function (v) {
+                return "<td>" + escapeHtml(v) + "</td>";
+              })
+              .join("") +
+            "</tr>"
+          );
+        })
+        .join("") +
+      "</tbody>";
+
+    dom.comparison.innerHTML = head + body;
   }
 
   // ── Cascade playground ───────────────────────────────
@@ -340,13 +374,8 @@
       })
       .join("");
 
-    playgroundPreview = makePreview(dom.playgroundPreview);
     // One heading here, since this section is about which rule wins on it.
-    Array.prototype.slice.call(playgroundPreview.root.querySelectorAll(".title"))
-      .slice(1)
-      .forEach(function (el) {
-        el.remove();
-      });
+    playgroundPreview = makePage(dom.playgroundPreview, ["Sunrise Bakery"]);
 
     dom.playgroundControls.addEventListener("change", refreshPlayground);
     dom.playgroundControls.addEventListener("input", refreshPlayground);
@@ -380,9 +409,9 @@
     renderJump();
     renderMethods();
     buildDemos();
+    renderComparison();
     renderLadder();
     buildPlayground();
-    renderChoosing();
 
     updateProgress();
     window.addEventListener("scroll", updateProgress, { passive: true });
