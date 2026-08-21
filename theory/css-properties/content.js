@@ -40,7 +40,7 @@ const PARTS = [
       "What to watch for":
         "If the browser does not understand a property name or a value, it silently throws that one declaration away and carries on. There is no error message, so a typo simply does nothing.",
       "Worth remembering":
-        "Property names are a fixed vocabulary defined by the CSS specification. You cannot invent one, and a made-up name is exactly as invisible as a misspelled one.",
+        "Property names are a fixed vocabulary defined by the CSS specification, so a made-up name is exactly as invisible as a misspelled one. There is one deliberate exception, custom properties, which is the last part of this lesson.",
     },
     demo: {
       editorLabel: "styles.css",
@@ -202,62 +202,81 @@ const PARTS = [
       panes: [{ label: "Rendered page", html: PANE, applies: true }],
     },
   },
+  {
+    id: "custom",
+    number: "05",
+    name: "Custom Properties",
+    tagline: "Values you name yourself",
+    accent: "#7c3aed",
+    lead:
+      "A <strong>custom property</strong> is a property you invent, whose name starts with two dashes. It is the one exception to the fixed vocabulary, and it exists so a value can be <strong>written once and reused everywhere</strong>.",
+    blocks: [
+      {
+        label: "styles.css",
+        lang: "css",
+        code: `/* Declared like any other property, but the name */
+/* starts with two dashes and is yours to choose.  */
+:root {
+  --brand: #0d9488;
+  --gap: 12px;
+}
+
+.box {
+  /* Read the value back with var(). */
+  color: var(--brand);
+  padding: var(--gap);
+
+  /* A second argument is used if it is not defined. */
+  border-color: var(--line, #cbd5e1);
+}`,
+      },
+    ],
+    meta: {
+      "What it is": "A property you define yourself",
+      "Written as": "--name: value;",
+      "Why it matters": "One value, changed in one place",
+    },
+    notes: {
+      "How it works":
+        "A custom property is declared on a selector like any other, and read back with <code>var()</code>. Change the declaration and every <code>var()</code> reading it updates, because it is genuinely the same value rather than a copy.",
+      "What to watch for":
+        "The name needs both dashes and is case sensitive, so <code>--Brand</code> and <code>--brand</code> are different properties. A <code>var()</code> pointing at something undefined falls back to the second argument, or makes the declaration invalid if there is none.",
+      "Worth remembering":
+        "Custom properties inherit, so declaring them on <code>:root</code> makes them available to the whole page. That is exactly how this site's colours and spacing are defined.",
+    },
+    demo: {
+      editorLabel: "styles.css",
+      value: ":root {\n  --brand: #0d9488;\n}\n\n.heading {\n  color: var(--brand);\n}\n\n.text {\n  color: var(--brand);\n}",
+      result: "Change the one declaration at the top and everything reading it follows.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
+    },
+  },
 ];
+
+const METAKEYS = ["What it is", "Written as", "Why it matters"];
 
 const LESSON = {
   id: "css-properties",
-  metaKeys: ["What it is", "Written as", "Why it matters"],
+  metaKeys: METAKEYS,
   noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   demoHint: "Edit the CSS and watch what each declaration does",
   sections: PARTS,
   comparison: {
-    columns: ["declaration", "values", "shorthand", "inheritance"],
-    rows: [
-      {
-        label: "What it is",
-        values: [
-          "One named setting on an element",
-          "The part of a declaration after the colon",
-          "One property that sets several at once",
-          "The value a property has when unset",
-        ],
-      },
-      {
-        label: "Written as",
-        values: [
-          "property: value;",
-          "A keyword, number, colour or list",
-          "border: 2px solid #94a3b8;",
-          "inherit, initial, unset",
-        ],
-      },
-      {
-        label: "Why it matters",
-        values: [
-          "It is the unit every rule is built from",
-          "It decides what the property actually does",
-          "It is shorter, but it resets what you omit",
-          "It explains styling you never wrote",
-        ],
-      },
-      {
-        label: "Where you see it",
-        values: [
-          "Inside every rule",
-          "After every colon",
-          "In place of several declarations",
-          "Nowhere, until something surprises you",
-        ],
-      },
-      {
-        label: "Get it wrong and",
-        values: [
-          "That one line is silently ignored",
-          "The property does nothing",
-          "Something you set earlier is reset",
-          "Styling appears from nowhere",
-        ],
-      },
-    ],
+    columns: PARTS.map(function (s) {
+      return s.id;
+    }),
+    /* The shared questions are read straight off each section's own meta
+       strip, so the table and the sections can never disagree. */
+    rows: METAKEYS.map(function (key) {
+      return {
+        label: key,
+        values: PARTS.map(function (s) {
+          return s.meta[key];
+        }),
+      };
+    }).concat([
+      { label: "Where you see it", values: [ "Inside every rule", "After every colon", "In place of several declarations", "Nowhere, until something surprises you", "Anywhere you would repeat a value", ] },
+      { label: "Get it wrong and", values: [ "That one line is silently ignored", "The property does nothing", "Something you set earlier is reset", "Styling appears from nowhere", "The value falls back, or the line dies", ] },
+    ]),
   },
 };

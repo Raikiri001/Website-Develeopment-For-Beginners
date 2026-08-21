@@ -2,7 +2,7 @@
   {
     "id": "html-tags-and-attributes",
     "title": "HTML Tags and Attributes",
-    "description": "What an HTML element actually is: the shape of a tag, how nesting builds the page as a tree, what attributes add, and why the tag you choose carries meaning beyond how it looks.",
+    "description": "What an HTML element actually is: the shape of a tag, how nesting builds the page as a tree, the document skeleton, what attributes add, how block and inline differ, and why the tag you choose carries meaning.",
     "category": "theory",
     "topic": "html",
     "order": 1,
@@ -100,7 +100,7 @@
   {
     "id": "css-properties",
     "title": "CSS Properties",
-    "description": "What a CSS property actually is: the shape of a declaration, the kinds of value it accepts, how shorthands expand, and what happens to properties you never set.",
+    "description": "What a CSS property actually is: the shape of a declaration, the kinds of value it accepts, how shorthands expand, what happens to properties you never set, and how to name values of your own.",
     "category": "theory",
     "topic": "css",
     "order": 2,
@@ -142,7 +142,7 @@
   {
     "id": "css-selectors",
     "title": "CSS Selectors",
-    "description": "What a CSS selector actually is: a pattern that picks out elements, how simple selectors combine, and how specificity settles a conflict between two rules.",
+    "description": "What a CSS selector actually is: a pattern that picks out elements, how simple selectors combine, how pseudo-classes match a state, and how specificity settles a conflict between two rules.",
     "category": "theory",
     "topic": "css",
     "order": 5,

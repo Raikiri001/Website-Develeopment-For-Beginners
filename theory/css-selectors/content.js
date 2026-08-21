@@ -155,8 +155,51 @@ h1 + p { }`,
   },
 
   {
-    id: "specificity",
+    id: "pseudo",
     number: "04",
+    name: "Pseudo-classes and Pseudo-elements",
+    tagline: "Matching a state, or a part of an element",
+    accent: "#7c3aed",
+    lead:
+      "A <strong>pseudo-class</strong> matches an element in a particular <strong>state or position</strong>, and a <strong>pseudo-element</strong> matches a <strong>part of an element</strong> that has no tag of its own. Both describe something the HTML never says.",
+    blocks: [
+      {
+        label: "styles.css",
+        lang: "css",
+        code: `/* One colon: a pseudo-CLASS. A state or a position. */
+a:hover { }        /* while the pointer is over it */
+li:first-child { } /* the first among its siblings */
+li:nth-child(2) { }/* counting starts at 1, not 0  */
+li:not(.done) { }  /* inverts whatever is inside   */
+
+/* Two colons: a pseudo-ELEMENT. Part of an element. */
+p::first-line { }  /* only the first line of text  */
+p::before { }      /* content inserted at the start */`,
+      },
+    ],
+    meta: {
+      "What it is": "A match on state, position, or a part",
+      "Written as": ":hover, :first-child, ::before",
+      "Why it matters": "It reaches what the HTML cannot label",
+    },
+    notes: {
+      "How it works":
+        "A pseudo-class is tested as the page runs, so <code>:hover</code> matches and stops matching as the pointer moves. A pseudo-element addresses a slice of an element that has no tag, such as its first line.",
+      "What to watch for":
+        "<code>:nth-child</code> counts from 1 rather than 0, and it counts <em>all</em> siblings, not only the ones your selector matches. That is the usual reason a striped list stripes the wrong rows.",
+      "Worth remembering":
+        "One colon is a class, two colons is an element. This is the only reliable way to tell which kind you are looking at, and it is why the doubled colon exists at all.",
+    },
+    demo: {
+      editorLabel: "styles.css",
+      value: ".item:first-child {\n  font-weight: bold;\n}\n\n.item:nth-child(even) {\n  background: #f1f5f9;\n}",
+      result: "The condition is checked per element, so nothing in the HTML has to change.",
+      panes: [{ label: "Rendered page", html: PANE, applies: true }],
+    },
+  },
+  {
+    id: "specificity",
+    number: "05",
     name: "Specificity",
     tagline: "When two rules both match",
     accent: "#db2777",
@@ -203,52 +246,30 @@ li { color: blue; }
   },
 ];
 
+const METAKEYS = ["What it is", "Written as", "Why it matters"];
+
 const LESSON = {
   id: "css-selectors",
-  metaKeys: ["What it is", "Written as", "Why it matters"],
+  metaKeys: METAKEYS,
   noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   demoHint: "Edit the selector and watch which elements respond",
   sections: PARTS,
   comparison: {
-    columns: ["what", "simple", "combining", "specificity"],
-    rows: [
-      {
-        label: "What it is",
-        values: [
-          "A pattern that picks out elements",
-          "A match on the element itself",
-          "Two or more selectors joined together",
-          "How a conflict between rules is settled",
-        ],
-      },
-      {
-        label: "Written as",
-        values: [
-          "The part before the { brackets",
-          "li, .class, #id, [attr], *",
-          "ab, a b, a, b, a > b, a + b",
-          "Not written; it is counted",
-        ],
-      },
-      {
-        label: "Why it matters",
-        values: [
-          "It decides who a rule applies to",
-          "It is the building block of every selector",
-          "The join changes the meaning completely",
-          "It explains why a rule you wrote is ignored",
-        ],
-      },
-      {
-        label: "Get it wrong and",
-        values: [
-          "The rule matches nothing, silently",
-          "You match far more or far less than you meant",
-          "You match the wrong elements entirely",
-          "Your rule is overridden by an older one",
-        ],
-      },
-    ],
+    columns: PARTS.map(function (s) {
+      return s.id;
+    }),
+    /* The shared questions are read straight off each section's own meta
+       strip, so the table and the sections can never disagree. */
+    rows: METAKEYS.map(function (key) {
+      return {
+        label: key,
+        values: PARTS.map(function (s) {
+          return s.meta[key];
+        }),
+      };
+    }).concat([
+      { label: "Get it wrong and", values: [ "The rule matches nothing, silently", "You match far more or far less than you meant", "You match the wrong elements entirely", "You style the wrong row or nothing at all", "Your rule is overridden by an older one", ] },
+    ]),
   },
   ladder: [
     {

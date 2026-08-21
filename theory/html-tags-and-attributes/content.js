@@ -102,8 +102,60 @@ const PARTS = [
   },
 
   {
-    id: "attributes",
+    id: "document",
     number: "03",
+    name: "The Document",
+    tagline: "The skeleton every page starts from",
+    accent: "#0d9488",
+    lead:
+      "Every page is one big nested element, and its shape is <strong>always the same</strong>: a doctype, an <code>html</code> element, a <code>head</code> for information about the page, and a <code>body</code> for what is shown.",
+    blocks: [
+      {
+        label: "index.html",
+        lang: "html",
+        code: `<!-- Not a tag. It tells the browser which HTML this is. -->
+<!DOCTYPE html>
+
+<!-- Everything else lives inside this one element. -->
+<html lang="en">
+  <!-- ABOUT the page. None of this is displayed. -->
+  <head>
+    <meta charset="UTF-8" />
+    <title>Shown in the browser tab</title>
+  </head>
+
+  <!-- The page itself. Everything visible goes here. -->
+  <body>
+    <h1>A heading</h1>
+  </body>
+</html>`,
+      },
+    ],
+    meta: {
+      "What it is": "The fixed outer shape of every page",
+      "Written as": "<!DOCTYPE html> then html, head, body",
+      "Why it matters": "Leaving it out changes how the page is read",
+    },
+    notes: {
+      "How it works":
+        "The doctype tells the browser to use modern standards, <code>head</code> holds information about the page, and <code>body</code> holds everything a visitor actually sees.",
+      "What to watch for":
+        "Without the doctype the browser switches to a compatibility mode built for pages from the 1990s, and layouts start behaving in ways no amount of CSS will explain.",
+      "Worth remembering":
+        "The browser builds this skeleton whether or not you type it. Writing it yourself is how you keep control of what ends up in the head.",
+    },
+    demo: {
+      editorKind: "html",
+      editorLabel: "index.html (the body)",
+      paneCss: "",
+      value: "<h1>A heading</h1>\n<p>Everything visible lives in the body.</p>",
+      result: "Only body content is ever displayed. Head content shapes the page without appearing on it.",
+      panes: [{ label: "Rendered page", html: "", applies: true }],
+    },
+  },
+  {
+    id: "attributes",
+    number: "04",
     name: "Attributes",
     tagline: "Extra settings on an element",
     accent: "#0d9488",
@@ -152,8 +204,55 @@ const PARTS = [
   },
 
   {
+    id: "flow",
+    number: "05",
+    name: "Block and Inline",
+    tagline: "How elements take up space",
+    accent: "#db2777",
+    lead:
+      "Every element is either <strong>block</strong> or <strong>inline</strong> by default, and that decides whether it starts a new line and whether width and height mean anything to it.",
+    blocks: [
+      {
+        label: "index.html",
+        lang: "html",
+        code: `<!-- BLOCK: starts on a new line, fills the width. -->
+<!-- div, p, h1, ul, li are all block by default.   -->
+<p>This takes a whole line.</p>
+<p>So does this one.</p>
+
+<!-- INLINE: sits in the flow of text, only as wide -->
+<!-- as its content. a, strong, em, img, span.      -->
+<p>Some <strong>bold words</strong> inside a line.</p>
+
+<!-- Width and height are ignored on inline elements. -->
+<!-- CSS can change which one an element behaves as.  -->`,
+      },
+    ],
+    meta: {
+      "What it is": "Whether an element takes a whole line",
+      "Written as": "Not written; it is the tag's default",
+      "Why it matters": "It decides whether sizing works at all",
+    },
+    notes: {
+      "How it works":
+        "A block element starts on a new line and stretches to fill its container. An inline element sits inside a line of text and is only as wide as the content it holds.",
+      "What to watch for":
+        "Setting <code>width</code> or <code>height</code> on an inline element does nothing, and vertical padding on one overlaps its neighbours instead of pushing them away. This is a very common first confusion.",
+      "Worth remembering":
+        "The default comes from the tag, but CSS can change it with <code>display</code>. Choose the tag for its meaning and change the behaviour in CSS, never the other way round.",
+    },
+    demo: {
+      editorKind: "html",
+      editorLabel: "index.html",
+      paneCss: "p, strong { background: #f1f5f9; }",
+      value: "<p>A block element.</p>\n<p>Another <strong>inline one</strong> inside a line.</p>",
+      result: "The shaded areas show it: blocks claim the full width, inline elements claim only their content.",
+      panes: [{ label: "Rendered page", html: "", applies: true }],
+    },
+  },
+  {
     id: "semantics",
-    number: "04",
+    number: "06",
     name: "Semantics",
     tagline: "What the tag means, not how it looks",
     accent: "#db2777",
@@ -203,55 +302,30 @@ const PARTS = [
   },
 ];
 
+const METAKEYS = ["What it is", "Written as", "Why it matters"];
+
 const LESSON = {
   id: "html-tags-and-attributes",
-  metaKeys: ["What it is", "Written as", "Why it matters"],
+  metaKeys: METAKEYS,
   noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   demoHint: "Edit the HTML and watch the page rebuild",
   sections: PARTS,
   comparison: {
-    columns: ["element", "nesting", "attributes", "semantics"],
-    rows: [
-      {
-        label: "What it is",
-        values: [
-          "One piece of content, named by its tag",
-          "Elements placed inside other elements",
-          "A setting written inside the opening tag",
-          "Choosing a tag for its meaning",
-        ],
-      },
-      {
-        label: "Written as",
-        values: [
-          "<name>content</name>",
-          "Indented, opened and closed in order",
-          'name="value"',
-          '<h1> rather than <div class="big">',
-        ],
-      },
-      {
-        label: "Why it matters",
-        values: [
-          "The name is what gives content meaning",
-          "It builds the tree the page is made of",
-          "It carries what the tag name cannot",
-          "Meaning is read by more than just eyes",
-        ],
-      },
-      {
-        label: "Visible on screen",
-        values: ["Yes", "Yes", "Sometimes", "No"],
-      },
-      {
-        label: "Get it wrong and",
-        values: [
-          "The content is unmarked or malformed",
-          "The browser repairs it by guessing",
-          "The element quietly does not work",
-          "The page looks fine and means nothing",
-        ],
-      },
-    ],
+    columns: PARTS.map(function (s) {
+      return s.id;
+    }),
+    /* The shared questions are read straight off each section's own meta
+       strip, so the table and the sections can never disagree. */
+    rows: METAKEYS.map(function (key) {
+      return {
+        label: key,
+        values: PARTS.map(function (s) {
+          return s.meta[key];
+        }),
+      };
+    }).concat([
+      { label: "Visible on screen", values: ["Yes", "Yes", "Only the body", "Sometimes", "Yes", "No"] },
+      { label: "Get it wrong and", values: [ "The content is unmarked or malformed", "The browser repairs it by guessing", "The browser falls back to an old mode", "The element quietly does not work", "Sizing and spacing are ignored", "The page looks fine and means nothing", ] },
+    ]),
   },
 };

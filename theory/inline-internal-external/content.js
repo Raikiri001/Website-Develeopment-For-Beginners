@@ -175,46 +175,33 @@ METHODS.forEach(function (m) {
   };
 });
 
+const METAKEYS = ["Where it lives", "Reach", "Use it for"];
+
 const LESSON = {
   id: "inline-internal-external",
-  metaKeys: ["Where it lives", "Reach", "Use it for"],
+  metaKeys: METAKEYS,
   noteLabels: ["How it works", "What it costs", "When to use it"],
   demoHint: "Edit the CSS and watch how far it reaches",
   sections: METHODS,
   comparison: {
-  columns: ["external", "internal", "inline"],
-  rows: [
-    {
-      label: "Where it lives",
-      values: ["A .css file", "A <style> block in <head>", "A style attribute"],
-    },
-    {
-      label: "Reach",
-      values: ["Every page that links the file", "This one page", "That one element"],
-    },
-    { label: "Needs a selector", values: ["Yes", "Yes", "No"] },
-    {
-      label: "To reuse it",
-      values: ["Link the same file", "Copy it into each page", "Copy it onto each element"],
-    },
-    {
-      label: "Beaten by",
-      values: [
-        "A more specific selector",
-        "A more specific selector",
-        "Only !important",
-      ],
-    },
-    {
-      label: "Use it for",
-      values: [
-        "Sites with more than one page",
-        "A single standalone page",
-        "Styles set by JavaScript",
-      ],
-    },
-  ],
-},
+    columns: METHODS.map(function (s) {
+      return s.id;
+    }),
+    /* The shared questions are read straight off each section's own meta
+       strip, so the table and the sections can never disagree. */
+    rows: METAKEYS.map(function (key) {
+      return {
+        label: key,
+        values: METHODS.map(function (s) {
+          return s.meta[key];
+        }),
+      };
+    }).concat([
+      { label: "Needs a selector", values: ["Yes", "Yes", "No"] },
+      { label: "To reuse it", values: ["Link the same file", "Copy it into each page", "Copy it onto each element"] },
+      { label: "Beaten by", values: [ "A more specific selector", "A more specific selector", "Only !important", ] },
+    ]),
+  },
   ladder: [
   {
     rank: "1",
