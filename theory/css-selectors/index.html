@@ -3,11 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="The three places CSS can live, explained through annotated code. External, internal and inline side by side, with the comments in the code doing half the teaching, and a plain account of which one wins."
-    />
-    <title>Inline, Internal, External - Web Dev For Beginners</title>
+    <meta name="description" content="The three kinds of CSS selector: basic selectors that match by name, combinators that match by position, and pseudo-classes and attributes that match by condition. Plus how specificity decides which one wins." />
+    <title>CSS Selectors - Web Dev For Beginners</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -35,14 +32,9 @@
     <main class="lesson">
       <header class="lesson-hero">
         <p class="lesson-eyebrow">Theory</p>
-        <h1>Inline, Internal, External</h1>
-        <p class="lesson-standfirst">
-          CSS can be attached to a page in exactly three places. All three
-          produce real CSS and use the same properties. What differs is
-          <strong>how far each one reaches</strong> and
-          <strong>which one wins</strong> when they disagree.
-        </p>
-        <nav class="lesson-jump" id="lessonJump" aria-label="Jump to a method"></nav>
+        <h1>CSS Selectors</h1>
+        <p class="lesson-standfirst">A CSS rule needs a <strong>selector</strong> to say which elements it applies to. There are three kinds, and they differ in <strong>what they match on</strong>: what an element is called, where it sits, or what condition it is in.</p>
+        <nav class="lesson-jump" id="lessonJump" aria-label="Jump to a section"></nav>
       </header>
 
       <div id="sections"></div>
@@ -50,9 +42,9 @@
       <section class="compare-section" id="compare">
         <header class="section-head">
           <p class="section-eyebrow">Side by side</p>
-          <h2>The three, compared</h2>
+          <h2>The three kinds, compared</h2>
           <p class="section-lead">
-            Every row asks the same question of all three, so you can read
+            Every row asks the same question of all of them, so you can read
             straight across to see what actually differs.
           </p>
         </header>
@@ -61,40 +53,22 @@
         </div>
       </section>
 
-      <section class="cascade-section" id="cascade">
+      <section class="cascade-section" id="ladder-section">
         <header class="section-head">
-          <p class="section-eyebrow">When they disagree</p>
-          <h2>Which one wins?</h2>
-          <p class="section-lead">
-            Put a colour on the same heading in all three places and only one
-            of them can take effect. The browser settles it in this order,
-            from the top down.
-          </p>
+          <p class="section-eyebrow">When two match</p>
+          <h2>Which selector wins?</h2>
+          <p class="section-lead">Two rules can both match the same element and set the same property. Specificity decides between them, counted in this order.</p>
         </header>
-
-        <div class="playground" id="playground">
-          <div class="playground-controls" id="playgroundControls"></div>
-          <div class="playground-result">
-            <div class="playground-preview" id="playgroundPreview"></div>
-            <ol class="playground-ranking" id="playgroundRanking"></ol>
-          </div>
-        </div>
-
         <ol class="ladder" id="ladder"></ol>
       </section>
 
       <footer class="lesson-end">
-        <p>
-          That is the whole picture: one file for a site, one block for a
-          page, one attribute for one element, and a cascade that settles
-          any argument between them.
-        </p>
+        <p>Three ways to describe an element: by its name, by where it sits, or by what is true of it. When two rules both match, the more specific selector wins, and a tie goes to whichever was written last.</p>
       </footer>
     </main>
 
     <script src="../../assets/js/progress.js"></script>
     <script src="content.js"></script>
     <script src="../../assets/js/lesson.js"></script>
-    <script src="cascade.js"></script>
   </body>
 </html>

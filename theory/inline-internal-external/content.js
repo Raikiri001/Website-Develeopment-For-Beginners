@@ -1,12 +1,6 @@
-/* Inline, Internal, External - lesson content. Every method answers the same questions, in the same order, in the same words, so the three can be read across and compared. */
+/* Inline, Internal, External - lesson content. Every section answers the same questions, in the same order, in the same words, so the three can be read across and compared. */
 
-/* The three fixed questions each method's meta strip answers. */
-const META_KEYS = ["Where it lives", "Reach", "Use it for"];
-
-/* The three fixed questions each method's notes answer, in this order. */
-const NOTE_LABELS = ["How it works", "What it costs", "When to use it"];
-
-const CSS_METHODS = [
+const METHODS = [
   {
     id: "external",
     number: "01",
@@ -135,8 +129,7 @@ const CSS_METHODS = [
   },
 ];
 
-/* The same live demo for all three: edit the CSS, and see how far it reaches. Only `mode` differs, so the result is the only comparison. */
-const METHOD_DEMOS = {
+const DEMOS = {
   external: {
     editorLabel: "styles.css",
     mode: "external",
@@ -157,14 +150,38 @@ const METHOD_DEMOS = {
   },
 };
 
-/* Every demo renders these two pages, each with the same two headings, so reach is visible without any control to fiddle with. */
-const DEMO_PAGES = [
-  { file: "index.html", headings: ["Sunrise Bakery", "Corner Cafe"] },
-  { file: "about.html", headings: ["About us", "Our bakers"] },
-];
+/* Every demo shows the same two pages with the same two headings, so reach is visible without a control to fiddle with. */
+const PANES = {
+  external: [
+    { label: "index.html", html: '<h1 class="title" id="headline">Sunrise Bakery</h1>\n<h1 class="title">Corner Cafe</h1>', applies: true },
+    { label: "about.html", html: '<h1 class="title">About us</h1>\n<h1 class="title">Our bakers</h1>', applies: true },
+  ],
+  internal: [
+    { label: "index.html", html: '<h1 class="title" id="headline">Sunrise Bakery</h1>\n<h1 class="title">Corner Cafe</h1>', applies: true },
+    { label: "about.html", html: '<h1 class="title">About us</h1>\n<h1 class="title">Our bakers</h1>', applies: false },
+  ],
+  inline: [
+    { label: "index.html", html: '<h1 class="title" id="headline">Sunrise Bakery</h1>\n<h1 class="title">Corner Cafe</h1>', applies: false, inlineTarget: ".title" },
+    { label: "about.html", html: '<h1 class="title">About us</h1>\n<h1 class="title">Our bakers</h1>', applies: false },
+  ],
+};
 
-/* The side-by-side summary. Row order matches the order the methods explain things. */
-const COMPARISON = {
+METHODS.forEach(function (m) {
+  m.demo = {
+    editorLabel: DEMOS[m.id].editorLabel,
+    value: DEMOS[m.id].value,
+    result: DEMOS[m.id].result,
+    panes: PANES[m.id],
+  };
+});
+
+const LESSON = {
+  id: "inline-internal-external",
+  metaKeys: ["Where it lives", "Reach", "Use it for"],
+  noteLabels: ["How it works", "What it costs", "When to use it"],
+  demoHint: "Edit the CSS and watch how far it reaches",
+  sections: METHODS,
+  comparison: {
   columns: ["external", "internal", "inline"],
   rows: [
     {
@@ -197,10 +214,8 @@ const COMPARISON = {
       ],
     },
   ],
-};
-
-/* The cascade, strongest first. */
-const CASCADE_ORDER = [
+},
+  ladder: [
   {
     rank: "1",
     title: "!important beats everything",
@@ -230,9 +245,10 @@ const CASCADE_ORDER = [
     code: `<link rel="stylesheet" href="styles.css" />
 <style> /* this one wins a tie */ </style>`,
   },
-];
+],
+};
 
-/* The cascade playground. Selector choices run least to most specific. */
+/* The cascade playground, built by cascade.js. Selector choices run least to most specific. */
 const PLAYGROUND = {
   selectors: ["h1", ".title", "#headline"],
   sources: [

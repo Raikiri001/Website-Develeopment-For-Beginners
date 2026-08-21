@@ -1,0 +1,318 @@
+/* Shared renderer for theory lessons. Each page supplies a global LESSON object in its own content.js; this builds the page from it. */
+(function () {
+  "use strict";
+
+  function escapeHtml(str) {
+    const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" };
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return map[c];
+    });
+  }
+
+  /** Pull comments out before the other passes, then put them back highlighted. */
+  function protectComments(text, pattern, store) {
+    return text.replace(pattern, function (m) {
+      store.push(m);
+      return "@@C" + (store.length - 1) + "@@";
+    });
+  }
+
+  function restoreComments(text, store) {
+    return text.replace(/@@C(\d+)@@/g, function (m, i) {
+      return '<span class="comment">' + store[Number(i)] + "</span>";
+    });
+  }
+
+  /* Comments carry half the teaching, so they are protected from the tag pass rather than re-matched as markup. */
+  function highlightHtml(source) {
+    const store = [];
+    let out = protectComments(escapeHtml(source), /&lt;!--[\s\S]*?--&gt;/g, store);
+
+    out = out.replace(
+      /(&lt;\/?)([\w-]+)((?:\s+[\w-]+(?:=&quot;[^&]*?&quot;)?)*\s*\/?)(&gt;)/g,
+      function (match, open, tag, attrs, close) {
+        let html = '<span class="tag">' + open + tag + "</span>";
+        if (attrs) {
+          html += attrs.replace(
+            /([\w-]+)(=)(&quot;)([\s\S]*?)(&quot;)/g,
+            '<span class="attr">$1</span>$2<span class="string">$3$4$5</span>'
+          );
+        }
+        return html + '<span class="tag">' + close + "</span>";
+      }
+    );
+
+    return restoreComments(out, store);
+  }
+
+  function highlightCss(source) {
+    const store = [];
+    let out = protectComments(escapeHtml(source), /\/\*[\s\S]*?\*\//g, store);
+
+    out = out
+      .replace(/^([^\n{}]+)(\{)/gm, '<span class="keyword">$1</span>$2')
+      .replace(
+        /^(\s*)([\w-]+)(\s*:\s*)([^;\n]+)(;)/gm,
+        '$1<span class="attr">$2</span>$3<span class="string">$4</span>$5'
+      );
+
+    return restoreComments(out, store);
+  }
+
+  function highlight(code, lang) {
+    return lang === "css" ? highlightCss(code) : highlightHtml(code);
+  }
+
+  // ── Rendering ────────────────────────────────────────
+  function renderJump(host, sections) {
+    host.innerHTML = sections
+      .map(function (s) {
+        return (
+          '<a href="#' + s.id + '" style="--accent:' + s.accent + '">' +
+          '<span class="jump-num">' + s.number + "</span><span>" + s.name + "</span></a>"
+        );
+      })
+      .join("");
+  }
+
+  function renderSections(host, lesson) {
+    host.innerHTML = lesson.sections
+      .map(function (s) {
+        // Fixed order, so the same question sits in the same place in every section.
+        const meta = lesson.metaKeys
+          .map(function (k) {
+            return "<div><dt>" + escapeHtml(k) + "</dt><dd>" + escapeHtml(s.meta[k]) + "</dd></div>";
+          })
+          .join("");
+
+        const code = s.blocks
+          .map(function (b) {
+            return (
+              '<figure class="code-figure"><figcaption><span class="file-dot"></span>' +
+              escapeHtml(b.label) +
+              '<span class="file-lang">' + b.lang.toUpperCase() + "</span></figcaption>" +
+              '<pre class="code-block"><code>' + highlight(b.code, b.lang) + "</code></pre></figure>"
+            );
+          })
+          .join("");
+
+        // Same questions, same order, labelled so they can be read across.
+        const notes = lesson.noteLabels
+          .map(function (label) {
+            return (
+              '<p><strong class="note-label">' + escapeHtml(label) + ".</strong> " +
+              s.notes[label] + "</p>"
+            );
+          })
+          .join("");
+
+        return (
+          '<section class="method" id="' + s.id + '" style="--accent:' + s.accent + '">' +
+          '<header class="method-head"><span class="method-num">' + s.number + "</span>" +
+          "<div><h2>" + s.name + '</h2><p class="method-tagline">' + s.tagline + "</p></div></header>" +
+          '<p class="method-lead">' + s.lead + "</p>" +
+          '<dl class="method-meta">' + meta + "</dl>" +
+          '<div class="method-code">' + code + "</div>" +
+          '<div class="method-notes">' + notes + "</div>" +
+          (s.demo ? '<div class="tryit" data-section="' + s.id + '"></div>' : "") +
+          "</section>"
+        );
+      })
+      .join("");
+  }
+
+  // ── Live demos ───────────────────────────────────────
+  const DEMO_BASE =
+    ":host { display: block; }" +
+    "h1 { font-size: 19px; margin: 0 0 6px; font-family: inherit; }" +
+    "h1:last-child { margin-bottom: 0; }" +
+    "p { margin: 0 0 8px; }" +
+    "ul { margin: 0; padding-left: 20px; }" +
+    "button { font: inherit; }";
+
+  /** One preview pane as its own shadow root, so its CSS cannot leak into the next. */
+  function makePane(box, markup) {
+    const root = box.attachShadow({ mode: "open" });
+    const base = document.createElement("style");
+    base.textContent = DEMO_BASE;
+    root.appendChild(base);
+    const sheet = document.createElement("style");
+    root.appendChild(sheet);
+
+    const pane = {
+      root: root,
+      sheet: sheet,
+      /* Swap the markup without touching the two style nodes, since a
+         shadow root can only ever be attached to its host once. */
+      setMarkup: function (html) {
+        while (root.lastChild && root.lastChild !== sheet) {
+          root.removeChild(root.lastChild);
+        }
+        const holder = document.createElement("div");
+        holder.innerHTML = html;
+        while (holder.firstChild) root.appendChild(holder.firstChild);
+      },
+    };
+    pane.setMarkup(markup);
+    return pane;
+  }
+
+  /* Every demo in a lesson takes the same controls and shows the same panes, so the result is the only difference. */
+  function buildDemos(host, lesson) {
+    lesson.sections.forEach(function (s) {
+      if (!s.demo) return;
+      const demo = s.demo;
+      const box = host.querySelector('.tryit[data-section="' + s.id + '"]');
+      if (!box) return;
+
+      box.innerHTML =
+        '<div class="tryit-head"><span class="tryit-label">Try it</span>' +
+        '<span class="tryit-hint">' + escapeHtml(lesson.demoHint) + "</span></div>" +
+        '<div class="tryit-grid"><div class="tryit-editor">' +
+        '<div class="tryit-editor-label">' + escapeHtml(demo.editorLabel) + "</div>" +
+        '<textarea data-role="editor" spellcheck="false" aria-label="Editable code"></textarea>' +
+        '</div><div class="tryit-pages">' +
+        demo.panes
+          .map(function (pane, i) {
+            return (
+              '<div class="demo-page"><div class="demo-page-label">' +
+              escapeHtml(pane.label) + "</div>" +
+              '<div class="demo-page-body" data-role="pane" data-index="' + i + '"></div></div>'
+            );
+          })
+          .join("") +
+        "</div></div>" +
+        '<p class="tryit-note"><strong>Result:</strong> ' + escapeHtml(demo.result) + "</p>";
+
+      const editor = box.querySelector('[data-role="editor"]');
+      editor.value = demo.value;
+
+      const panes = Array.prototype.slice
+        .call(box.querySelectorAll('[data-role="pane"]'))
+        .map(function (el, i) {
+          return makePane(el, demo.panes[i].html);
+        });
+
+      function paint() {
+        const text = editor.value;
+        demo.panes.forEach(function (spec, i) {
+          if (demo.editorKind === "html") {
+            // The editor IS the markup, so the pane is rebuilt from it.
+            panes[i].setMarkup(spec.applies ? text : spec.html);
+            panes[i].sheet.textContent = demo.paneCss || "";
+            return;
+          }
+          panes[i].sheet.textContent = spec.applies ? text : "";
+          if (spec.inlineTarget) {
+            const el = panes[i].root.querySelector(spec.inlineTarget);
+            if (el) el.setAttribute("style", text);
+          }
+        });
+      }
+
+      editor.addEventListener("input", paint);
+      paint();
+    });
+  }
+
+  // ── Comparison table ─────────────────────────────────
+  function renderComparison(table, lesson) {
+    if (!table || !lesson.comparison) return;
+    const names = {};
+    lesson.sections.forEach(function (s) {
+      names[s.id] = { name: s.name, accent: s.accent };
+    });
+
+    const head =
+      "<thead><tr><th></th>" +
+      lesson.comparison.columns
+        .map(function (id) {
+          return '<th style="--accent:' + names[id].accent + '">' + escapeHtml(names[id].name) + "</th>";
+        })
+        .join("") +
+      "</tr></thead>";
+
+    const body =
+      "<tbody>" +
+      lesson.comparison.rows
+        .map(function (row) {
+          return (
+            '<tr><th scope="row">' + escapeHtml(row.label) + "</th>" +
+            row.values
+              .map(function (v) {
+                return "<td>" + escapeHtml(v) + "</td>";
+              })
+              .join("") +
+            "</tr>"
+          );
+        })
+        .join("") +
+      "</tbody>";
+
+    table.innerHTML = head + body;
+  }
+
+  // ── Ordered ladder, for a lesson that ends in a ranking ──
+  function renderLadder(host, lesson) {
+    if (!host || !lesson.ladder) return;
+    host.innerHTML = lesson.ladder
+      .map(function (step) {
+        return (
+          '<li class="ladder-step"><span class="ladder-rank">' + step.rank + "</span>" +
+          '<div class="ladder-body"><h3>' + step.title + "</h3><p>" + step.body + "</p>" +
+          (step.code ? '<pre class="ladder-code"><code>' + escapeHtml(step.code) + "</code></pre>" : "") +
+          "</div></li>"
+        );
+      })
+      .join("");
+  }
+
+  // ── Reading progress ─────────────────────────────────
+  function setupProgress(bar, activityId) {
+    let reported = 0;
+
+    function readPercent() {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollable <= 0) return 100;
+      return Math.max(0, Math.min(100, Math.round((window.scrollY / scrollable) * 100)));
+    }
+
+    function update() {
+      const pct = readPercent();
+      if (bar) bar.style.width = pct + "%";
+      // Only ever report forwards, so scrolling back up cannot undo progress.
+      if (pct > reported) {
+        reported = pct;
+        if (window.WDFBProgress) window.WDFBProgress.setPercent(activityId, pct);
+      }
+    }
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+  }
+
+  function init() {
+    if (typeof LESSON === "undefined") return;
+    if (window.WDFBProgress) window.WDFBProgress.markViewed(LESSON.id);
+
+    const sectionHost = document.getElementById("sections");
+    renderJump(document.getElementById("lessonJump"), LESSON.sections);
+    renderSections(sectionHost, LESSON);
+    buildDemos(sectionHost, LESSON);
+    renderComparison(document.getElementById("comparison"), LESSON);
+    renderLadder(document.getElementById("ladder"), LESSON);
+    setupProgress(document.getElementById("readProgress"), LESSON.id);
+
+    // A lesson with a bespoke widget hangs it off this hook.
+    if (typeof window.onLessonReady === "function") window.onLessonReady();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+  window.LessonKit = { escapeHtml: escapeHtml, makePane: makePane };
+})();

@@ -1,4 +1,6 @@
-/* Inline, Internal, External - a long-form reading layout, deliberately unlike the activity shell. */
+/* Shared layout for theory lessons: a long-form reading page of annotated code, deliberately unlike the activity shell.
+   Every lesson-style theory page links this and assets/js/lesson.js, and supplies only its own content.js, so the four
+   read as one series rather than four hand-built pages that drift apart. */
 
 /* Each method sets --accent inline from content.js, and the spines, numbers
    and file labels below all read from it. */
@@ -349,12 +351,6 @@
   line-height: var(--leading-normal);
   color: var(--text-secondary);
   margin: 0 0 var(--space-6);
-}
-
-.lesson-end-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
 }
 
 /* ---------- Responsive ---------- */

@@ -126,3 +126,18 @@ main {
     font-size: var(--text-base);
   }
 }
+
+/* The card's position in its topic's route, numbered by home.js. */
+.card {
+  position: relative;
+}
+
+.card-step {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-dim);
+}

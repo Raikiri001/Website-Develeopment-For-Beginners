@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="What a tag is, what an attribute adds to it, and why choosing a semantic tag matters even when it changes nothing on screen." />
+    <title>HTML Tags and Attributes - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="../../assets/css/lesson.css" />
+  </head>
+  <body>
+    <div class="read-progress" id="readProgress" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <main class="lesson">
+      <header class="lesson-hero">
+        <p class="lesson-eyebrow">Theory</p>
+        <h1>HTML Tags and Attributes</h1>
+        <p class="lesson-standfirst">HTML is built from <strong>tags</strong> that say what content is, and <strong>attributes</strong> that add detail a tag name cannot carry on its own. Choosing the right tag is the part that keeps mattering long after the page looks finished.</p>
+        <nav class="lesson-jump" id="lessonJump" aria-label="Jump to a section"></nav>
+      </header>
+
+      <div id="sections"></div>
+
+      <section class="compare-section" id="compare">
+        <header class="section-head">
+          <p class="section-eyebrow">Side by side</p>
+          <h2>The three, compared</h2>
+          <p class="section-lead">
+            Every row asks the same question of all of them, so you can read
+            straight across to see what actually differs.
+          </p>
+        </header>
+        <div class="compare-scroll">
+          <table class="compare-table" id="comparison"></table>
+        </div>
+      </section>
+
+      <footer class="lesson-end">
+        <p>A tag says what something is, an attribute says something extra about it, and a semantic tag says what a whole section is for. The first two change what you see; the third changes what the page means.</p>
+      </footer>
+    </main>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="content.js"></script>
+    <script src="../../assets/js/lesson.js"></script>
+  </body>
+</html>

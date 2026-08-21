@@ -1,7 +1,8 @@
 /**
  * Homepage card renderer.
- * Reads data/activities.json and groups activities by category, so adding a
- * new lesson later is just: new folder plus one entry in that manifest.
+ * Groups activities by `topic` (the language they teach) and lays each topic
+ * out in `order`, so the page reads as a route from basics to advanced rather
+ * than a pile of cards. `category` is only a badge now, not the grouping.
  */
 
 (function () {
@@ -13,10 +14,20 @@
     quiz: "Quizzes",
   };
 
-  const CATEGORY_DESCRIPTIONS = {
-    theory: "Explains one browser or web concept at a time, usually with an interactive diagram.",
-    practical: "A problem to solve directly in the browser, then check against a working solution.",
-    quiz: "Recall practice against a bank of questions, scored so a run is worth repeating.",
+  // Topics are the page's real structure. A topic missing here never renders,
+  // exactly as a category missing from the old order array never did.
+  const TOPIC_ORDER = ["html", "css", "both"];
+
+  const TOPIC_LABELS = {
+    html: "HTML",
+    css: "CSS",
+    both: "How it all runs",
+  };
+
+  const TOPIC_DESCRIPTIONS = {
+    html: "The language that says what is on a page. Start at the top and work down.",
+    css: "The language that says how it looks. Each one builds on the last.",
+    both: "What the browser does with the two of them once it has both.",
   };
 
   const STATUS_LABELS = {
@@ -109,16 +120,16 @@
     return card;
   }
 
-  function renderSection(category, activities) {
+  function renderSection(topic, activities) {
     const section = document.createElement("section");
 
     const heading = document.createElement("div");
     heading.className = "section-heading";
-    heading.id = `${category}-heading`;
+    heading.id = `${topic}-heading`;
     const h2 = document.createElement("h2");
-    h2.textContent = CATEGORY_LABELS[category] || category;
+    h2.textContent = TOPIC_LABELS[topic] || topic;
     const p = document.createElement("p");
-    p.textContent = CATEGORY_DESCRIPTIONS[category] || "";
+    p.textContent = TOPIC_DESCRIPTIONS[topic] || "";
     heading.appendChild(h2);
     heading.appendChild(p);
 
@@ -131,7 +142,16 @@
       empty.textContent = "More activities are on the way.";
       grid.appendChild(empty);
     } else {
-      activities.forEach((activity) => grid.appendChild(createCard(activity)));
+      activities.forEach((activity, i) => {
+        const card = createCard(activity);
+        // The step number is the position in the route, so it renumbers by
+        // itself when something is inserted rather than being hand-kept.
+        const step = document.createElement("span");
+        step.className = "card-step";
+        step.textContent = String(i + 1);
+        card.insertBefore(step, card.firstChild);
+        grid.appendChild(card);
+      });
     }
 
     section.appendChild(heading);
@@ -148,10 +168,12 @@
       if (!response.ok) throw new Error("Failed to load activities");
       const activities = await response.json();
 
-      const order = ["theory", "practical", "quiz"];
-      order.forEach((category) => {
-        const inCategory = activities.filter((a) => a.category === category);
-        content.appendChild(renderSection(category, inCategory));
+      TOPIC_ORDER.forEach((topic) => {
+        const inTopic = activities
+          .filter((a) => a.topic === topic)
+          .sort((a, b) => (a.order || 0) - (b.order || 0));
+        if (inTopic.length === 0) return;
+        content.appendChild(renderSection(topic, inTopic));
       });
     } catch (err) {
       console.error(err);
