@@ -1,21 +1,11 @@
-/*
-  Complete the CSS - activity styles.
-  Colours, fonts, radii and spacing all come from ../../assets/css/tokens.css;
-  this file only holds the layout and components specific to this activity.
-*/
+/* Complete the CSS - layout and components specific to this activity. */
 
-/* Several panels are toggled with the `hidden` attribute rather than a
-   class. Shared components like .welcome-state and .btn set their own
-   `display`, which would otherwise win over the browser's default
-   `[hidden] { display: none }` and leave a "hidden" panel on screen. */
+/* Shared components set their own display, so [hidden] needs to win. */
 [hidden] {
   display: none !important;
 }
 
-/* Fixed to the viewport, like the HTML Structure Trainer: the sidebar and
-   main panel both stretch to fill it and scroll their own contents
-   internally (.category-list, .workspace), so expanding a category can
-   never grow the sidebar - or the page - past the viewport. */
+/* Fixed to the viewport; .category-list and .workspace scroll internally. */
 body {
   display: flex;
   flex-direction: column;
@@ -31,10 +21,7 @@ body {
   padding: var(--space-3);
 }
 
-/* .sidebar, .sidebar-header, .category-list, .category-group,
-   .category-header, .category-problems, .problem-item, .panel,
-   .title-bar, .welcome-state and the .btn family are shared components,
-   see assets/css/base.css. */
+/* Sidebar, panel, title-bar and button components live in assets/css/base.css. */
 
 /* ---------- Sidebar ---------- */
 .progress-container {
@@ -56,9 +43,7 @@ body {
   font-weight: 700;
 }
 
-/* Attempted but not finished. Distinct from .solved so the sidebar can
-   tell "had a go at this" apart from "got this out", which matters in an
-   activity you are meant to retry until it is right. */
+/* Attempted but not yet solved. */
 .problem-item.started .status-dot {
   background: var(--accent-warning);
 }
@@ -160,10 +145,7 @@ body {
   overflow-y: auto;
 }
 
-/* The CSS block holds real <input> elements, so its lines are built as
-   elements rather than being one blob of pre-formatted text. Line height
-   is set a little looser than the HTML block above it to leave room for
-   the inputs without the lines colliding. */
+/* Holds real <input> elements, so lines are elements and need extra height. */
 .code-editable {
   line-height: 2.1;
   max-height: none;
@@ -186,9 +168,7 @@ body {
   color: var(--code-keyword);
 }
 
-/* A colour-picking aid: shows what a colour value actually looks like,
-   right next to the code, instead of asking a beginner to picture six hex
-   digits. See makeSwatch/refreshValueSwatches in app.js. */
+/* Shows what a colour value looks like, next to the code. */
 .color-swatch {
   display: inline-block;
   width: 12px;
@@ -205,10 +185,7 @@ body {
 }
 
 /* ---------- Blanks ---------- */
-/* Sized in `ch` from app.js so every blank of a kind starts the same width
-   whatever its answer is (a blank cut to fit its answer would give the
-   answer's length away). Deliberately loud against the code around it:
-   the whole point of the activity is that these are the bits missing. */
+/* Width is set in `ch` from app.js; see BLANK_WIDTH. */
 .blank {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
@@ -248,8 +225,7 @@ body {
   background-color: var(--accent-danger-tint);
 }
 
-/* The blank the current hint is about, so a three-blank question's hint
-   is never ambiguous about which blank it is talking about. */
+/* The blank the current hint refers to. */
 .blank.is-hinted {
   border-color: var(--accent-warning);
   background-color: var(--accent-warning-tint);
@@ -260,15 +236,7 @@ body {
   padding: var(--space-5);
 }
 
-/* The preview surface is deliberately light in both themes: the CSS in
-   these problems declares real colours (#334155 text, a #ffffff-on-#0f172a
-   navigation bar) that all assume the white page a browser gives you by
-   default. Flipping this surface dark would make correct answers look
-   wrong. --white and --slate-900 are primitive tokens, so unlike the
-   semantic ones they hold the same value in both themes.
-   Note there is no box-sizing reset here on purpose: box-model problem
-   bm08 teaches what `width` measures by default, and a border-box reset
-   would make its correct answer change nothing. */
+/* Light in both themes, since the problems declare colours that assume a white page. No box-sizing reset here: bm08 depends on the default. */
 .preview-stage {
   background-color: var(--white);
   color: var(--slate-900);

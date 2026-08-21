@@ -1,40 +1,11 @@
-/**
- * Complete the CSS - activity logic.
- *
- * COMPLETE_CSS_CATEGORIES comes from questions.js (loaded first, global)
- * and holds only what the learner is allowed to see: the brief, the HTML,
- * and the CSS rule with blanks punched out of it. The accepted answers,
- * the per-blank hints and the explanation are encrypted in answers.json,
- * fetched once at init and decrypted per question on demand (same scheme
- * as html-debugger/answers.json - see decryptAnswer below).
- *
- * Two things here are worth knowing before changing anything:
- *
- * 1. The preview is a shadow root, not an iframe. The learner's CSS is
- *    rebuilt and re-applied on every keystroke; re-setting an iframe's
- *    srcdoc that often reloads the whole document and flickers badly,
- *    whereas swapping one <style> node's text inside a shadow root is
- *    instant. A shadow root still scopes the CSS, so a learner who types
- *    a stray "}" and accidentally starts a new rule can only affect the
- *    preview, never the page around it.
- *
- * 2. There is deliberately NO box-sizing reset inside the preview.
- *    box-model problem bm08 exists to teach that `width` measures the
- *    content only until you say otherwise, and a global
- *    `box-sizing: border-box` reset would quietly make that question's
- *    correct answer change nothing on screen.
- */
+/* Complete the CSS - quiz logic: renders the blanks, marks them and drives the live preview. */
 (function () {
   "use strict";
 
   const ACTIVITY_ID = "complete-the-css";
   const STATE_KEY = "complete_css_state_v1";
 
-  // Base widths for the two kinds of blank, in characters. Every blank of
-  // a kind is the same size regardless of its answer: sizing an input to
-  // fit its answer would quietly leak how long that answer is. Inputs do
-  // grow past this as the learner types, which leaks nothing, since it
-  // only ever reflects what they typed themselves.
+  // Starting width of each kind of blank, in characters.
   const BLANK_WIDTH = { property: 16, value: 14 };
 
   const state = {
@@ -51,9 +22,7 @@
   let previewStyle = null; // the <style> node inside it holding the learner's CSS
 
   // ── Decryption ───────────────────────────────────────
-  // Key is split to make casual inspection harder. This is obfuscation
-  // against peeking at view-source, not real security (see
-  // html-drag-and-drop/app.js's decryptSolution for the same scheme).
+  // Split key, to obfuscate the answers against view-source.
   const _kp = ["Fi11", "_Bl@", "nk_C", "ss7#"];
   const _dk = _kp.join("");
 
@@ -114,14 +83,7 @@
     return str.replace(/[&<>"']/g, (c) => map[c]);
   }
 
-  /**
-   * Put a typed answer into the one form answers are compared in, so the
-   * things that genuinely do not matter in CSS stop mattering here too:
-   * surrounding space, capitals, a semicolon they typed out of habit
-   * (with or without a space in front of it), and how much space sits
-   * around a comma. Everything the encrypt script
-   * checks accept[] against uses this exact shape.
-   */
+  /** Put a typed answer into the single form answers are compared in. */
   function normalise(str) {
     return String(str)
       .trim()
@@ -156,11 +118,7 @@
     return match ? match[0] : null;
   }
 
-  /**
-   * A colour-picking aid, the same one match-the-css uses: show what a
-   * colour value actually looks like right next to the code, rather than
-   * asking a beginner to picture six hex digits.
-   */
+  /** Build a small swatch showing what a colour value looks like. */
   function makeSwatch(colour) {
     const swatch = document.createElement("span");
     swatch.className = "color-swatch";
@@ -194,8 +152,7 @@
     return input;
   }
 
-  /** Grow a blank past its base width once the typing outruns it, never
-   * shrinking below the shared base (see BLANK_WIDTH). */
+  /** Grow a blank past its base width once the typing outruns it. */
   function fitBlankWidth(input) {
     const base = BLANK_WIDTH[input.dataset.kind];
     input.style.width = Math.max(base, input.value.length + 2) + "ch";
@@ -224,8 +181,7 @@
 
         if (decl.valueBlank) {
           parts.push(makeBlankInput(decl.valueBlank, "value"));
-          // Placeholder for a swatch of whatever colour they type; filled
-          // in by refreshValueSwatches() as the value becomes a colour.
+          // Slot that refreshValueSwatches() fills with a live colour swatch.
           const slot = document.createElement("span");
           slot.className = "swatch-slot";
           slot.dataset.for = decl.valueBlank;
@@ -264,12 +220,7 @@
   }
 
   // ── Live preview ─────────────────────────────────────
-  /**
-   * Turn the question's rules plus whatever is currently typed into real
-   * CSS text. A declaration whose property or value is still blank is left
-   * out entirely, so an unfinished rule previews as "this bit isn't styled
-   * yet" rather than as invalid CSS the browser silently drops anyway.
-   */
+  /** Turn the rules plus whatever is typed into CSS text, dropping unfilled declarations. */
   function buildCssText(question, values) {
     return question.rules
       .map((rule) => {
@@ -296,8 +247,7 @@
     previewStyle = document.createElement("style");
     previewRoot.appendChild(previewStyle);
 
-    // The question's own markup is authored by us, never learner input,
-    // so it goes in as HTML on purpose - that's the element being styled.
+    // The question's own markup, which is the element being styled.
     const holder = document.createElement("div");
     holder.innerHTML = question.html;
     while (holder.firstChild) previewRoot.appendChild(holder.firstChild);
@@ -308,8 +258,7 @@
     previewStyle.textContent = buildCssText(question, readBlanks());
   }
 
-  /** Show a live swatch beside a value blank once what's typed reads as a
-   * colour, the same aid the fixed values already get. */
+  /** Show a swatch beside a value blank once what's typed reads as a colour. */
   function refreshValueSwatches() {
     getBlankInputs().forEach((input) => {
       if (input.dataset.kind !== "value") return;
@@ -324,12 +273,7 @@
   }
 
   // ── Marking ──────────────────────────────────────────
-  /**
-   * When an answer is wrong but only just, say what specifically is off
-   * rather than a flat "not quite". These are the four slips a Year 10
-   * class makes constantly, and a learner who is told "you need a # in
-   * front" learns something a red outline alone never teaches them.
-   */
+  /** Name the specific slip behind a nearly-right answer, or return null. */
   function diagnose(typed, accept) {
     const value = normalise(typed);
 
@@ -426,8 +370,7 @@
     const blanks = state.currentAnswer ? state.currentAnswer.blanks : null;
     if (!blanks) return;
 
-    // Walk the blanks that aren't right yet, one per press, so a
-    // three-blank question can be nudged a piece at a time.
+    // Walk the blanks that aren't right yet, one per press.
     const pending = getBlankInputs().filter((i) => !i.classList.contains("is-correct"));
     if (pending.length === 0) return;
 
@@ -614,8 +557,7 @@
     buildCssEditor(question);
     mountPreview(question);
 
-    // A problem already solved comes back filled in and marked, so
-    // revisiting it reads as "you did this" rather than as a fresh start.
+    // A solved problem comes back filled in and marked.
     if (state.solved.has(question.id)) {
       getBlankInputs().forEach((input) => {
         const accept = (answer.blanks[input.dataset.blank] || {}).accept || [];
@@ -746,9 +688,7 @@
     dom.btnNext.addEventListener("click", handleNext);
     dom.btnRestart.addEventListener("click", restartAll);
 
-    // One listener on the editor rather than one per input: the blanks are
-    // rebuilt from scratch on every question, and rebinding each time is
-    // how a stale listener ends up pointing at a previous question.
+    // One delegated listener, since the blanks are rebuilt per question.
     dom.cssEditor.addEventListener("input", (e) => {
       if (!e.target.classList.contains("blank")) return;
       const question = findQuestion(state.currentQuestionId);
@@ -759,8 +699,7 @@
       refreshPreview(question);
     });
 
-    // Enter checks, so a learner filling the last blank never has to reach
-    // for the mouse to find out whether they got it.
+    // Enter checks the answer.
     dom.cssEditor.addEventListener("keydown", (e) => {
       if (e.key !== "Enter" || !e.target.classList.contains("blank")) return;
       e.preventDefault();
@@ -768,8 +707,7 @@
       else handleCheck();
     });
 
-    // Mirrors the HTML Structure Trainer and Match the CSS: never
-    // auto-load a problem, even for a learner with partial progress.
+    // Never auto-load a problem; the learner picks one from the sidebar.
   }
 
   if (document.readyState === "loading") {

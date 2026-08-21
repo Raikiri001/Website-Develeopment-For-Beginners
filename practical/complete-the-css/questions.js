@@ -1,37 +1,4 @@
-/**
- * Complete the CSS - question bank (plain metadata only).
- *
- * Each question shows a short brief, a fixed bit of HTML, and a CSS rule
- * with one or more blanks punched out of it. The learner types the missing
- * property name or value; a live preview re-renders as they type.
- *
- * The ANSWERS are not in this file. Accepted answers, per-blank hints and
- * the explanation text all live encrypted in answers.json, decrypted by
- * app.js at runtime (same scheme as html-debugger/answers.json). A
- * plaintext answer key here would be the whole activity, one view-source
- * away, and unlike match-the-css there is no way to re-key it: the answer
- * IS the string, so once committed in the clear it stays in git history
- * forever. Edit practical/complete-the-css/answers.source.js (gitignored)
- * and re-run `node scripts/encrypt-answers.js complete-the-css`, which
- * also checks every blank id here has exactly one answer over there.
- *
- * Declaration shapes inside a rule:
- *   { prop, value }              nothing missing, shown as-is
- *   { propBlank, value }         the learner supplies the property name
- *   { prop, valueBlank }         the learner supplies the value
- *   { propBlank, valueBlank }    both (used sparingly, hardest tier only)
- *
- * Difficulty within a category is the array order; `difficulty` only
- * drives the badge. The ramp is: one value blank -> one property blank ->
- * two blanks -> three blanks, with the brief getting less literal as it
- * goes. A brief always pins down the exact value wanted (a hex code, a
- * pixel size) rather than saying "make it blue", because there are a
- * hundred blues and only one of them can be marked correct.
- *
- * Markup sticks to the tags a Year 10 class has already met (div, p,
- * h1-h4, a, button, ul/li, strong) per CLAUDE.md's audience note.
- */
-
+/* Complete the CSS - question bank: the brief, HTML and CSS rule with blanks. Answers live encrypted in answers.json; edit answers.source.js and re-run scripts/encrypt-answers.js. */
 const COMPLETE_CSS_CATEGORIES = [
   {
     id: "text-colour",

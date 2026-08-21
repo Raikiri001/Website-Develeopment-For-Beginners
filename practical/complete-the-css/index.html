@@ -80,7 +80,7 @@
           </div>
         </div>
 
-        <!-- Welcome State (shown until a problem is selected) -->
+        <!-- Shown until a problem is selected -->
         <div class="welcome-state" id="welcomeState">
           <div class="welcome-icon">&#9633;</div>
           <h2 class="welcome-title">Select a problem to begin</h2>
@@ -136,12 +136,7 @@
                 </div>
               </div>
               <div class="preview-body">
-                <!-- The preview is a shadow root rather than an iframe: the
-                     learner's CSS is re-applied on every keystroke, and
-                     re-setting an iframe's srcdoc that often reloads the
-                     document and flickers. A shadow root just swaps one
-                     <style> node's text, and still keeps the CSS from
-                     leaking out into the page around it. -->
+                <!-- Preview host; app.js attaches a shadow root here. -->
                 <div class="preview-stage" id="previewStage"></div>
               </div>
             </div>
