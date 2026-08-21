@@ -8,11 +8,28 @@
 (function () {
   "use strict";
 
+  /* A badge describes the one card it sits on, so it is singular. The group
+     heading names a set, so it is plural. Using one list for both is how
+     "Practical activities" ended up printed on a single card. */
+  const CATEGORY_BADGES = {
+    theory: "Theory",
+    practical: "Practical activity",
+    quiz: "Quiz",
+  };
+
   const CATEGORY_LABELS = {
     theory: "Theory",
     practical: "Practical activities",
     quiz: "Quizzes",
   };
+
+  const CATEGORY_DESCRIPTIONS = {
+    theory: "Explains one concept at a time, with annotated code you can edit.",
+    practical: "A problem to solve in the browser, then check against a working solution.",
+    quiz: "Recall practice against a bank of questions, scored so a run is worth repeating.",
+  };
+
+  const CATEGORY_ORDER = ["theory", "practical", "quiz"];
 
   // Topics are the page's real structure. A topic missing here never renders,
   // exactly as a category missing from the old order array never did.
@@ -63,7 +80,7 @@
 
     const badge = document.createElement("span");
     badge.className = `badge badge-${activity.category}`;
-    badge.textContent = CATEGORY_LABELS[activity.category] || activity.category;
+    badge.textContent = CATEGORY_BADGES[activity.category] || activity.category;
 
     const statusBadge = document.createElement("span");
     statusBadge.className = `status-badge status-${progress.status}`;
@@ -120,16 +137,20 @@
     return card;
   }
 
-  function renderSection(topic, activities) {
+  function renderSection(key, activities, mode) {
+    const byTopic = mode === "topic";
+    const labels = byTopic ? TOPIC_LABELS : CATEGORY_LABELS;
+    const descriptions = byTopic ? TOPIC_DESCRIPTIONS : CATEGORY_DESCRIPTIONS;
+
     const section = document.createElement("section");
 
     const heading = document.createElement("div");
     heading.className = "section-heading";
-    heading.id = `${topic}-heading`;
+    heading.id = `${key}-heading`;
     const h2 = document.createElement("h2");
-    h2.textContent = TOPIC_LABELS[topic] || topic;
+    h2.textContent = labels[key] || key;
     const p = document.createElement("p");
-    p.textContent = TOPIC_DESCRIPTIONS[topic] || "";
+    p.textContent = descriptions[key] || "";
     heading.appendChild(h2);
     heading.appendChild(p);
 
@@ -144,12 +165,14 @@
     } else {
       activities.forEach((activity, i) => {
         const card = createCard(activity);
-        // The step number is the position in the route, so it renumbers by
-        // itself when something is inserted rather than being hand-kept.
-        const step = document.createElement("span");
-        step.className = "card-step";
-        step.textContent = String(i + 1);
-        card.insertBefore(step, card.firstChild);
+        // The step number is a position in a route, so it only means anything
+        // when the cards are in route order. Grouped by type they are not.
+        if (byTopic) {
+          const step = document.createElement("span");
+          step.className = "card-step";
+          step.textContent = String(i + 1);
+          card.insertBefore(step, card.firstChild);
+        }
         grid.appendChild(card);
       });
     }
@@ -157,6 +180,68 @@
     section.appendChild(heading);
     section.appendChild(grid);
     return section;
+  }
+
+  const GROUP_KEY = "wdfb_home_grouping";
+
+  function loadGrouping() {
+    try {
+      const saved = localStorage.getItem(GROUP_KEY);
+      return saved === "category" ? "category" : "topic";
+    } catch (e) {
+      return "topic";
+    }
+  }
+
+  function saveGrouping(mode) {
+    try {
+      localStorage.setItem(GROUP_KEY, mode);
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  /** Draw every section for the chosen grouping. */
+  function render(content, activities, mode) {
+    content.innerHTML = "";
+    const keys = mode === "topic" ? TOPIC_ORDER : CATEGORY_ORDER;
+
+    keys.forEach((key) => {
+      const inGroup = activities
+        .filter((a) => (mode === "topic" ? a.topic : a.category) === key)
+        .sort(function (a, b) {
+          // Route order within a language. Grouped by type, keep the
+          // languages together and still run basics first inside each.
+          if (mode === "topic") return (a.order || 0) - (b.order || 0);
+          const byTopic = TOPIC_ORDER.indexOf(a.topic) - TOPIC_ORDER.indexOf(b.topic);
+          return byTopic !== 0 ? byTopic : (a.order || 0) - (b.order || 0);
+        });
+      if (inGroup.length === 0) return;
+      content.appendChild(renderSection(key, inGroup, mode));
+    });
+  }
+
+  function wireFilters(content, activities) {
+    const bar = document.getElementById("filterBar");
+    if (!bar) return;
+    const buttons = Array.prototype.slice.call(bar.querySelectorAll(".filter-btn"));
+
+    function apply(mode) {
+      buttons.forEach(function (b) {
+        const on = b.dataset.group === mode;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
+      render(content, activities, mode);
+      saveGrouping(mode);
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        apply(b.dataset.group);
+      });
+    });
+    apply(loadGrouping());
   }
 
   async function init() {
@@ -168,13 +253,8 @@
       if (!response.ok) throw new Error("Failed to load activities");
       const activities = await response.json();
 
-      TOPIC_ORDER.forEach((topic) => {
-        const inTopic = activities
-          .filter((a) => a.topic === topic)
-          .sort((a, b) => (a.order || 0) - (b.order || 0));
-        if (inTopic.length === 0) return;
-        content.appendChild(renderSection(topic, inTopic));
-      });
+      render(content, activities, loadGrouping());
+      wireFilters(content, activities);
     } catch (err) {
       console.error(err);
       content.innerHTML =

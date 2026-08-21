@@ -302,62 +302,72 @@ const PARTS = [
   {
     id: "semantics",
     number: "06",
-    name: "Semantics",
-    tagline: "What the tag means, not how it looks",
+    name: "Semantic Tags",
+    tagline: "Naming the parts of a page",
     accent: "#db2777",
     lead:
-      "Two elements can look identical and mean completely different things. <strong>Semantics</strong> is choosing the tag whose meaning matches the content, rather than the one whose default appearance you happen to like.",
+      "A <strong>semantic</strong> tag says what a piece of the page is <strong>for</strong>. The clearest examples are the ones that name the regions of a page, <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code> and <code>&lt;footer&gt;</code>, each doing the same layout job as a <code>&lt;div&gt;</code> while saying something a <code>&lt;div&gt;</code> cannot.",
+    keyPoint:
+      "<code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code> and <code>&lt;footer&gt;</code> are called <strong>landmarks</strong>, and a screen reader can jump straight to any of them. A page built from <code>&lt;div&gt;</code>s offers nothing to jump to.",
     blocks: [
       {
         label: "index.html",
         lang: "html",
-        code: `<!-- These two look the same on screen. -->
-<div class="big-text">Chapter One</div>
-<h1>Chapter One</h1>
+        code: `<!-- Built from divs. Every region is nameless, and the -->
+<!-- class attributes mean nothing to the browser.       -->
+<div class="top">The site name</div>
+<div class="links"><a href="about.html">About</a></div>
+<div class="middle"><h1>The main heading</h1></div>
+<div class="bottom">Contact details</div>
 
-<!-- Only one of them SAYS "this is a heading". -->
-<!-- Search engines and screen readers use that. -->
 
-<!-- Same again: identical look, different meaning. -->
-<div class="bold">Warning</div>
-<strong>Warning</strong>
+<!-- Identical on screen. Every region now says what it -->
+<!-- is, and each of these is a landmark.               -->
+<header>The site name</header>
 
-<!-- A div means nothing on purpose. Use it when -->
-<!-- there is genuinely no meaning to express.   -->
-<div class="layout-wrapper">...</div>`,
+<nav>
+  <a href="about.html">About</a>
+</nav>
+
+<main>
+  <h1>The main heading</h1>
+</main>
+
+<footer>Contact details</footer>`,
       },
     ],
-    keyPoint:
-      "Choosing the right tag <strong>rarely changes how a page looks</strong>, so nothing on screen tells you when you have chosen badly. That is exactly why it gets skipped.",
-    meta: {
-      "What it is": "Choosing a tag for its meaning",
-      "Written as": "<h1> rather than <div class=\"big\">",
-      "Why it matters": "Meaning is read by more than just eyes",
-    },
     exampleHeadings: ["Written", "Kind", "Used for", "What it adds"],
     examples: [
-      { syntax: "<header>", label: "Semantic", code: "Top of a page or section", meaning: "Lays out like a div, but says what it is." },
-      { syntax: "<nav>", label: "Semantic", code: "A set of links", meaning: "A screen reader can jump straight to it." },
-      { syntax: "<main>", label: "Semantic", code: "The main content", meaning: "One per page. Skip links target it." },
-      { syntax: "<footer>", label: "Semantic", code: "End of a page or section", meaning: "Says what it is rather than where it sits." },
-      { syntax: "<article>", label: "Semantic", code: "A self-contained piece", meaning: "Makes sense on its own, out of context." },
-      { syntax: "<div>", label: "Generic", code: "A layout wrapper", meaning: "Means nothing, on purpose. Use when there is no meaning." },
-      { syntax: "<span>", label: "Generic", code: "An inline wrapper", meaning: "The inline equivalent of a div. Also means nothing." },
+      { syntax: "<header>", label: "Landmark", code: "The top of a page or section", meaning: "Introductory content: a logo, a title, a search box." },
+      { syntax: "<nav>", label: "Landmark", code: "A block of navigation links", meaning: "A screen reader can jump to it, or skip past it." },
+      { syntax: "<main>", label: "Landmark", code: "The page's main content", meaning: "Exactly one per page. This is what a skip link targets." },
+      { syntax: "<footer>", label: "Landmark", code: "The end of a page or section", meaning: "Closing content: contact details, small print, hours." },
+      { syntax: "<aside>", label: "Landmark", code: "Content beside the main point", meaning: "A sidebar or pull quote. Related, but not the main thread." },
+      { syntax: "<section>", label: "Structural", code: "A themed group of content", meaning: "A part of the page that would carry its own heading." },
+      { syntax: "<article>", label: "Structural", code: "A self-contained piece", meaning: "Still makes sense lifted out on its own, like a blog post." },
+      { syntax: "<h1> to <h6>", label: "Structural", code: "Headings, in order", meaning: "Builds the outline a reader navigates by. Do not skip levels." },
+      { syntax: "<div>", label: "Generic", code: "A block wrapper", meaning: "Means nothing, on purpose. Correct when there is no meaning." },
+      { syntax: "<span>", label: "Generic", code: "An inline wrapper", meaning: "The inline equivalent of a div, and equally meaningless." },
     ],
+    meta: {
+      "What it is": "A tag chosen for what the content is for",
+      "Written as": "<header>, <nav>, <main>, <footer>",
+      "Why it matters": "It names regions nothing else can name",
+    },
     notes: {
       "How it works":
-        "The browser exposes the meaning of your tags to other software. A screen reader can list every heading on a page, but only finds the ones marked up as headings.",
+        "A landmark lays out exactly like a <code>&lt;div&gt;</code>, so the page looks no different. What changes is that the browser now exposes a named region, and assistive software can list those regions and jump between them.",
       "What to watch for":
-        "Semantic does not mean styled. Choosing the right tag rarely changes how a page looks, so nothing on screen tells you when you have chosen badly.",
+        "Semantic does not mean styled. <code>&lt;header&gt;</code> gets no special appearance, so nothing on screen tells you whether you chose well. The same applies to <code>&lt;h1&gt;</code> against a large <code>&lt;div&gt;</code>: identical on screen, and only one of them is a heading.",
       "Worth remembering":
-        "Pick the tag for what the content is, then style it however you like. Picking a tag for its default appearance is what leads to pages built entirely from divs.",
+        "Use <code>&lt;main&gt;</code> once per page, keep headings in order without skipping a level, and reach for <code>&lt;div&gt;</code> only when there is genuinely no meaning to express. Choose the tag for what the content <em>is</em>, then style it however you like.",
     },
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
-      paneCss: ".big { font-size: 2em; font-weight: bold; }",
-      value: '<div class="big">A fake heading</div>\n<h1>A real heading</h1>',
-      result: "Both look like headings. Only one is a heading as far as any other software is concerned.",
+      paneCss: "header, footer, nav, main { border: 1px dashed #94a3b8; padding: 6px; margin-bottom: 6px; }",
+      value: "<header>The site name</header>\n<nav><a href=\"#\">About</a></nav>\n<main><h1>The main heading</h1></main>\n<footer>Contact details</footer>",
+      result: "Swap any of these for a div and nothing visible changes. The named region is what was lost.",
       panes: [{ label: "Rendered page", html: "", applies: true }],
     },
   },
@@ -386,8 +396,8 @@ const LESSON = {
         }),
       };
     }).concat([
-      { label: "Visible on screen", values: ["Yes", "Yes", "Only the body", "Sometimes", "Yes", "No"] },
-      { label: "Get it wrong and", values: [ "The content is unmarked or malformed", "The browser repairs it by guessing", "The browser falls back to an old mode", "The element quietly does not work", "Sizing and spacing are ignored", "The page looks fine and means nothing", ] },
+      { label: "Visible on screen", values: ["Yes", "Yes", "Only the body", "Sometimes", "Yes", "No difference"] },
+      { label: "Get it wrong and", values: [ "The content is unmarked or malformed", "The browser repairs it by guessing", "The browser falls back to an old mode", "The element quietly does not work", "Sizing and spacing are ignored", "The page looks fine and names nothing", ] },
     ]),
   },
 };

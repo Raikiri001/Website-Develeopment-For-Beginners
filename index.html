@@ -25,9 +25,7 @@
         <span>Web Dev For Beginners</span>
       </a>
       <nav>
-        <a href="#theory-heading">Theory</a>
-        <a href="#practical-heading">Practical</a>
-        <a href="#quiz-heading">Quizzes</a>
+        <a href="./">Home</a>
         <a href="dashboard/">Dashboard</a>
       </nav>
     </header>
@@ -41,11 +39,18 @@
           and how browsers work.
         </p>
         <p class="hero-subtitle">
-          Each activity is one of two types. Theory activities explain a
-          single browser concept, usually with an interactive diagram.
-          Practical activities give you a problem to solve directly in the
-          browser.
+          Work down a language from the basics, or switch the grouping to
+          browse by activity type. Theory explains a concept, practical
+          activities give you a problem to solve, and quizzes drill recall.
         </p>
+      </div>
+
+      <div class="filter-bar" id="filterBar" role="group" aria-label="Group activities by">
+        <span class="filter-label">Group by</span>
+        <div class="filter-options">
+          <button class="filter-btn" data-group="topic" type="button">Language</button>
+          <button class="filter-btn" data-group="category" type="button">Activity type</button>
+        </div>
       </div>
 
       <div class="content" id="activityContent">

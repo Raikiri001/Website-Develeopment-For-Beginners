@@ -31,7 +31,8 @@
     completed: "Review",
   };
 
-  const CATEGORY_LABELS = { theory: "Theory", practical: "Practical activities", quiz: "Quizzes" };
+  // Singular: this labels one activity's row, not a group of them.
+  const CATEGORY_LABELS = { theory: "Theory", practical: "Practical activity", quiz: "Quiz" };
 
   let allRows = [];
   let currentFilter = "all";
