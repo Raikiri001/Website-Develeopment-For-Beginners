@@ -40,6 +40,14 @@
     "tags": ["HTML", "debugging", "validation"]
   },
   {
+    "id": "resolving-paths",
+    "title": "Resolving Paths",
+    "description": "Read a project's folder tree and type the paths that reach the files. Twenty problems where the src, href and alt values are blank and you fill them in, from a single flat folder to structures several levels deep.",
+    "category": "practical",
+    "href": "practical/resolving-paths/",
+    "tags": ["HTML", "paths", "file structure"]
+  },
+  {
     "id": "understanding-tags",
     "title": "Understanding Tags",
     "description": "A definition or a use case, four tags, one right answer. Sixty-four tags from the everyday ones to the genuinely niche. Race a one, two or three minute clock for a high score, or work through the whole bank untimed.",
