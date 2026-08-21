@@ -1045,3 +1045,187 @@
   color: var(--white);
   white-space: nowrap;
 }
+
+/* ---------- Path resolver ---------- */
+.resolver-section {
+  margin-bottom: var(--space-20);
+}
+
+.resolver {
+  display: grid;
+  grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+  gap: var(--space-5);
+  padding: var(--space-5);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+}
+
+.resolver-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.resolver-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.resolver-field > span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.resolver-field select,
+.resolver-field input {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-sunken);
+  color: var(--text-primary);
+}
+
+.resolver-field input:focus,
+.resolver-field select:focus {
+  outline: none;
+  border-color: var(--border-active);
+  box-shadow: 0 0 0 3px var(--accent-primary-tint);
+}
+
+.resolver-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.resolve-preset {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-sunken);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.resolve-preset:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.resolver-out {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* The working, one row per segment of the path. */
+.resolve-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resolve-step {
+  display: grid;
+  grid-template-columns: 18px 76px 1fr auto;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-sunken);
+  font-size: var(--text-xs);
+}
+
+.resolve-num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.resolve-part {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.resolve-note {
+  color: var(--text-secondary);
+}
+
+.resolve-at {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.resolve-empty {
+  padding: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.resolve-verdict {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-sunken);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.resolve-verdict.is-right {
+  border-left-color: var(--accent-success);
+  background-color: var(--accent-success-tint);
+  color: var(--accent-success);
+}
+
+.resolve-verdict.is-wrong {
+  border-left-color: var(--accent-danger);
+  background-color: var(--accent-danger-tint);
+  color: var(--accent-danger);
+}
+
+.resolve-verdict.is-outside {
+  border-left-color: var(--accent-warning);
+  background-color: var(--accent-warning-tint);
+  color: var(--accent-warning);
+}
+
+#resolverTree {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-sunken);
+}
+
+@media (max-width: 720px) {
+  .resolver {
+    grid-template-columns: 1fr;
+  }
+
+  .resolve-step {
+    grid-template-columns: 18px 70px 1fr;
+  }
+
+  .resolve-at {
+    grid-column: 2 / -1;
+    text-align: left;
+  }
+}

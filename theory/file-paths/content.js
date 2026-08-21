@@ -1,5 +1,14 @@
 /* File Paths - lesson content. Explains what a path is and how one is resolved in general, so it holds up whatever folder structures an activity happens to use. */
 
+/* The sample site the lesson and the resolver both work over. */
+const SITE_FILES = [
+  "index.html",
+  "about.html",
+  "css/styles.css",
+  "images/logo.png",
+  "blog/post.html",
+];
+
 const PARTS = [
   {
     id: "what",
@@ -45,14 +54,6 @@ const PARTS = [
         "Only images announce themselves when they fail. A stylesheet, a script or a link that points nowhere gives you no marker on the page, so the symptom you see is unstyled text, a dead button, or a click that goes to a missing page, rather than anything naming the path.",
       "Worth remembering":
         "Paths are case sensitive on most web servers, even where they are not on your own computer, so <code>Logo.png</code> and <code>logo.png</code> become different files once the site is published. Note also that a path in a URL no longer has to match real folders on the server: MDN describes it as <a href=\"https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_URL\" target=\"_blank\" rel=\"noopener\">mostly an abstraction</a> the server handles however it likes.",
-    },
-    demo: {
-      editorKind: "html",
-      editorLabel: "index.html",
-      paneCss: "",
-      value: '<a href="about.html">A link with a path</a>\n<p>Change the path and the link changes where it points.</p>',
-      result: "The path is just an attribute value. Nothing checks it until something tries to follow it.",
-      panes: [{ label: "Rendered page", html: "", applies: true }],
     },
   },
 
@@ -126,14 +127,6 @@ const PARTS = [
       "Worth remembering":
         "Relative paths survive being moved. Copy the whole folder anywhere, or publish it under any domain or subfolder, and every one of them still works, because none of them names the site root.",
     },
-    demo: {
-      editorKind: "html",
-      editorLabel: "index.html",
-      paneCss: "code { background: #f1f5f9; padding: 1px 5px; }",
-      value: '<p>From <strong>index.html</strong>: <code>css/styles.css</code></p>\n<p>From <strong>blog/post.html</strong>: <code>../css/styles.css</code></p>\n<p>Same file. Different starting point.</p>',
-      result: "Same target file, two different paths, because the starting point moved.",
-      panes: [{ label: "Rendered page", html: "", applies: true }],
-    },
   },
   {
     id: "absolute",
@@ -185,14 +178,6 @@ const PARTS = [
         "Root-relative paths look tidier but tie the site to sitting at the root of its domain. This project uses relative paths everywhere for exactly that reason, so it also works from a subfolder.",
       "Worth remembering":
         "Use a full URL when linking to somebody else's site, since there is no relative route to it. Use a relative path within your own.",
-    },
-    demo: {
-      editorKind: "html",
-      editorLabel: "index.html",
-      paneCss: "",
-      value: '<p><a href="https://example.com">A full URL, works from anywhere</a></p>\n<p><a href="about.html">A relative path, works from this folder</a></p>',
-      result: "Both are links. Only one of them still means the same file if you move the page.",
-      panes: [{ label: "Rendered page", html: "", applies: true }],
     },
   },
 
@@ -273,14 +258,6 @@ const PARTS = [
       "Worth remembering":
         "When something will not load, resolve its path by hand and compare the answer with where the file actually sits. The gap between the two is your mistake, and usually it is one level.",
     },
-    demo: {
-      editorKind: "html",
-      editorLabel: "Try resolving one yourself",
-      paneCss: "code { background: #f1f5f9; padding: 1px 5px; } li { margin-bottom: 4px; }",
-      value: '<p>From <strong>blog/post.html</strong>, resolve <code>../css/styles.css</code></p>\n<ol>\n  <li>Start: <code>blog/</code></li>\n  <li><code>../</code> up one: <code>site root</code></li>\n  <li><code>css/</code> down one: <code>css/</code></li>\n  <li>File: <code>css/styles.css</code></li>\n</ol>',
-      result: "Every path resolves this way. Change the steps above and check your own working.",
-      panes: [{ label: "Working it out", html: "", applies: true }],
-    },
   },
   {
     id: "context",
@@ -340,14 +317,6 @@ const PARTS = [
         "This is why a background image breaks when a stylesheet is reorganised while the HTML is untouched. Nothing about the page changed, but the starting point for every <code>url()</code> in that file did.",
       "Worth remembering":
         "Ask which <em>file</em> the path is written in, not which page is open. That one question resolves nearly every path that mysteriously does not work.",
-    },
-    demo: {
-      editorKind: "html",
-      editorLabel: "index.html",
-      paneCss: "",
-      value: '<p>In <strong>index.html</strong>, <code>images/logo.png</code> means <code>images/logo.png</code>.</p>\n<p>In <strong>css/styles.css</strong>, the same text means <code>css/images/logo.png</code>.</p>',
-      result: "Identical text, two different files, because they were written in different places.",
-      panes: [{ label: "Rendered page", html: "", applies: true }],
     },
   },
 ];

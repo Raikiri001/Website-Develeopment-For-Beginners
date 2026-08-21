@@ -54,6 +54,38 @@
         </div>
       </section>
 
+      <section class="resolver-section" id="resolver">
+        <header class="section-head">
+          <p class="section-eyebrow">Try it</p>
+          <h2>Resolve a path yourself</h2>
+          <p class="section-lead">
+            Pick which file the path is written in, then type a path or choose
+            one. Every step is worked out below, and the tree shows where you
+            land, whether or not anything is actually there.
+          </p>
+        </header>
+
+        <div class="resolver">
+          <div class="resolver-controls">
+            <label class="resolver-field">
+              <span>Path is written in</span>
+              <select id="resolverFrom"></select>
+            </label>
+            <label class="resolver-field">
+              <span>The path</span>
+              <input type="text" id="resolverPath" spellcheck="false" autocomplete="off" />
+            </label>
+            <div class="resolver-presets" id="resolverPresets"></div>
+          </div>
+
+          <div class="resolver-out">
+            <ol class="resolve-steps" id="resolverSteps"></ol>
+            <p class="resolve-verdict" id="resolverVerdict"></p>
+            <div class="file-tree" id="resolverTree"></div>
+          </div>
+        </div>
+      </section>
+
       <footer class="lesson-end">
         <p>A path is directions. A relative one starts from the folder of the file it is written in, an absolute one starts from a fixed point, and resolving either is a matter of taking one step at a time from the right place.</p>
       </footer>
@@ -63,5 +95,6 @@
     <script src="../../assets/js/progress.js"></script>
     <script src="content.js"></script>
     <script src="../../assets/js/lesson.js"></script>
+    <script src="resolver.js"></script>
   </body>
 </html>
