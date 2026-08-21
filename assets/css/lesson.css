@@ -331,6 +331,10 @@
   margin: 0 0 var(--space-3);
 }
 
+.method-notes a {
+  color: var(--accent-primary);
+}
+
 .method-notes code,
 .ladder-body code,
 .section-lead code {
@@ -862,6 +866,20 @@
   border-radius: var(--radius-sm);
   padding: 1px 5px;
   font-weight: 400;
+}
+
+/* A ladder that belongs to one section sits inside it, so the steps stay
+   next to the thing they are explaining. */
+.ladder-inline {
+  margin-bottom: var(--space-6);
+}
+
+.ladder-inline .ladder-step {
+  background-color: var(--bg-sunken);
+}
+
+.ladder-inline .ladder-rank {
+  color: var(--accent);
 }
 
 /* ---------- Reference table ---------- */

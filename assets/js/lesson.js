@@ -227,6 +227,7 @@
           '<dl class="method-meta">' + meta + "</dl>" +
           '<div class="method-code">' + code + "</div>" +
           examples +
+          (s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : "") +
           '<div class="method-notes">' + notes + "</div>" +
           (s.demo ? '<div class="tryit" data-section="' + s.id + '"></div>' : "") +
           "</section>"
@@ -367,9 +368,8 @@
   }
 
   // ── Ordered ladder, for a lesson that ends in a ranking ──
-  function renderLadder(host, lesson) {
-    if (!host || !lesson.ladder) return;
-    host.innerHTML = lesson.ladder
+  function ladderRows(steps) {
+    return steps
       .map(function (step) {
         return (
           '<li class="ladder-step"><span class="ladder-rank">' + step.rank + "</span>" +
@@ -379,6 +379,11 @@
         );
       })
       .join("");
+  }
+
+  function renderLadder(host, lesson) {
+    if (!host || !lesson.ladder) return;
+    host.innerHTML = ladderRows(lesson.ladder);
   }
 
   // ── Reading progress ─────────────────────────────────
