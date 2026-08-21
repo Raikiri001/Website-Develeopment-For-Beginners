@@ -176,3 +176,53 @@ const CHOOSING = [
     when: "Leave it to JavaScript and to HTML email. Writing it by hand is nearly always a mistake.",
   },
 ];
+
+/* The live demo under each method. `disable` powers the toggle that shows what happens when that CSS does not reach the page. */
+const METHOD_DEMOS = {
+  external: {
+    editorLabel: "styles.css",
+    mode: "css",
+    value: ".title {\n  color: #0d9488;\n}",
+    note:
+      "Edit the rule and both headings change together, because both are on pages linking this one file.",
+    toggle: {
+      label: "Pretend styles.css fails to load",
+      on: "With the file missing, nothing is styled. Every rule lived in that one file, so the whole page falls back to browser defaults.",
+    },
+  },
+  internal: {
+    editorLabel: "the <style> block",
+    mode: "css",
+    value: ".title {\n  color: #b45309;\n}",
+    note:
+      "Same syntax as the file above. Edit it and this page changes, but no other page would.",
+    toggle: {
+      label: "Show a different page of the same site",
+      on: "A second page gets none of it. The CSS was written into the first page, so this one would need its own copy.",
+    },
+  },
+  inline: {
+    editorLabel: 'style="..."',
+    mode: "inline",
+    value: "color: #7c3aed;",
+    note:
+      "Declarations only, no selector. Only the first heading responds, however you edit it, because the attribute is attached to that one element.",
+    toggle: null,
+  },
+};
+
+/* The two headings every demo renders. The id and class both exist so the playground's selectors have something to differ on. */
+const DEMO_MARKUP =
+  '<h1 class="title" id="headline">Sunrise Bakery</h1>\n<h1 class="title">Corner Cafe</h1>';
+
+/* The cascade playground. Selector choices are ordered least to most specific. */
+const PLAYGROUND = {
+  target: ".title",
+  prop: "color",
+  selectors: ["h1", ".title", "#headline"],
+  sources: [
+    { id: "external", label: "External (styles.css)", selector: ".title", value: "#0d9488", on: true, important: false },
+    { id: "internal", label: "Internal (<style>)", selector: ".title", value: "#b45309", on: true, important: false },
+    { id: "inline", label: "Inline (style attribute)", value: "#7c3aed", on: true, important: false },
+  ],
+};
