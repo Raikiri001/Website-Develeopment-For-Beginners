@@ -828,6 +828,15 @@
   }
 }
 
+/* A folder listing inside a code figure or a demo pane. */
+.tree {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.7;
+  margin: 0;
+  white-space: pre;
+}
+
 /* ---------- Key point ---------- */
 /* The single line a reader skimming the section must not miss. Loud on
    purpose, and deliberately the only thing in the section styled this way. */

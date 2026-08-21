@@ -56,12 +56,26 @@
     ]
   },
   {
+    "id": "file-paths",
+    "title": "File Paths",
+    "description": "What a path actually is: directions from one file to another, how relative and absolute paths differ, how to resolve one by hand, and why a path in a stylesheet counts from somewhere different.",
+    "category": "theory",
+    "topic": "html",
+    "order": 5,
+    "href": "theory/file-paths/",
+    "tags": [
+      "paths",
+      "files",
+      "linking"
+    ]
+  },
+  {
     "id": "resolving-paths",
     "title": "Resolving Paths",
     "description": "Read a project's folder tree and type the paths that reach the files. Twenty problems where the src, href and alt values are blank and you fill them in, from a single flat folder to structures several levels deep.",
     "category": "practical",
     "topic": "html",
-    "order": 5,
+    "order": 6,
     "href": "practical/resolving-paths/",
     "tags": [
       "HTML",
@@ -75,7 +89,7 @@
     "description": "Click the parts of a broken HTML page where the mistakes are. Thirty problems from Beginner to Expert, mixing in more kinds of mistake as you go.",
     "category": "practical",
     "topic": "html",
-    "order": 6,
+    "order": 7,
     "href": "practical/html-debugger/",
     "tags": [
       "HTML",

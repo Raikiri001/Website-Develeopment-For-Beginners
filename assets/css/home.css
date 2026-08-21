@@ -145,12 +145,16 @@ main {
 /* ---------- Grouping control ---------- */
 /* Switches the page between the learning route (by language) and browsing
    by activity type. The choice is remembered in localStorage. */
+/* Shares the hero's and the card grid's measure, or it sits flush to the
+   viewport edge and lines up with nothing. */
 .filter-bar {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6) var(--space-6);
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-4);
-  margin-bottom: var(--space-8);
 }
 
 .filter-label {
