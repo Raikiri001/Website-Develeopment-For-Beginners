@@ -10,7 +10,7 @@
   {
     "id": "inline-internal-external",
     "title": "Inline, Internal, External",
-    "description": "The three places CSS can live, side by side and all editable. Six guided steps that have you write real CSS in a file, a style block and a style attribute, with a cascade panel showing which declaration actually wins.",
+    "description": "The three places CSS can live, explained through annotated code. External, internal and inline side by side, with the comments in the code doing half the teaching, and a plain account of which one wins.",
     "category": "theory",
     "href": "theory/inline-internal-external/",
     "tags": ["CSS", "cascade", "stylesheets"]
