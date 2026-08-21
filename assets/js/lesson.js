@@ -167,7 +167,7 @@
           })
           .join("");
 
-        const code = s.blocks
+        const code = (s.blocks || [])
           .map(function (b) {
             return (
               '<figure class="code-figure"><figcaption><span class="file-dot"></span>' +
@@ -221,6 +221,25 @@
             "</tbody></table></div>"
           : "";
 
+        const tree = s.tree
+          ? '<figure class="tree-figure"><figcaption>' +
+            escapeHtml(s.tree.label) + "</figcaption>" +
+            '<div class="file-tree">' +
+            s.tree.lines
+              .map(function (line) {
+                return (
+                  '<div class="tree-row' + (line.mark ? " is-marked" : "") + '"' +
+                  ' style="--depth:' + (line.depth || 0) + '">' +
+                  '<span class="tree-name' + (line.kind === "folder" ? " is-folder" : "") + '">' +
+                  escapeHtml(line.name) + "</span>" +
+                  (line.mark ? '<span class="tree-mark">' + escapeHtml(line.mark) + "</span>" : "") +
+                  "</div>"
+                );
+              })
+              .join("") +
+            "</div></figure>"
+          : "";
+
         return (
           '<section class="method" id="' + s.id + '" style="--accent:' + s.accent + '">' +
           '<header class="method-head"><span class="method-num">' + s.number + "</span>" +
@@ -228,7 +247,8 @@
           '<p class="method-lead">' + s.lead + "</p>" +
           keyPoint +
           '<dl class="method-meta">' + meta + "</dl>" +
-          '<div class="method-code">' + code + "</div>" +
+          (code ? '<div class="method-code">' + code + "</div>" : "") +
+          tree +
           examples +
           (s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : "") +
           '<div class="method-notes">' + notes + "</div>" +

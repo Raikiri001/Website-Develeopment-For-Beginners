@@ -983,3 +983,65 @@
     font-size: var(--text-sm);
   }
 }
+
+/* ---------- File tree ---------- */
+/* A folder structure is data, so it gets a real component instead of being
+   typed into a code block and pretending to be markup. */
+.tree-figure {
+  margin: 0 0 var(--space-6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--bg-sunken);
+}
+
+.tree-figure figcaption {
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.file-tree {
+  padding: var(--space-3) var(--space-4);
+}
+
+/* Indentation is driven by --depth, so nesting cannot drift out of step
+   with the data the way hand-typed spaces do. */
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 2px 0 2px calc(var(--depth) * var(--space-5));
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.tree-name.is-folder {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.tree-row.is-marked {
+  background-color: var(--accent-primary-tint);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+}
+
+.tree-mark {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  background-color: var(--accent-primary);
+  color: var(--white);
+  white-space: nowrap;
+}

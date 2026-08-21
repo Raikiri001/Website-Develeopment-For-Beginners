@@ -1,8 +1,5 @@
 /* File Paths - lesson content. Explains what a path is and how one is resolved in general, so it holds up whatever folder structures an activity happens to use. */
 
-const TREE =
-  '<pre class="tree">site/\n  index.html\n  about.html\n  css/\n    styles.css\n  images/\n    logo.png\n  blog/\n    post.html</pre>';
-
 const PARTS = [
   {
     id: "what",
@@ -47,7 +44,7 @@ const PARTS = [
       "What to watch for":
         "A broken image usually shows a placeholder, but a broken stylesheet shows nothing at all. The page just renders with browser defaults, which looks like the CSS is at fault when the path is.",
       "Worth remembering":
-        "Paths are case sensitive on most web servers, even though they often are not on your own computer. <code>Logo.png</code> and <code>logo.png</code> are different files once the site is published.",
+        "Paths are case sensitive on most web servers, even where they are not on your own computer, so <code>Logo.png</code> and <code>logo.png</code> become different files once the site is published. Note also that a path in a URL no longer has to match real folders on the server: MDN describes it as <a href=\"https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_URL\" target=\"_blank\" rel=\"noopener\">mostly an abstraction</a> the server handles however it likes.",
     },
     demo: {
       editorKind: "html",
@@ -66,43 +63,55 @@ const PARTS = [
     tagline: "Directions from where you are",
     accent: "#d97706",
     lead:
-      "A <strong>relative path</strong> starts from <strong>the folder the current file is in</strong>. It does not say where the site starts, only how to get there from here, which is why the same path can mean different files in different pages.",
+      "A <strong>relative path</strong> leaves out everything the browser can work out for itself. It starts from <strong>the folder holding the current file</strong>, so the same path written in two different files can point at two different places.",
+    keyPoint:
+      "<code>../</code> means <strong>go up one folder</strong>. It comes from the Unix file system, and you need one for every level between where you are and where you are going.",
+    tree: {
+      label: "The site this lesson uses",
+      lines: [
+        { depth: 0, name: "site/", kind: "folder" },
+        { depth: 1, name: "index.html", kind: "file" },
+        { depth: 1, name: "about.html", kind: "file" },
+        { depth: 1, name: "css/", kind: "folder" },
+        { depth: 2, name: "styles.css", kind: "file" },
+        { depth: 1, name: "images/", kind: "folder" },
+        { depth: 2, name: "logo.png", kind: "file" },
+        { depth: 1, name: "blog/", kind: "folder" },
+        { depth: 2, name: "post.html", kind: "file" },
+      ],
+    },
     blocks: [
       {
-        label: "A folder to navigate",
+        label: "Written in index.html",
         lang: "html",
-        code: `site/
-  index.html
-  about.html
-  css/
-    styles.css
-  images/
-    logo.png
-  blog/
-    post.html
+        code: `<!-- index.html sits directly inside site/, so a plain -->
+<!-- name is a file beside it, and a folder name goes    -->
+<!-- one level down.                                     -->
 
-<!-- Written in index.html, which sits in site/ -->
-about.html          <!-- a sibling, same folder     -->
-css/styles.css      <!-- down into css/             -->
-images/logo.png     <!-- down into images/          -->
-blog/post.html      <!-- down into blog/            -->
+<a href="about.html">About</a>
+<link rel="stylesheet" href="css/styles.css" />
+<img src="images/logo.png" alt="Logo" />`,
+      },
+      {
+        label: "Written in blog/post.html",
+        lang: "html",
+        code: `<!-- This file sits one level deeper, inside blog/, so -->
+<!-- everything has to climb out of blog/ first.        -->
 
-<!-- Written in blog/post.html, one level deeper -->
-../index.html       <!-- up one, then index.html    -->
-../css/styles.css   <!-- up one, then into css/     -->`,
+<a href="../about.html">About</a>
+<link rel="stylesheet" href="../css/styles.css" />
+<img src="../images/logo.png" alt="Logo" />`,
       },
     ],
-    keyPoint:
-      "<code>../</code> means <strong>go up one folder</strong>. Every <code>../</code> at the front of a path is one level up, and you need one for each folder between you and the site root.",
     exampleHeadings: ["Syntax", "Kind", "Example", "What it means"],
     examples: [
       { syntax: "file.ext", label: "Same folder", code: "about.html", meaning: "A file sitting beside the current one." },
-      { syntax: "./file.ext", label: "Same folder, explicit", code: "./about.html", meaning: "Identical to the line above. The <code>./</code> is optional." },
-      { syntax: "folder/file.ext", label: "Down one", code: "css/styles.css", meaning: "Into a folder that sits beside the current file." },
-      { syntax: "a/b/file.ext", label: "Down two", code: "assets/img/logo.png", meaning: "Each slash is one more level down." },
-      { syntax: "../file.ext", label: "Up one", code: "../index.html", meaning: "Out of the current folder, then the file." },
-      { syntax: "../../file.ext", label: "Up two", code: "../../index.html", meaning: "One <code>../</code> for each level you need to climb." },
-      { syntax: "../folder/file.ext", label: "Up then down", code: "../css/styles.css", meaning: "Climb out, then descend into a different folder." },
+      { syntax: "./file.ext", label: "Same folder, spelled out", code: "./about.html", meaning: "Identical to the line above. The <code>./</code> is optional." },
+      { syntax: "folder/file.ext", label: "One level down", code: "css/styles.css", meaning: "Into a folder beside the current file, then the file." },
+      { syntax: "a/b/file.ext", label: "Two levels down", code: "images/icons/x.png", meaning: "Each slash is one more level down." },
+      { syntax: "../file.ext", label: "One level up", code: "../about.html", meaning: "Out of the current folder, then the file." },
+      { syntax: "../../file.ext", label: "Two levels up", code: "../../index.html", meaning: "One <code>../</code> for each level you need to climb." },
+      { syntax: "../folder/file.ext", label: "Up, then down", code: "../css/styles.css", meaning: "Climb out, then descend into a different folder." },
     ],
     meta: {
       "What it is": "Directions starting from the current folder",
@@ -111,22 +120,21 @@ blog/post.html      <!-- down into blog/            -->
     },
     notes: {
       "How it works":
-        "The browser starts in the folder holding the current file, then applies each step in turn. A plain name or a folder name goes down, and <code>../</code> goes up.",
+        "The browser looks for the file in a subfolder of the one holding the current file. A plain name or a folder name goes down; <code>../</code> goes up.",
       "What to watch for":
-        "The same path means different things in different files. <code>css/styles.css</code> works from <code>index.html</code> but not from <code>blog/post.html</code>, which needs <code>../css/styles.css</code> instead.",
+        "The same text means different files in different places. <code>css/styles.css</code> is correct in <code>index.html</code> and wrong in <code>blog/post.html</code>, which needs <code>../css/styles.css</code>.",
       "Worth remembering":
-        "Relative paths survive being moved. Copy the whole site folder anywhere, or publish it under any domain, and every relative path still works because none of them names the site root.",
+        "Relative paths survive being moved. Copy the whole folder anywhere, or publish it under any domain or subfolder, and every one of them still works, because none of them names the site root.",
     },
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
-      paneCss: ".tree { font-family: monospace; font-size: 12px; background: #f1f5f9; padding: 8px; }",
-      value: '<p>From <strong>index.html</strong>, the stylesheet is at:</p>\n<p><code>css/styles.css</code></p>\n<p>From <strong>blog/post.html</strong> it is at:</p>\n<p><code>../css/styles.css</code></p>',
-      result: "Same file, two different paths, because the starting point moved.",
+      paneCss: "code { background: #f1f5f9; padding: 1px 5px; }",
+      value: '<p>From <strong>index.html</strong>: <code>css/styles.css</code></p>\n<p>From <strong>blog/post.html</strong>: <code>../css/styles.css</code></p>\n<p>Same file. Different starting point.</p>',
+      result: "Same target file, two different paths, because the starting point moved.",
       panes: [{ label: "Rendered page", html: "", applies: true }],
     },
   },
-
   {
     id: "absolute",
     number: "03",
@@ -192,44 +200,65 @@ blog/post.html      <!-- down into blog/            -->
     id: "resolving",
     number: "04",
     name: "Resolving a Path",
-    tagline: "Working it out step by step",
+    tagline: "Following it one step at a time",
     accent: "#7c3aed",
     lead:
-      "To work out where a relative path lands, <strong>start at the current file's folder and apply one step at a time</strong>. This is exactly what the browser does, and doing it by hand is how you find the mistake.",
-    blocks: [
+      "To work out where a relative path lands, <strong>start at the current file's folder and take one step per slash</strong>. This is exactly what the browser does, and doing it by hand is how you find the mistake.",
+    keyPoint:
+      "Start from the current file's <strong>folder</strong>, not the file itself. Counting the file as a level is the mistake behind almost every off-by-one path error.",
+    tree: {
+      label: "Resolving ../images/logo.png, written in blog/post.html",
+      lines: [
+        { depth: 0, name: "site/", kind: "folder" },
+        { depth: 1, name: "index.html", kind: "file" },
+        { depth: 1, name: "css/", kind: "folder" },
+        { depth: 2, name: "styles.css", kind: "file" },
+        { depth: 1, name: "images/", kind: "folder" },
+        { depth: 2, name: "logo.png", kind: "file", mark: "target" },
+        { depth: 1, name: "blog/", kind: "folder" },
+        { depth: 2, name: "post.html", kind: "file", mark: "you are here" },
+      ],
+    },
+    ladder: [
       {
-        label: "Working it out",
-        lang: "html",
-        code: `<!-- Current file:  site/blog/post.html          -->
-<!-- Path written:   ../images/logo.png          -->
-
-<!-- Step 0: start in the current file's FOLDER  -->
-<!--         site/blog/                          -->
-
-<!-- Step 1: ../   go up one level               -->
-<!--         site/                                -->
-
-<!-- Step 2: images/   go down into images        -->
-<!--         site/images/                         -->
-
-<!-- Step 3: logo.png   the file itself           -->
-<!--         site/images/logo.png    <- resolved  -->
-
-<!-- Note step 0. The starting point is the       -->
-<!-- FOLDER, never the file itself, which is the  -->
-<!-- single most common slip.                     -->`,
+        rank: "0",
+        title: "Start in the current file's folder",
+        body: "Not the file. <code>blog/post.html</code> is the file, so the starting point is <code>blog/</code>.",
+        code: "site/blog/",
+      },
+      {
+        rank: "1",
+        title: "../  goes up one level",
+        body: "Drop the last folder off the end. There is one <code>../</code>, so climb once.",
+        code: "site/blog/   ->   site/",
+      },
+      {
+        rank: "2",
+        title: "images/  goes down into that folder",
+        body: "A folder name adds one level. Add it to the end.",
+        code: "site/   ->   site/images/",
+      },
+      {
+        rank: "3",
+        title: "logo.png  is the file itself",
+        body: "The last segment has no slash after it, so it is the file being asked for.",
+        code: "site/images/logo.png",
+      },
+      {
+        rank: "4",
+        title: "Check the answer against the tree",
+        body: "<code>site/images/logo.png</code> is exactly where the file sits, so the path is right. If it had not matched, the difference would tell you how many levels you were out by.",
+        code: "resolved  ==  actual   ->   it works",
       },
     ],
-    keyPoint:
-      "Start from the current file's <strong>folder</strong>, not the file. Counting the file itself as a level is the mistake behind most off-by-one path errors.",
-    exampleHeadings: ["From", "Path written", "Steps", "Resolves to"],
+    exampleHeadings: ["Written in", "Path", "What happens", "Resolves to"],
     examples: [
-      { syntax: "index.html", label: "css/styles.css", code: "down into css", meaning: "<code>css/styles.css</code>" },
-      { syntax: "blog/post.html", label: "css/styles.css", code: "down into blog/css", meaning: "<code>blog/css/styles.css</code>, which does not exist." },
-      { syntax: "blog/post.html", label: "../css/styles.css", code: "up one, then down", meaning: "<code>css/styles.css</code>" },
-      { syntax: "blog/post.html", label: "../index.html", code: "up one", meaning: "<code>index.html</code>" },
-      { syntax: "blog/post.html", label: "post.html", code: "same folder", meaning: "<code>blog/post.html</code>, itself." },
-      { syntax: "index.html", label: "../index.html", code: "up past the root", meaning: "Outside the site. Nothing is there." },
+      { syntax: "index.html", label: "css/styles.css", code: "Down into css/", meaning: "<code>css/styles.css</code>. Correct." },
+      { syntax: "blog/post.html", label: "css/styles.css", code: "Down into blog/css/", meaning: "<code>blog/css/styles.css</code>. Nothing is there." },
+      { syntax: "blog/post.html", label: "../css/styles.css", code: "Up one, then down", meaning: "<code>css/styles.css</code>. Correct." },
+      { syntax: "blog/post.html", label: "../index.html", code: "Up one", meaning: "<code>index.html</code>. Correct." },
+      { syntax: "blog/post.html", label: "post.html", code: "Same folder", meaning: "<code>blog/post.html</code>, the file itself." },
+      { syntax: "index.html", label: "../index.html", code: "Up past the top", meaning: "Outside the site. Nothing is there, and no error is raised." },
     ],
     meta: {
       "What it is": "Following a path one step at a time",
@@ -238,22 +267,21 @@ blog/post.html      <!-- down into blog/            -->
     },
     notes: {
       "How it works":
-        "Take the current file's folder as the starting point, then read the path left to right. Each <code>../</code> removes one folder from the end, and each name adds one.",
+        "Take the current file's folder, then read the path left to right. Each <code>../</code> removes one folder from the end, each folder name adds one, and the last segment is the file.",
       "What to watch for":
-        "Going up past the top of the site does not wrap around or error, it simply points at nothing. The request fails and whatever needed the file is missing.",
+        "Climbing above the top of the site does not wrap around or warn you. The path simply points at nothing, the request fails, and whatever needed the file is missing.",
       "Worth remembering":
-        "When a path is wrong, resolve it by hand and compare the answer to where the file actually is. The difference tells you exactly how many levels you are out by.",
+        "When something will not load, resolve its path by hand and compare the answer with where the file actually sits. The gap between the two is your mistake, and usually it is one level.",
     },
     demo: {
       editorKind: "html",
-      editorLabel: "index.html",
-      paneCss: ".tree { font-family: monospace; font-size: 12px; background: #f1f5f9; padding: 8px; white-space: pre; }",
-      value: '<p>Resolve <code>../images/logo.png</code> from <code>blog/post.html</code>:</p>\n<p>blog/ &rarr; up one &rarr; images/ &rarr; logo.png</p>\n<p><strong>images/logo.png</strong></p>',
-      result: "Every path can be worked out this way, one step at a time.",
-      panes: [{ label: "Rendered page", html: "", applies: true }],
+      editorLabel: "Try resolving one yourself",
+      paneCss: "code { background: #f1f5f9; padding: 1px 5px; } li { margin-bottom: 4px; }",
+      value: '<p>From <strong>blog/post.html</strong>, resolve <code>../css/styles.css</code></p>\n<ol>\n  <li>Start: <code>blog/</code></li>\n  <li><code>../</code> up one: <code>site root</code></li>\n  <li><code>css/</code> down one: <code>css/</code></li>\n  <li>File: <code>css/styles.css</code></li>\n</ol>',
+      result: "Every path resolves this way. Change the steps above and check your own working.",
+      panes: [{ label: "Working it out", html: "", applies: true }],
     },
   },
-
   {
     id: "context",
     number: "05",
@@ -282,6 +310,17 @@ blog/post.html      <!-- down into blog/            -->
     ],
     keyPoint:
       "A <code>url()</code> in a stylesheet is resolved from <strong>the stylesheet's folder</strong>, not the page's. Move a CSS file into a subfolder and every <code>url()</code> inside it needs rewriting.",
+    tree: {
+      label: "index.html links css/styles.css, and both want images/logo.png",
+      lines: [
+        { depth: 0, name: "site/", kind: "folder" },
+        { depth: 1, name: "index.html", kind: "file", mark: "images/logo.png" },
+        { depth: 1, name: "css/", kind: "folder" },
+        { depth: 2, name: "styles.css", kind: "file", mark: "../images/logo.png" },
+        { depth: 1, name: "images/", kind: "folder" },
+        { depth: 2, name: "logo.png", kind: "file", mark: "target" },
+      ],
+    },
     exampleHeadings: ["Written in", "Path", "Resolved from", "Points at"],
     examples: [
       { syntax: "index.html", label: "images/logo.png", code: "The page's folder", meaning: "<code>images/logo.png</code>" },
