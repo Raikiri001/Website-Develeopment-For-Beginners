@@ -24,6 +24,14 @@
     "tags": ["CSS", "properties", "styling"]
   },
   {
+    "id": "complete-the-css",
+    "title": "Complete the CSS",
+    "description": "Read what the design needs, then type the missing property or value into the blank. Forty problems across text and colour, the box model, backgrounds and borders, and layout, with a preview that updates as you type.",
+    "category": "practical",
+    "href": "practical/complete-the-css/",
+    "tags": ["CSS", "properties", "values"]
+  },
+  {
     "id": "html-debugger",
     "title": "HTML Debugger",
     "description": "Click the parts of a broken HTML page where the mistakes are. Thirty problems from Beginner to Expert, mixing in more kinds of mistake as you go.",

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Read what the design needs, then type the missing CSS property or value into the blank. Forty problems across text and colour, the box model, backgrounds and borders, and layout, with a preview that updates as you type."
+    />
+    <title>Complete the CSS - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>Complete the CSS</h1>
+      <div class="header-desc">
+        Every problem gives you a <strong>brief</strong> and a CSS rule with
+        pieces missing. Type the <strong>property name</strong> or the
+        <strong>value</strong> into each blank, and watch the
+        <strong>preview</strong> change as you type.
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="header-top">
+            <span>Problems</span>
+            <span class="panel-badge" id="totalCount">40</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span id="progressCount">0/40</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="category-list" id="categoryList"></div>
+      </aside>
+
+      <div class="main-content panel">
+        <div class="title-bar">
+          <div class="title-bar-left">
+            <span class="title-bar-badge" id="titleBarBadge">Ready</span>
+            <h2 id="titleBarTitle">Select a Problem</h2>
+          </div>
+          <div class="title-bar-right">
+            <button class="btn" id="btnReset" disabled>Reset</button>
+            <button class="btn btn-warning" id="btnHint" disabled>Hint</button>
+            <button class="btn btn-success" id="btnCheck" disabled>
+              Check Solution
+            </button>
+            <button class="btn btn-primary" id="btnNext" hidden>
+              Next question
+            </button>
+          </div>
+        </div>
+
+        <!-- Welcome State (shown until a problem is selected) -->
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon">&#9633;</div>
+          <h2 class="welcome-title">Select a problem to begin</h2>
+          <p class="welcome-subtitle">
+            Pick a problem from the sidebar. Read the brief, then type the
+            missing property name or value into each blank in the CSS. The
+            preview updates as you type, so you can see what your CSS does
+            before you check it.
+          </p>
+          <div class="welcome-stats" id="welcomeStats"></div>
+        </div>
+
+        <div class="workspace" id="workspace" hidden>
+          <div class="panel brief-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>The brief</span>
+                <span
+                  class="panel-badge difficulty-badge"
+                  id="promptDifficultyBadge"
+                  >Easy</span
+                >
+              </div>
+            </div>
+            <p class="brief-body" id="briefBody"></p>
+          </div>
+
+          <div class="work-grid">
+            <div class="panel code-panel">
+              <div class="panel-header">
+                <div class="header-top">
+                  <span>Fill in the blanks</span>
+                  <span class="panel-badge" id="blankCountBadge">1 blank</span>
+                </div>
+              </div>
+              <div class="code-body">
+                <div class="code-block-group">
+                  <div class="code-label">HTML (given, do not change)</div>
+                  <pre class="code-text" id="promptHtml"></pre>
+                </div>
+                <div class="code-block-group">
+                  <div class="code-label">CSS</div>
+                  <div class="code-text code-editable" id="cssEditor"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel preview-panel">
+              <div class="panel-header">
+                <div class="header-top">
+                  <span>Live preview</span>
+                  <span class="panel-badge">Updates as you type</span>
+                </div>
+              </div>
+              <div class="preview-body">
+                <!-- The preview is a shadow root rather than an iframe: the
+                     learner's CSS is re-applied on every keystroke, and
+                     re-setting an iframe's srcdoc that often reloads the
+                     document and flickers. A shadow root just swaps one
+                     <style> node's text, and still keeps the CSS from
+                     leaking out into the page around it. -->
+                <div class="preview-stage" id="previewStage"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="feedback-note" id="feedbackNote" aria-live="polite"></div>
+        </div>
+
+        <div class="completion-panel" id="completionPanel">
+          <h2>All done</h2>
+          <p id="completionScoreText"></p>
+          <button class="btn btn-primary" id="btnRestart">
+            Restart all problems
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
