@@ -102,20 +102,25 @@
   color: var(--accent, var(--accent-primary));
 }
 
-/* Subheadings stay closed until you are reading that part, or hover it. */
-.toc-subs {
+/* Subheadings stay closed until you are reading that part, or hover it.
+   The wrapper is the collapsing grid and holds exactly one child, so the
+   single 0fr row track covers the whole list rather than just its first
+   item. The child needs overflow:hidden and min-height:0 for the row to
+   actually be allowed to reach zero. */
+.toc-subs-wrap {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows var(--transition-medium);
 }
 
-.toc-item.is-current .toc-subs,
-.toc-item:hover .toc-subs {
+.toc-item.is-current > .toc-subs-wrap,
+.toc-item:hover > .toc-subs-wrap {
   grid-template-rows: 1fr;
 }
 
-.toc-subs > li {
+.toc-subs {
   overflow: hidden;
+  min-height: 0;
 }
 
 .toc-subs a {

@@ -98,14 +98,17 @@
       '<ul class="toc-list">' +
       items
         .map(function (it) {
+          /* The list is wrapped so the collapsing grid has exactly one child.
+             Applied straight to the <ul>, `grid-template-rows: 0fr` would
+             only size the first row and every other item would still show. */
           const subs = it.subs.length
-            ? '<ul class="toc-subs">' +
+            ? '<div class="toc-subs-wrap"><ul class="toc-subs">' +
               it.subs
                 .map(function (sub) {
                   return '<li><a href="#' + sub.id + '">' + escapeHtml(sub.name) + "</a></li>";
                 })
                 .join("") +
-              "</ul>"
+              "</ul></div>"
             : "";
           return (
             '<li class="toc-item" data-target="' + it.id + '"' +
