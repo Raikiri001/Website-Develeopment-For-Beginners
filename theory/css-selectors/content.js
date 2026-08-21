@@ -32,6 +32,8 @@ const PARTS = [
 }`,
       },
     ],
+    keyPoint:
+      "A selector describes <strong>what an element is</strong>, never what it says. If a rule seems to do nothing, suspect the selector before the declarations.",
     meta: {
       "What it is": "A pattern that picks out elements",
       "Written as": "The part before the { brackets",
@@ -83,11 +85,22 @@ li { }
 * { }`,
       },
     ],
+    keyPoint:
+      "The <strong>first character tells you what is being matched</strong>: a full stop is a class, a hash is an id, square brackets are an attribute, and a bare word is a tag name.",
     meta: {
       "What it is": "A match on the element itself",
       "Written as": "li, .class, #id, [attr], *",
       "Why it matters": "It is the building block of every selector",
     },
+    examples: [
+      { code: "p", label: "Type", meaning: "Every <code>&lt;p&gt;</code> on the page, wherever it sits." },
+      { code: ".item", label: "Class", meaning: "Every element carrying <code>class=\"item\"</code>, however many that is." },
+      { code: "#first", label: "Id", meaning: "The one element carrying <code>id=\"first\"</code>." },
+      { code: "[href]", label: "Attribute", meaning: "Any element that has an <code>href</code> attribute, whatever its value." },
+      { code: '[type="text"]', label: "Attribute value", meaning: "Any element whose <code>type</code> is exactly <code>text</code>." },
+      { code: '[href^="https"]', label: "Attribute starts with", meaning: "Values beginning with <code>https</code>. Also <code>$=</code> ends with, <code>*=</code> contains." },
+      { code: "*", label: "Universal", meaning: "Every element, without exception. Rarely what you want." },
+    ],
     notes: {
       "How it works":
         "Each kind reads one thing about the element. The marker character tells you which: a full stop means a class, a hash means an id, square brackets mean an attribute, and a bare word means a tag name.",
@@ -133,11 +146,21 @@ ul > .item { }
 h1 + p { }`,
       },
     ],
+    keyPoint:
+      "<strong>A space is a combinator, not formatting.</strong> <code>li.item</code> matches one element that is both; <code>li .item</code> matches an <code>.item</code> inside an <code>li</code>. They are completely different rules.",
     meta: {
       "What it is": "Two or more selectors joined together",
       "Written as": "ab, a b, a, b, a > b, a + b",
       "Why it matters": "The join changes the meaning completely",
     },
+    examples: [
+      { code: "li.item", label: "Compound", meaning: "One element that is <strong>both</strong> an <code>li</code> and <code>.item</code>. No space." },
+      { code: "li, .item", label: "Grouping", meaning: "<strong>Either</strong> one, matched separately. The comma splits the rule in two." },
+      { code: "ul li", label: "Descendant", meaning: "An <code>li</code> anywhere inside a <code>ul</code>, at any depth." },
+      { code: "ul > li", label: "Child", meaning: "An <code>li</code> that is a <strong>direct</strong> child of a <code>ul</code>, one level down." },
+      { code: "h1 + p", label: "Adjacent sibling", meaning: "The <code>p</code> immediately after an <code>h1</code>, and only that one." },
+      { code: "h1 ~ p", label: "General sibling", meaning: "Every <code>p</code> after an <code>h1</code> that shares its parent." },
+    ],
     notes: {
       "How it works":
         "With no separator, all parts must be true of the same element. With a separator, the parts describe different elements and the separator says how they must be related.",
@@ -177,11 +200,24 @@ p::first-line { }  /* only the first line of text  */
 p::before { }      /* content inserted at the start */`,
       },
     ],
+    keyPoint:
+      "<strong>One colon is a state or a position. Two colons is a part of an element.</strong> That is the only reliable way to tell a pseudo-class from a pseudo-element.",
     meta: {
       "What it is": "A match on state, position, or a part",
       "Written as": ":hover, :first-child, ::before",
       "Why it matters": "It reaches what the HTML cannot label",
     },
+    examples: [
+      { code: "a:hover", label: "State", meaning: "An <code>a</code> only while the pointer is over it." },
+      { code: "input:checked", label: "State", meaning: "A checkbox or radio that is currently ticked." },
+      { code: "li:first-child", label: "Position", meaning: "An <code>li</code> that is the first child of its parent." },
+      { code: "li:last-child", label: "Position", meaning: "An <code>li</code> that is the last child of its parent." },
+      { code: "li:nth-child(2)", label: "Position, counted", meaning: "The second child. Counting starts at <strong>1</strong>, not 0." },
+      { code: "li:nth-child(odd)", label: "Position, pattern", meaning: "The 1st, 3rd, 5th and so on. Also takes <code>even</code> or a formula like <code>3n</code>." },
+      { code: "li:not(.done)", label: "Negation", meaning: "Every <code>li</code> that does <strong>not</strong> carry <code>.done</code>." },
+      { code: "p::first-line", label: "Pseudo-element", meaning: "Only the first line of the paragraph, however wide the window is." },
+      { code: "p::before", label: "Pseudo-element", meaning: "A slot inserted before the paragraph's own content." },
+    ],
     notes: {
       "How it works":
         "A pseudo-class is tested as the page runs, so <code>:hover</code> matches and stops matching as the pointer moves. A pseudo-element addresses a slice of an element that has no tag, such as its first line.",
@@ -224,11 +260,21 @@ li { color: blue; }
 .item { color: teal; }   /* this beats the green above */`,
       },
     ],
+    keyPoint:
+      "<strong>One id beats any number of classes, and one class beats any number of tag names.</strong> Position in the file only breaks a tie, so moving a rule lower rarely fixes anything.",
     meta: {
       "What it is": "How a conflict between rules is settled",
       "Written as": "Not written; it is counted",
       "Why it matters": "It explains why a rule you wrote is ignored",
     },
+    examples: [
+      { code: "#first", label: "1 id", meaning: "Beats every selector below, however long they are." },
+      { code: ".item.done", label: "2 classes", meaning: "Beats one class. Still loses to a single id." },
+      { code: "ul li .item", label: "1 class, 2 types", meaning: "The class is what carries it. The tags add almost nothing." },
+      { code: ".item", label: "1 class", meaning: "Beats any number of tag names on its own." },
+      { code: "ul li span", label: "3 types", meaning: "Long, but weaker than a single class." },
+      { code: "li", label: "1 type", meaning: "The weakest match there is, short of the universal selector." },
+    ],
     notes: {
       "How it works":
         "The browser counts ids, then classes and attributes and pseudo-classes, then tag names. A higher count in an earlier group wins outright, so one id beats any number of classes.",
@@ -252,6 +298,7 @@ const LESSON = {
   id: "css-selectors",
   metaKeys: METAKEYS,
   noteLabels: ["How it works", "What to watch for", "Worth remembering"],
+  exampleHeadings: ["Written", "Kind", "What it matches"],
   demoHint: "Edit the selector and watch which elements respond",
   sections: PARTS,
   comparison: {

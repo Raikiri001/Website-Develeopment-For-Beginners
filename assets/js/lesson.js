@@ -106,13 +106,43 @@
           })
           .join("");
 
+        /* The one line someone skimming has to come away with. */
+        const keyPoint = s.keyPoint
+          ? '<p class="key-point"><span class="key-point-label">Key point</span>' +
+            s.keyPoint + "</p>"
+          : "";
+
+        /* A scannable line per item, so the section works as a reference as
+           well as an explanation. */
+        const examples = s.examples
+          ? '<div class="ref-scroll"><table class="ref-table"><thead><tr>' +
+            (lesson.exampleHeadings || ["Written", "Name", "Matches"])
+              .map(function (h) {
+                return "<th>" + escapeHtml(h) + "</th>";
+              })
+              .join("") +
+            "</tr></thead><tbody>" +
+            s.examples
+              .map(function (ex) {
+                return (
+                  '<tr><td class="ref-code"><code>' + escapeHtml(ex.code) + "</code></td>" +
+                  '<td class="ref-name">' + escapeHtml(ex.label) + "</td>" +
+                  '<td class="ref-meaning">' + ex.meaning + "</td></tr>"
+                );
+              })
+              .join("") +
+            "</tbody></table></div>"
+          : "";
+
         return (
           '<section class="method" id="' + s.id + '" style="--accent:' + s.accent + '">' +
           '<header class="method-head"><span class="method-num">' + s.number + "</span>" +
           "<div><h2>" + s.name + '</h2><p class="method-tagline">' + s.tagline + "</p></div></header>" +
           '<p class="method-lead">' + s.lead + "</p>" +
+          keyPoint +
           '<dl class="method-meta">' + meta + "</dl>" +
           '<div class="method-code">' + code + "</div>" +
+          examples +
           '<div class="method-notes">' + notes + "</div>" +
           (s.demo ? '<div class="tryit" data-section="' + s.id + '"></div>' : "") +
           "</section>"

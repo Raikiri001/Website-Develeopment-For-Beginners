@@ -722,3 +722,118 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Key point ---------- */
+/* The single line a reader skimming the section must not miss. Loud on
+   purpose, and deliberately the only thing in the section styled this way. */
+.key-point {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-sunken);
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+}
+
+.key-point-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.key-point code {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  font-weight: 400;
+}
+
+/* ---------- Reference table ---------- */
+/* One line per item, so a section reads as a reference as well as prose. */
+.ref-scroll {
+  overflow-x: auto;
+  margin: 0 0 var(--space-6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  min-width: 520px;
+}
+
+.ref-table th,
+.ref-table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ref-table thead th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background-color: var(--bg-sunken);
+}
+
+.ref-table tbody tr:last-child th,
+.ref-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* The syntax is the thing being looked up, so it carries the emphasis. */
+.ref-code code {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--accent);
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+}
+
+.ref-name {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.ref-meaning {
+  color: var(--text-secondary);
+}
+
+.ref-meaning code {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+}
+
+@media (max-width: 640px) {
+  .key-point {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+  }
+}
