@@ -145,10 +145,11 @@ body {
   overflow-y: auto;
 }
 
-/* Holds a real <input>, so lines are elements and need extra height. */
+/* Holds a real <input>, so lines are elements and each line keeps its own pre. */
 .code-editable {
   line-height: 1.9;
   max-height: none;
+  white-space: normal;
 }
 
 .code-line {
