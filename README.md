@@ -1,6 +1,6 @@
 # Web Dev For Beginners
 
-![HTML5](https://img.shields.io/badge/HTML5-blue?style=flat-square) ![CSS3](https://img.shields.io/badge/CSS3-blue?style=flat-square) ![JavaScript](https://img.shields.io/badge/JavaScript-blue?style=flat-square) ![Status](https://img.shields.io/badge/status-in%20progress-green?style=flat-square) [![Deployed on GitHub Pages](https://img.shields.io/badge/deployed-GitHub%20Pages-green?style=flat-square)](https://raikiri001.github.io/Website-Develeopment-For-Beginners/) ![License](https://img.shields.io/badge/license-MIT-yellow?style=flat-square)
+![HTML5](https://img.shields.io/badge/HTML5-blue?style=flat-square) ![CSS3](https://img.shields.io/badge/CSS3-blue?style=flat-square) ![JavaScript](https://img.shields.io/badge/JavaScript-blue?style=flat-square) ![Status](https://img.shields.io/badge/status-in%20progress-green?style=flat-square) [![Deployed on GitHub Pages](https://img.shields.io/badge/deployed-GitHub%20Pages-green?style=flat-square)](https://raikiri001.github.io/Website-Develeopment-For-Beginners/)
 
 ## Description
 
