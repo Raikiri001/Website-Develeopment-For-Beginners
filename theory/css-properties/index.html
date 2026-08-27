@@ -3,11 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="The three places CSS can live, explained through annotated code. External, internal and inline side by side, with the comments in the code doing half the teaching, and a plain account of which one wins."
-    />
-    <title>Inline, Internal, External - Web Dev For Beginners</title>
+    <meta name="description" content="What a CSS property actually is: the shape of a declaration, the kinds of value it accepts, how shorthands expand, what happens to properties you never set, and how to name values of your own." />
+    <title>CSS Properties - Web Dev For Beginners</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -37,13 +34,8 @@
       <div class="lesson-body">
       <header class="lesson-hero">
         <p class="lesson-eyebrow">Theory</p>
-        <h1>Inline, Internal, External</h1>
-        <p class="lesson-standfirst">
-          CSS can be attached to a page in exactly three places. All three
-          produce real CSS and use the same properties. What differs is
-          <strong>how far each one reaches</strong> and
-          <strong>which one wins</strong> when they disagree.
-        </p>
+        <h1>CSS Properties</h1>
+        <p class="lesson-standfirst">A CSS rule is a list of <strong>properties</strong>, and each one is a single named setting on an element. This is what a property is, what you are allowed to put after the colon, what a property does when you never set it, and how to define one of your own.</p>
               </header>
 
       <div id="sections"></div>
@@ -51,9 +43,9 @@
       <section class="compare-section" id="compare">
         <header class="section-head">
           <p class="section-eyebrow">Side by side</p>
-          <h2>The three, compared</h2>
+          <h2>Every part, compared</h2>
           <p class="section-lead">
-            Every row asks the same question of all three, so you can read
+            Every row asks the same question of all of them, so you can read
             straight across to see what actually differs.
           </p>
         </header>
@@ -62,34 +54,8 @@
         </div>
       </section>
 
-      <section class="cascade-section" id="cascade">
-        <header class="section-head">
-          <p class="section-eyebrow">When they disagree</p>
-          <h2>Which one wins?</h2>
-          <p class="section-lead">
-            Put a colour on the same heading in all three places and only one
-            of them can take effect. The browser settles it in this order,
-            from the top down.
-          </p>
-        </header>
-
-        <div class="playground" id="playground">
-          <div class="playground-controls" id="playgroundControls"></div>
-          <div class="playground-result">
-            <div class="playground-preview" id="playgroundPreview"></div>
-            <ol class="playground-ranking" id="playgroundRanking"></ol>
-          </div>
-        </div>
-
-        <ol class="ladder" id="ladder"></ol>
-      </section>
-
       <footer class="lesson-end">
-        <p>
-          That is the whole picture: one file for a site, one block for a
-          page, one attribute for one element, and a cascade that settles
-          any argument between them.
-        </p>
+        <p>A property is one setting, a value is what you set it to, a shorthand sets several at once, anything you never set still has a value, and a custom property lets you name a value and reuse it. Those ideas hold for every property in CSS, including the ones you have not met yet.</p>
       </footer>
       </div>
     </main>
@@ -97,6 +63,5 @@
     <script src="../../assets/js/progress.js"></script>
     <script src="content.js"></script>
     <script src="../../assets/js/lesson.js"></script>
-    <script src="cascade.js"></script>
   </body>
 </html>

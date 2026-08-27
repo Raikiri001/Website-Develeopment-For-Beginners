@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="What a path actually is: directions from one file to another, how relative and absolute paths differ, how to resolve one by hand, and why a path in a stylesheet counts from somewhere different." />
+    <title>File Paths - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="../../assets/css/lesson.css" />
+  </head>
+  <body>
+    <div class="read-progress" id="readProgress" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <main class="lesson">
+      <nav class="lesson-toc" id="lessonToc" aria-label="On this page"></nav>
+      <div class="lesson-body">
+      <header class="lesson-hero">
+        <p class="lesson-eyebrow">Theory</p>
+        <h1>File Paths</h1>
+        <p class="lesson-standfirst">Every <code>href</code>, <code>src</code> and <code>url()</code> holds a <strong>path</strong>: directions from one file to another. The browser follows them literally, from a starting point you have to know, which is why a wrong path is so often invisible until something fails to load.</p>
+      </header>
+
+      <div id="sections"></div>
+
+      <section class="compare-section" id="compare">
+        <header class="section-head">
+          <p class="section-eyebrow">Side by side</p>
+          <h2>Every part, compared</h2>
+          <p class="section-lead">
+            Every row asks the same question of all of them, so you can read
+            straight across to see what actually differs.
+          </p>
+        </header>
+        <div class="compare-scroll">
+          <table class="compare-table" id="comparison"></table>
+        </div>
+      </section>
+
+      <section class="resolver-section" id="resolver">
+        <header class="section-head">
+          <p class="section-eyebrow">Try it</p>
+          <h2>Resolve a path yourself</h2>
+          <p class="section-lead">
+            Pick which file the path is written in, then type a path or choose
+            one. Every step is worked out below, and the tree shows where you
+            land, whether or not anything is actually there.
+          </p>
+        </header>
+
+        <div class="resolver">
+          <div class="resolver-controls">
+            <label class="resolver-field">
+              <span>Path is written in</span>
+              <select id="resolverFrom"></select>
+            </label>
+            <label class="resolver-field">
+              <span>The path</span>
+              <input type="text" id="resolverPath" spellcheck="false" autocomplete="off" />
+            </label>
+            <div class="resolver-presets" id="resolverPresets"></div>
+          </div>
+
+          <div class="resolver-out">
+            <ol class="resolve-steps" id="resolverSteps"></ol>
+            <p class="resolve-verdict" id="resolverVerdict"></p>
+            <div class="file-tree" id="resolverTree"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="lesson-end">
+        <p>A path is directions. A relative one starts from the folder of the file it is written in, an absolute one starts from a fixed point, and resolving either is a matter of taking one step at a time from the right place.</p>
+      </footer>
+      </div>
+    </main>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="content.js"></script>
+    <script src="../../assets/js/lesson.js"></script>
+    <script src="resolver.js"></script>
+  </body>
+</html>
