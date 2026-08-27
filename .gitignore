@@ -7,3 +7,4 @@ node_modules/
 # *.source.js file to regenerate the committed, encrypted answers.json.
 /scripts/
 practical/*/*.source.js
+.vscode/
