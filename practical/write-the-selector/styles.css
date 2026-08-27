@@ -147,7 +147,7 @@ body {
 
 /* Holds a real <input>, so lines are elements and need extra height. */
 .code-editable {
-  line-height: 2.2;
+  line-height: 1.9;
   max-height: none;
 }
 
@@ -173,19 +173,19 @@ body {
 }
 
 /* ---------- The selector input ---------- */
-/* One wide field, deliberately loud against the code around it. */
+/* Sits inline where the selector goes, so the rule still reads as one line. */
 .blank {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   line-height: 1.4;
-  padding: 4px 8px;
+  padding: 2px 8px;
   border: 1px dashed var(--accent-primary);
   border-radius: var(--radius-sm);
   background-color: var(--accent-primary-tint);
   color: var(--text-primary);
   vertical-align: baseline;
-  width: 100%;
-  max-width: 320px;
+  width: 22ch;
+  max-width: 100%;
   transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
