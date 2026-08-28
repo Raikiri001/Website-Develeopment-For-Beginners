@@ -1,8 +1,8 @@
 /**
  * HTML Structure Trainer - Problem Library
- * 43 problems across 6 categories, ordered to match how the class covers
+ * 63 problems across 8 categories, ordered to match how the class covers
  * HTML: boilerplate, tags/elements/syntax, text/headings, lists/nesting,
- * links/images/attributes, then semantic layout.
+ * links/images/attributes, semantic layout, then forms and tables.
  *
  * Solutions are stored in solutions.json as encrypted strings.
  * This file contains only problem metadata (titles, descriptions, hints).
@@ -350,6 +350,162 @@ const PROBLEM_CATEGORIES = [
         description:
           "Build a complete website with header, nav list, main with two sections, aside, and footer.",
         hint: "This combines everything: semantic elements, lists, links, and proper nesting.",
+      },
+    ],
+  },
+  {
+    id: "forms",
+    name: "Forms",
+    icon: "",
+    color: "#f06292",
+    problems: [
+      {
+        id: "fm1",
+        title: "Label and Text Input",
+        description:
+          "Create a form with a label and a single-line text box for a username.",
+        hint: 'A <label> is joined to its box by for="id", so the for value on the label and the id on the <input> have to be the same word. <input> is a void element with no closing tag.',
+      },
+      {
+        id: "fm2",
+        title: "Search Box",
+        description:
+          "Create a search form with a heading, a labelled text box showing placeholder text, and a button.",
+        hint: "The placeholder attribute shows faint example text inside the box until the user types. It is a hint, not a value, so it disappears as soon as they start typing.",
+      },
+      {
+        id: "fm3",
+        title: "Email and Password",
+        description:
+          "Create a log in form with a labelled email box, a labelled password box that must be filled in, and a button.",
+        hint: 'The type attribute changes what an <input> does: type="email" checks the text looks like an address, type="password" hides the characters. Adding required stops the form submitting while the box is empty.',
+      },
+      {
+        id: "fm4",
+        title: "Radio Buttons",
+        description:
+          "Create a form offering a choice of small, medium or large, where only one option can be picked at a time.",
+        hint: 'Radio buttons only behave as one group, where picking one clears the others, when every <input type="radio"> shares the same name. Each still needs its own id so its label can point at it.',
+      },
+      {
+        id: "fm5",
+        title: "Checkboxes",
+        description:
+          "Create a form where the user can tick any number of toppings, then submit their order.",
+        hint: 'type="checkbox" lets several boxes be ticked at once, which is the difference from a radio button. A shared name still groups them, so the answers arrive together.',
+      },
+      {
+        id: "fm6",
+        title: "Dropdown Menu",
+        description:
+          "Create a form with a labelled dropdown offering three countries to choose from.",
+        hint: "A dropdown is a <select> wrapping one <option> per choice. The text between the option tags is what the user reads; the value attribute is what gets sent.",
+      },
+      {
+        id: "fm7",
+        title: "Text Area",
+        description:
+          "Create a feedback form with a heading, a labelled multi-line comments box, and a send button.",
+        hint: "<textarea> is for text longer than one line, and unlike <input> it is a paired tag with a closing </textarea>. The rows attribute sets how many lines tall it starts.",
+      },
+      {
+        id: "fm8",
+        title: "Where the Form Sends",
+        description:
+          "Create a newsletter sign up form that posts a required email address to /subscribe.",
+        hint: "action says which address the answers are sent to and method says how they travel, with post used for data that changes something. The name attribute on an input labels that value when it arrives.",
+      },
+      {
+        id: "fm9",
+        title: "Grouping with Fieldset",
+        description:
+          "Create a form where a street and a postcode box are grouped together under the heading 'Delivery address'.",
+        hint: "<fieldset> draws a box around related fields and <legend> names that group. The legend has to be the first thing inside the fieldset.",
+      },
+      {
+        id: "fm10",
+        title: "Full Contact Form",
+        description:
+          "Build a complete contact form: a grouped name and email, a topic dropdown, a message box, and a submit button.",
+        hint: "This combines everything: a form with action and method, a fieldset with its legend, labels joined to inputs by for and id, a select of options, a textarea, and a submit button at the end.",
+      },
+    ],
+  },
+  {
+    id: "tables",
+    name: "Tables",
+    icon: "",
+    color: "#a1887f",
+    problems: [
+      {
+        id: "tb1",
+        title: "Rows and Cells",
+        description:
+          "Create a table of two rows with two cells of fruit in each.",
+        hint: "A table is built row by row, not column by column: <tr> opens a row and each <td> inside it is one cell. Close the row before starting the next.",
+      },
+      {
+        id: "tb2",
+        title: "Header Row",
+        description:
+          "Create a price list table with a heading above it, a header row, and one row of data.",
+        hint: "<th> is a heading cell and <td> is a data cell. They sit in a <tr> exactly the same way; the difference is what they mean, and browsers show <th> bold and centred.",
+      },
+      {
+        id: "tb3",
+        title: "Table Caption",
+        description:
+          "Create a timetable with the title 'Monday timetable' attached to the table itself.",
+        hint: "<caption> names the whole table, and it has to be the very first thing inside <table>, before any row.",
+      },
+      {
+        id: "tb4",
+        title: "Head and Body",
+        description:
+          "Create a results table where the header row and the two data rows are in separate sections.",
+        hint: "<thead> wraps the row of headings and <tbody> wraps the rows of data. Both go directly inside <table> and each holds whole <tr> rows.",
+      },
+      {
+        id: "tb5",
+        title: "Table Footer",
+        description:
+          "Create an order table with a head, a body, and a footer row holding the total.",
+        hint: "<tfoot> is the section for summary rows such as a total. Like <thead> and <tbody>, it holds complete <tr> rows.",
+      },
+      {
+        id: "tb6",
+        title: "Spanning Columns",
+        description:
+          "Create a timetable whose top row is a single 'Term 1' heading stretched across both columns.",
+        hint: 'colspan="2" makes one cell as wide as two, so that row needs only one cell instead of two. Count carefully: a row using colspan has fewer cells than the rows below it.',
+      },
+      {
+        id: "tb7",
+        title: "Spanning Rows",
+        description:
+          "Create a roster where a single 'Monday' cell stretches down beside two names.",
+        hint: 'rowspan="2" makes one cell as tall as two rows, so the row underneath it starts with the next cell along and is one cell shorter.',
+      },
+      {
+        id: "tb8",
+        title: "Row and Column Headers",
+        description:
+          "Create a report card table with a caption, headings across the top, and a heading at the start of the data row.",
+        hint: 'scope tells a screen reader which cells a heading belongs to: scope="col" for a heading above a column, scope="row" for one at the start of a row.',
+      },
+      {
+        id: "tb9",
+        title: "Table on a Page",
+        description:
+          "Create a weather page with a heading, an opening paragraph, a captioned table of temperatures, then a closing paragraph.",
+        hint: "A table is an ordinary block of content in the body, so paragraphs sit before and after it as siblings, never inside the <table>.",
+      },
+      {
+        id: "tb10",
+        title: "Full Data Table",
+        description:
+          "Build a complete sales table: a caption, a head with column headings, a body with a heading at the start of each row, and a footer holding the total across both columns.",
+        hint: "This combines everything: caption first, then thead, tbody and tfoot, with scope on every heading cell and colspan on the total row.",
       },
     ],
   },
