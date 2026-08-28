@@ -1,11 +1,25 @@
 [
   {
-    "id": "html-tags-and-attributes",
-    "title": "HTML Tags and Attributes",
-    "description": "What an HTML element actually is: the shape of a tag, how nesting builds the page as a tree, the document skeleton, what attributes add, how block and inline differ, and why the tag you choose carries meaning.",
+    "id": "html-overview",
+    "title": "HTML Overview",
+    "description": "What HTML is and what a page is made of: content and meaning rather than appearance, the element as the unit everything is built from, how a browser reads a file in order, why the tag you choose matters, and how a page reaches the other files it needs.",
     "category": "theory",
     "topic": "html",
     "order": 1,
+    "href": "theory/html-overview/",
+    "tags": [
+      "HTML",
+      "markup",
+      "elements"
+    ]
+  },
+  {
+    "id": "html-tags-and-attributes",
+    "title": "HTML Tags and Attributes",
+    "description": "What an HTML element actually is: the shape of a tag and what its name carries, what attributes add that the name alone cannot, and why the tag you choose says something no styling can.",
+    "category": "theory",
+    "topic": "html",
+    "order": 2,
     "href": "theory/html-tags-and-attributes/",
     "tags": [
       "HTML",
@@ -19,7 +33,7 @@
     "description": "A definition or a use case, four tags, one right answer. Sixty-four tags from the everyday ones to the genuinely niche. Race a one, two or three minute clock for a high score, or work through the whole bank untimed.",
     "category": "quiz",
     "topic": "html",
-    "order": 2,
+    "order": 3,
     "href": "quiz/understanding-tags/",
     "tags": [
       "HTML",
@@ -33,7 +47,7 @@
     "description": "One tag, one job, four versions of it. Sixty-four questions on the attributes that make a tag do what you want, from href and src to radio groups, colspan and scope. Race a clock for a high score, or work through the bank untimed.",
     "category": "quiz",
     "topic": "html",
-    "order": 3,
+    "order": 4,
     "href": "quiz/match-the-attribute/",
     "tags": [
       "HTML",
@@ -42,12 +56,26 @@
     ]
   },
   {
+    "id": "html-structure",
+    "title": "HTML Structure",
+    "description": "How markup is arranged into a document: the skeleton every page starts from, how nesting puts elements inside other elements, the tree that nesting builds and the names for every position in it, and how block and inline elements take up space.",
+    "category": "theory",
+    "topic": "html",
+    "order": 5,
+    "href": "theory/html-structure/",
+    "tags": [
+      "HTML",
+      "nesting",
+      "document"
+    ]
+  },
+  {
     "id": "html-drag-and-drop",
     "title": "HTML Structure Trainer",
     "description": "Sixty-three drag-and-drop problems that train you to arrange HTML elements in the correct order, following the same path as the class: boilerplate, tags, text, lists, links and images, semantic layout, then forms and tables.",
     "category": "practical",
     "topic": "html",
-    "order": 4,
+    "order": 6,
     "href": "practical/html-drag-and-drop/",
     "tags": [
       "HTML",
@@ -61,7 +89,7 @@
     "description": "What a path actually is: directions from one file to another, how relative and absolute paths differ, how to resolve one by hand, and why a path in a stylesheet counts from somewhere different.",
     "category": "theory",
     "topic": "html",
-    "order": 5,
+    "order": 7,
     "href": "theory/file-paths/",
     "tags": [
       "paths",
@@ -75,7 +103,7 @@
     "description": "Read a project's folder tree and type the paths that reach the files. Twenty problems where the src, href and alt values are blank and you fill them in, from a single flat folder to structures several levels deep.",
     "category": "practical",
     "topic": "html",
-    "order": 6,
+    "order": 8,
     "href": "practical/resolving-paths/",
     "tags": [
       "HTML",
@@ -89,7 +117,7 @@
     "description": "Click the parts of a broken HTML page where the mistakes are. Thirty problems from Beginner to Expert, mixing in more kinds of mistake as you go.",
     "category": "practical",
     "topic": "html",
-    "order": 7,
+    "order": 9,
     "href": "practical/html-debugger/",
     "tags": [
       "HTML",
@@ -98,17 +126,17 @@
     ]
   },
   {
-    "id": "inline-internal-external",
-    "title": "Inline, Internal, External",
-    "description": "The three places CSS can live, explained through annotated code. External, internal and inline side by side, with the comments in the code doing half the teaching, and a plain account of which one wins.",
+    "id": "css-overview",
+    "title": "CSS Overview",
+    "description": "What CSS is and what a rule is made of: how a stylesheet reaches a page, the selector and declaration block that every rule is built from, how one rule reaches many elements at once, and what happens when rules pile up on one element.",
     "category": "theory",
     "topic": "css",
     "order": 1,
-    "href": "theory/inline-internal-external/",
+    "href": "theory/css-overview/",
     "tags": [
       "CSS",
-      "cascade",
-      "stylesheets"
+      "rules",
+      "syntax"
     ]
   },
   {
@@ -140,26 +168,12 @@
     ]
   },
   {
-    "id": "match-the-css",
-    "title": "Match the CSS",
-    "description": "Read a real CSS snippet, then pick which of five live previews it actually produces. Forty questions across single HTML elements and whole-page layouts, running from obvious to easy to miss.",
-    "category": "practical",
-    "topic": "css",
-    "order": 4,
-    "href": "practical/match-the-css/",
-    "tags": [
-      "CSS",
-      "properties",
-      "styling"
-    ]
-  },
-  {
     "id": "css-selectors",
     "title": "CSS Selectors",
     "description": "What a CSS selector actually is: a pattern that picks out elements, how simple selectors combine, how pseudo-classes match a state, and how specificity settles a conflict between two rules.",
     "category": "theory",
     "topic": "css",
-    "order": 5,
+    "order": 4,
     "href": "theory/css-selectors/",
     "tags": [
       "CSS",
@@ -173,12 +187,40 @@
     "description": "The CSS is written for you but the selector is missing. Read the page, then write a selector that reaches exactly the outlined elements. Thirty problems across basic selectors, combinators, pseudo-classes and attributes.",
     "category": "practical",
     "topic": "css",
-    "order": 6,
+    "order": 5,
     "href": "practical/write-the-selector/",
     "tags": [
       "CSS",
       "selectors",
       "combinators"
+    ]
+  },
+  {
+    "id": "match-the-css",
+    "title": "Match the CSS",
+    "description": "Read a real CSS snippet, then pick which of five live previews it actually produces. Forty questions across single HTML elements and whole-page layouts, running from obvious to easy to miss.",
+    "category": "practical",
+    "topic": "css",
+    "order": 6,
+    "href": "practical/match-the-css/",
+    "tags": [
+      "CSS",
+      "properties",
+      "styling"
+    ]
+  },
+  {
+    "id": "inline-internal-external",
+    "title": "Inline, Internal, External",
+    "description": "The three places CSS can live, explained through annotated code. External, internal and inline side by side, with the comments in the code doing half the teaching, and a plain account of which one wins.",
+    "category": "theory",
+    "topic": "css",
+    "order": 7,
+    "href": "theory/inline-internal-external/",
+    "tags": [
+      "CSS",
+      "cascade",
+      "stylesheets"
     ]
   },
   {
