@@ -66,9 +66,9 @@
     would silently wipe a best score they had already set.
   */
   const TIMED_MODES = [
-    { id: "timed-60", label: "1 minute sprint", desc: "As many as you can in one minute", seconds: 60 },
-    { id: "timed-120", label: "2 minute sprint", desc: "Twice the time, twice the tags", seconds: 120 },
-    { id: "timed-180", label: "3 minute run", desc: "Long enough for the whole bank", seconds: 180 },
+    { id: "timed-60", label: "1 minute sprint", desc: "60 seconds, scored", seconds: 60 },
+    { id: "timed-120", label: "2 minute sprint", desc: "120 seconds, scored", seconds: 120 },
+    { id: "timed-180", label: "3 minute run", desc: "180 seconds, scored", seconds: 180 },
   ];
 
   // ── Persistent state ────────────────────────────────────────────────────
@@ -316,7 +316,7 @@
     untimed.body.appendChild(
       makeModeItem(
         "Every question",
-        "All " + totalQuestionCount() + " questions, easiest first",
+        "All " + totalQuestionCount() + " questions, not scored",
         {
           modeId: "untimed-all",
           mode: "untimed",
@@ -325,7 +325,7 @@
     );
     ATTRIBUTE_QUIZ_TIERS.forEach(function (tier) {
       untimed.body.appendChild(
-        makeModeItem(tier.name, tier.questions.length + " questions, no clock", {
+        makeModeItem(tier.name, tier.questions.length + " questions, not scored", {
           modeId: "untimed-" + tier.id,
           mode: "untimed",
           tier: tier.id,
