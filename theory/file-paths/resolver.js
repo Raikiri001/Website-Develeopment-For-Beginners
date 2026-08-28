@@ -48,6 +48,7 @@
     }
 
     let parts;
+    let clamped = false;
     if (path.charAt(0) === "/") {
       parts = [];
       steps.push({ part: "/", note: "Leading slash: start at the site root", at: "(root)" });
@@ -74,8 +75,9 @@
       }
       if (seg === "..") {
         if (parts.length === 0) {
-          steps.push({ part: "../", note: "Already at the root. There is nowhere above it", at: "(nowhere)" });
-          return { steps: steps, kind: "above-root" };
+          clamped = true;
+          steps.push({ part: "../", note: "Already at the root, so this one is thrown away", at: "(root)" });
+          continue;
         }
         parts.pop();
         steps.push({
@@ -93,7 +95,7 @@
       });
     }
 
-    return { steps: steps, kind: "relative", resolved: parts.join("/") };
+    return { steps: steps, kind: "relative", resolved: parts.join("/"), clamped: clamped };
   }
 
   function renderTree(resolved) {
@@ -157,11 +159,10 @@
     } else if (result.kind === "fragment") {
       verdict = "A fragment. It stays on this page rather than fetching a file.";
       tone = "is-outside";
-    } else if (result.kind === "above-root") {
-      verdict = "This climbs above the top of the site. There is nothing there, and the browser reports no error.";
-      tone = "is-wrong";
     } else if (SITE_FILES.indexOf(result.resolved) !== -1) {
-      verdict = "Resolves to " + result.resolved + ", and that file exists.";
+      verdict = result.clamped
+        ? "Resolves to " + result.resolved + ", and that file exists. A ../ with nothing left to climb was thrown away, so the extra one changed nothing."
+        : "Resolves to " + result.resolved + ", and that file exists.";
       tone = "is-right";
     } else {
       verdict = "Resolves to " + result.resolved + ", but nothing is there.";

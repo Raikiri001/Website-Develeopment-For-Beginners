@@ -260,15 +260,18 @@ const PARTS = [
 <p>So does this one.</p>
 
 <!-- INLINE: sits in the flow of text, only as wide -->
-<!-- as its content. a, strong, em, img, span.      -->
+<!-- as its content. a, strong, em, span.           -->
 <p>Some <strong>bold words</strong> inside a line.</p>
 
-<!-- Width and height are ignored on inline elements. -->
+<!-- Width and height are ignored on inline elements, -->
+<!-- with one exception: img is inline but IS sized   -->
+<!-- by width and height, because it holds a file     -->
+<!-- rather than text.                                -->
 <!-- CSS can change which one an element behaves as.  -->`,
       },
     ],
     keyPoint:
-      "<strong>Width and height do nothing on an inline element.</strong> If sizing is being ignored, check whether the element is inline before checking your CSS.",
+      "<strong>Width and height do nothing on an inline element</strong>, unless that element holds a file rather than text. If sizing is being ignored, check whether the element is inline before checking your CSS.",
     meta: {
       "What it is": "Whether an element takes a whole line",
       "Written as": "Not written; it is the tag's default",
@@ -277,7 +280,8 @@ const PARTS = [
     exampleHeadings: ["Written", "Kind", "Example", "What it does"],
     examples: [
       { syntax: "block", label: "Default for", code: "div, p, h1, ul, li", meaning: "Starts on a new line and fills the width available." },
-      { syntax: "inline", label: "Default for", code: "a, strong, em, img", meaning: "Sits inside a line, only as wide as its content." },
+      { syntax: "inline", label: "Default for", code: "a, strong, em, span", meaning: "Sits inside a line, only as wide as its content." },
+      { syntax: "inline", label: "Default for, but sizeable", code: "img, video, input", meaning: "Inline, yet <strong>does</strong> take width and height, because it holds a file rather than text." },
       { syntax: "display: block", label: "Change it", code: "span { display: block }", meaning: "Makes an inline element behave as a block." },
       { syntax: "display: inline-block", label: "Change it", code: "a { display: inline-block }", meaning: "Flows inline, but accepts width, height and vertical padding." },
       { syntax: "display: none", label: "Change it", code: ".old { display: none }", meaning: "Removed from the layout entirely, leaving no gap." },
@@ -286,7 +290,7 @@ const PARTS = [
       "How it works":
         "A block element starts on a new line and stretches to fill its container. An inline element sits inside a line of text and is only as wide as the content it holds.",
       "What to watch for":
-        "Setting <code>width</code> or <code>height</code> on an inline element does nothing, and vertical padding on one overlaps its neighbours instead of pushing them away. This is a very common first confusion.",
+        "Setting <code>width</code> or <code>height</code> on an inline element does nothing, and vertical padding on one overlaps its neighbours instead of pushing them away. This is a very common first confusion. The exception is an element holding a file rather than text, such as <code>&lt;img&gt;</code>: it is inline, but width and height do size it, which is why <code>&lt;img width=\"400\"&gt;</code> works.",
       "Worth remembering":
         "The default comes from the tag, but CSS can change it with <code>display</code>. Choose the tag for its meaning and change the behaviour in CSS, never the other way round.",
     },
