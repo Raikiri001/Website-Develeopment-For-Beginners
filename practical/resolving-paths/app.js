@@ -154,6 +154,7 @@
   */
   function resolvePath(fromDir, typed) {
     const stack = fromDir ? fromDir.split("/") : [];
+    let surplus = false;
 
     const parts = typed.split("/");
     for (let i = 0; i < parts.length; i++) {
@@ -161,14 +162,19 @@
       // An empty part is a double slash or a trailing one; neither moves you.
       if (part === "" || part === ".") continue;
       if (part === "..") {
-        if (!stack.length) return { error: "above-root" };
+        // A browser throws away a ../ with nothing left to climb, rather
+        // than failing, so the path still resolves. Match that.
+        if (!stack.length) {
+          surplus = true;
+          continue;
+        }
         stack.pop();
         continue;
       }
       stack.push(part);
     }
 
-    return { path: stack.join("/") };
+    return { path: stack.join("/"), surplus: surplus };
   }
 
   // Same journey, ignoring capitals, used only to tell a learner who has the
@@ -210,17 +216,17 @@
     }
 
     const resolved = resolvePath(dirName(editing), value);
-    if (resolved.error === "above-root") {
-      return {
-        ok: false,
-        message:
-          "That climbs up past the project folder itself. Count the folders between " +
-          baseName(editing) +
-          " and the top of the tree: that is how many ../ you get.",
-      };
-    }
     if (resolved.path === target) {
-      return { ok: true, message: "Lands on " + target + "." };
+      return {
+        ok: true,
+        message: resolved.surplus
+          ? "Lands on " +
+            target +
+            ". It works, but there is a ../ too many: once you are at the top of the tree an extra one is thrown away rather than obeyed. Count the folders between " +
+            baseName(editing) +
+            " and the top: that is how many you need."
+          : "Lands on " + target + ".",
+      };
     }
 
     if (index.folders.has(resolved.path)) {

@@ -128,7 +128,7 @@ const PARTS = [
         label: "styles.css",
         lang: "css",
         code: `.box {
-  /* The long way: four separate properties. */
+  /* The long way: three separate properties. */
   border-width: 2px;
   border-style: solid;
   border-color: #94a3b8;
@@ -229,7 +229,7 @@ const PARTS = [
       "What to watch for":
         "Before any of your CSS runs, the browser has already applied its own default stylesheet. Headings are large and bold, and lists have bullets, because of that, not because nothing is set.",
       "Worth remembering":
-        "The keywords <code>inherit</code>, <code>initial</code>, <code>unset</code> and <code>revert</code> work on any property, so you can always ask for the parent's value or reset explicitly. Note <code>initial</code> is the CSS specification's value, not the browser's, which is what <code>revert</code> gets you. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Inheritance\" target=\"_blank\" rel=\"noopener\">MDN's inheritance guide</a>.",
+        "The keywords <code>inherit</code>, <code>initial</code>, <code>unset</code> and <code>revert</code> work on any property, so you can always ask for the parent's value or reset explicitly. Note <code>initial</code> is the CSS specification's value, not the browser's, which is what <code>revert</code> gets you. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Inheritance\" target=\"_blank\" rel=\"noopener\">MDN's inheritance guide</a>.",
     },
     demo: {
       editorLabel: "styles.css",

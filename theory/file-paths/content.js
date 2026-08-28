@@ -243,7 +243,7 @@ const PARTS = [
       { syntax: "blog/post.html", label: "../css/styles.css", code: "Up one, then down", meaning: "<code>css/styles.css</code>. Correct." },
       { syntax: "blog/post.html", label: "../index.html", code: "Up one", meaning: "<code>index.html</code>. Correct." },
       { syntax: "blog/post.html", label: "post.html", code: "Same folder", meaning: "<code>blog/post.html</code>, the file itself." },
-      { syntax: "index.html", label: "../index.html", code: "Up past the top", meaning: "Outside the site. Nothing is there, and no error is raised." },
+      { syntax: "index.html", label: "../index.html", code: "Up past the top", meaning: "<code>index.html</code>. A <code>../</code> at the root is thrown away rather than obeyed." },
     ],
     meta: {
       "What it is": "Following a path one step at a time",
@@ -254,7 +254,7 @@ const PARTS = [
       "How it works":
         "Take the current file's folder, then read the path left to right. Each <code>../</code> removes one folder from the end, each folder name adds one, and the last segment is the file.",
       "What to watch for":
-        "Climbing above the top of the site does not wrap around or warn you. The path simply points at nothing, the request fails, and whatever needed the file is missing.",
+        "Climbing above the top of the site does not warn you. Any <code>../</code> with nothing left to climb is silently thrown away, so <code>../../../logo.png</code> at the root lands on <code>logo.png</code>. A path with too many of them can therefore still work, which hides the mistake until you move the file.",
       "Worth remembering":
         "When something will not load, resolve its path by hand and compare the answer with where the file actually sits. The gap between the two is your mistake, and usually it is one level.",
     },

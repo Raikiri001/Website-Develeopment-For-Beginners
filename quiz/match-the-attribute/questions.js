@@ -287,10 +287,10 @@ const FORM_QUESTIONS = [
       '<input type="radio" name="size" value="medium" checked>',
       '<input type="radio" name="size" value="medium" selected>',
       '<input type="radio" name="size" value="medium" default>',
-      '<input type="radio" name="size" value="medium" checked="no">',
+      '<input type="radio" name="size" value="medium" preselected>',
     ],
     explain:
-      "checked pre-selects a radio or checkbox. It is an on/off attribute: writing it at all turns it on, so even checked=\"no\" would still be checked. selected is the &lt;option&gt; version of this.",
+      "checked pre-selects a radio or checkbox. It is an on/off attribute: writing the word on its own turns it on, and there is no value to give it. selected is the &lt;option&gt; version of this.",
   },
   {
     id: "input-checkbox",
@@ -854,13 +854,13 @@ const LESS_COMMON_QUESTIONS = [
     id: "time-datetime",
     tag: "time",
     prompt:
-      'Write "next Tuesday" for readers while giving a computer the exact date.',
-    answer: '<time datetime="2026-08-18">next Tuesday</time>',
+      'Write "Australia Day" for readers while giving a computer the exact date.',
+    answer: '<time datetime="2027-01-26">Australia Day</time>',
     options: [
-      '<time datetime="2026-08-18">next Tuesday</time>',
-      '<time date="2026-08-18">next Tuesday</time>',
-      '<time value="2026-08-18">next Tuesday</time>',
-      '<time datetime="next Tuesday">2026-08-18</time>',
+      '<time datetime="2027-01-26">Australia Day</time>',
+      '<time date="2027-01-26">Australia Day</time>',
+      '<time value="2027-01-26">Australia Day</time>',
+      '<time datetime="Australia Day">2027-01-26</time>',
     ],
     explain:
       "datetime holds the machine-readable date in year-month-day order, while the friendly wording stays between the tags.",
