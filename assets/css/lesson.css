@@ -181,6 +181,7 @@
 }
 
 .lesson-standfirst strong {
+  font-weight: 700;
   color: var(--text-primary);
 }
 
@@ -229,6 +230,11 @@
   line-height: var(--leading-normal);
   color: var(--text-secondary);
   margin: 0 0 var(--space-6);
+}
+
+.method-lead strong {
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 /* ---------- Reach / reuse / best for ---------- */
@@ -373,6 +379,16 @@
   line-height: var(--leading-normal);
   color: var(--text-secondary);
   margin: 0;
+}
+
+/* Body copy is set at normal weight, so bold plus the stronger colour is what
+   marks the words that matter. The note label is already accent, so it is
+   left alone. */
+.section-lead strong,
+.ladder-body p strong,
+.method-notes p strong:not(.note-label) {
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .cascade-section {
@@ -620,6 +636,7 @@
 }
 
 .tryit-note strong {
+  font-weight: 700;
   color: var(--text-primary);
 }
 
@@ -848,8 +865,9 @@
 }
 
 /* ---------- Key point ---------- */
-/* The single line a reader skimming the section must not miss. Loud on
-   purpose, and deliberately the only thing in the section styled this way. */
+/* The single line a reader skimming the section must not miss. The panel is
+   what makes it loud; the sentence inside is set at normal weight so the
+   bolded words are the only bold thing in it. */
 .key-point {
   display: flex;
   flex-wrap: wrap;
@@ -861,15 +879,22 @@
   border-radius: var(--radius-sm);
   background-color: var(--bg-sunken);
   font-size: var(--text-base);
-  font-weight: 600;
+  font-weight: 400;
   line-height: var(--leading-normal);
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
 
 /* One flex child, so a <strong> inside the sentence stays inline. */
 .key-point-text {
   flex: 1;
   min-width: 0;
+}
+
+/* The emphasis carries the point, so it gets both the weight and the
+   stronger colour rather than being bold on top of bold. */
+.key-point strong {
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .key-point-label {
@@ -885,6 +910,7 @@
 .key-point code {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
+  color: var(--text-primary);
   background-color: var(--bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
@@ -979,6 +1005,11 @@
 
 .ref-meaning {
   color: var(--text-secondary);
+}
+
+.ref-meaning strong {
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .ref-meaning code {
