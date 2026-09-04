@@ -1016,6 +1016,12 @@
   color: var(--text-primary);
 }
 
+/* A lit part is one piece, so the underline hints on the smaller pieces
+   inside it are dropped rather than left cutting across the fill. */
+.anatomy-part.is-lit .anatomy-part {
+  box-shadow: none;
+}
+
 .ref-table tbody tr.is-lit {
   box-shadow: inset 3px 0 0 0 var(--accent-primary);
 }

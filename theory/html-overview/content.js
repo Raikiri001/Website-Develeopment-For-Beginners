@@ -70,9 +70,23 @@ About us
         {
           ref: "element",
           parts: [
-            { ref: "open", text: "<p>", tone: "tag" },
+            {
+              ref: "open",
+              parts: [
+                { text: "<", tone: "tag" },
+                { ref: "name", text: "p", tone: "tag" },
+                { text: ">", tone: "tag" },
+              ],
+            },
             { ref: "content", text: "Hello World!" },
-            { ref: "close", text: "</p>", tone: "tag" },
+            {
+              ref: "close",
+              parts: [
+                { text: "</", tone: "tag" },
+                { ref: "name", text: "p", tone: "tag" },
+                { text: ">", tone: "tag" },
+              ],
+            },
           ],
         },
         { text: "\n\n" },
@@ -97,7 +111,14 @@ About us
               ],
             },
             { ref: "content", text: "A short introduction." },
-            { ref: "close", text: "</p>", tone: "tag" },
+            {
+              ref: "close",
+              parts: [
+                { text: "</", tone: "tag" },
+                { ref: "name", text: "p", tone: "tag" },
+                { text: ">", tone: "tag" },
+              ],
+            },
           ],
         },
         { text: "\n" },
