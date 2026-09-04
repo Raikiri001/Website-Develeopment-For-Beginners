@@ -49,20 +49,20 @@ const PARTS = [
     },
     notes: [
       {
-        after: "meta",
-        title: "A path is resolved to a file, then that file is requested",
+        after: "code",
+        title: "From path to file",
         body:
           "The browser reads the path, works out which file it points at, and requests that file. If nothing is there, the request fails and whatever depended on it does not appear.",
       },
       {
-        after: "code",
-        title: "Only images tell you when their path is wrong",
+        after: "examples",
+        title: "Which failures are visible",
         body:
           "Only images announce themselves when they fail. A stylesheet, a script or a link that points nowhere gives you no marker on the page, so the symptom you see is unstyled text, a dead button, or a click that goes to a missing page, rather than anything naming the path.",
       },
       {
-        after: "examples",
-        title: "Once the site is published, a path is case sensitive",
+        after: "end",
+        title: "Case sensitivity",
         body:
           "Paths are case sensitive on most web servers, even where they are not on your own computer, so <code>Logo.png</code> and <code>logo.png</code> become different files once the site is published. Note also that a path in a URL no longer has to match real folders on the server: MDN describes it as <a href=\"https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_URL\" target=\"_blank\" rel=\"noopener\">mostly an abstraction</a> the server handles however it likes.",
       },
@@ -133,20 +133,20 @@ const PARTS = [
     },
     notes: [
       {
-        after: "meta",
-        title: "A plain name goes down a folder, ../ goes up one",
-        body:
-          "The browser looks for the file in a subfolder of the one holding the current file. A plain name or a folder name goes down; <code>../</code> goes up.",
-      },
-      {
-        after: "tree",
-        title: "The same path means different files in different folders",
+        after: "code",
+        title: "The same path, two places",
         body:
           "The same text means different files in different places. <code>css/styles.css</code> is correct in <code>index.html</code> and wrong in <code>blog/post.html</code>, which needs <code>../css/styles.css</code>.",
       },
       {
         after: "examples",
-        title: "A relative path survives being moved",
+        title: "Down and up",
+        body:
+          "The browser looks for the file in a subfolder of the one holding the current file. A plain name or a folder name goes down; <code>../</code> goes up.",
+      },
+      {
+        after: "end",
+        title: "Moving the whole folder",
         body:
           "Relative paths survive being moved. Copy the whole folder anywhere, or publish it under any domain or subfolder, and every one of them still works, because none of them names the site root.",
       },
@@ -197,20 +197,20 @@ const PARTS = [
     },
     notes: [
       {
-        after: "meta",
-        title: "A leading slash starts at the server's root",
-        body:
-          "A leading slash tells the browser to start at the root of whatever server it is talking to. A full URL goes further and names the server too, so it works from any site at all.",
-      },
-      {
         after: "code",
-        title: "A root-relative path ties the site to its own domain",
+        title: "Tied to the domain root",
         body:
           "Root-relative paths look tidier but tie the site to sitting at the root of its domain. This project uses relative paths everywhere for exactly that reason, so it also works from a subfolder.",
       },
       {
         after: "examples",
-        title: "A full URL for other sites, a relative path for yours",
+        title: "Starting from the root",
+        body:
+          "A leading slash tells the browser to start at the root of whatever server it is talking to. A full URL goes further and names the server too, so it works from any site at all.",
+      },
+      {
+        after: "end",
+        title: "Which one to use",
         body:
           "Use a full URL when linking to somebody else's site, since there is no relative route to it. Use a relative path within your own.",
       },
@@ -288,20 +288,20 @@ const PARTS = [
     },
     notes: [
       {
-        after: "meta",
-        title: "Read the path left to right, one segment at a time",
+        after: "tree",
+        title: "Reading it left to right",
         body:
           "Take the current file's folder, then read the path left to right. Each <code>../</code> removes one folder from the end, each folder name adds one, and the last segment is the file.",
       },
       {
-        after: "tree",
-        title: "Climbing above the top of the site is silently ignored",
+        after: "ladder",
+        title: "Climbing past the top",
         body:
           "Climbing above the top of the site does not warn you. Any <code>../</code> with nothing left to climb is silently thrown away, so <code>../../../logo.png</code> at the root lands on <code>logo.png</code>. A path with too many of them can therefore still work, which hides the mistake until you move the file.",
       },
       {
-        after: "ladder",
-        title: "Resolve the path by hand and compare it with the real file",
+        after: "end",
+        title: "Resolving one by hand",
         body:
           "When something will not load, resolve its path by hand and compare the answer with where the file actually sits. The gap between the two is your mistake, and usually it is one level.",
       },
@@ -360,20 +360,20 @@ const PARTS = [
     },
     notes: [
       {
-        after: "meta",
-        title: "Every file resolves its paths from its own folder",
-        body:
-          "Each file resolves its own paths. An <code>href</code> in a page counts from the page's folder, and a <code>url()</code> in a stylesheet counts from the stylesheet's folder, even though both end up on the same screen.",
-      },
-      {
-        after: "tree",
-        title: "Moving a stylesheet breaks the images it points at",
+        after: "code",
+        title: "When a stylesheet moves",
         body:
           "This is why a background image breaks when a stylesheet is reorganised while the HTML is untouched. Nothing about the page changed, but the starting point for every <code>url()</code> in that file did.",
       },
       {
-        after: "examples",
-        title: "Ask which file the path is written in",
+        after: "tree",
+        title: "Each file counts from itself",
+        body:
+          "Each file resolves its own paths. An <code>href</code> in a page counts from the page's folder, and a <code>url()</code> in a stylesheet counts from the stylesheet's folder, even though both end up on the same screen.",
+      },
+      {
+        after: "end",
+        title: "Which file is it written in",
         body:
           "Ask which <em>file</em> the path is written in, not which page is open. That one question resolves nearly every path that mysteriously does not work.",
       },

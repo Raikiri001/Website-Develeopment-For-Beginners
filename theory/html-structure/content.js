@@ -60,20 +60,20 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "The head describes the page, the body is the page",
+        after: "anatomy",
+        title: "What each part holds",
         body:
           "The doctype tells the browser to use modern standards, <code>head</code> holds information about the page, and <code>body</code> holds everything a visitor actually sees.",
       },
       {
-        after: "anatomy",
-        title: "Without the doctype, the browser follows 1990s rules",
+        after: "examples",
+        title: "Leaving out the doctype",
         body:
           "Without the doctype the browser switches to a compatibility mode built for pages from the 1990s, and layouts start behaving in ways no amount of CSS will explain.",
       },
       {
-        after: "examples",
-        title: "The browser builds this skeleton whether you type it or not",
+        after: "end",
+        title: "Typing it yourself",
         body:
           "The browser builds this skeleton whether or not you type it. Writing it yourself is how you keep control of what ends up in the head.",
       },
@@ -132,20 +132,20 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "An element inside another is its child",
+        after: "code",
+        title: "Children and the tree",
         body:
           "An element inside another is its child, and the whole page is one tree of these relationships. Indentation is only for humans, but the nesting itself is real structure.",
       },
       {
-        after: "code",
-        title: "Tags must close in the reverse order they were opened",
+        after: "examples",
+        title: "Closing order",
         body:
           "Tags must close in the reverse order they were opened. Cross them over and the browser repairs the markup by guessing, which is how a page ends up not matching the HTML you wrote.",
       },
       {
-        after: "examples",
-        title: "Indentation proves nothing about the nesting",
+        after: "end",
+        title: "Indentation",
         body:
           "Indentation is for people reading the file and means nothing to the browser. A page written entirely on one line nests exactly the same way, which is why a badly indented file can still be correct, and a neatly indented one can still be wrong.",
       },
@@ -208,20 +208,20 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "The browser builds the tree before it draws anything",
+        after: "tree",
+        title: "When the tree is built",
         body:
           "The browser turns your markup into this tree before it draws anything, and from then on the tree is the page. Change the nesting and you have changed the tree, whatever the page looks like afterwards.",
       },
       {
-        after: "tree",
-        title: "Every child is a descendant, not every descendant a child",
+        after: "examples",
+        title: "Child and descendant",
         body:
           "A child and a descendant are not the same thing, and the difference is exactly where beginners lose an afternoon. <code>strong</code> is inside <code>div</code>, so it is a descendant, but its parent is <code>p</code>, so it is not a child of <code>div</code>.",
       },
       {
-        after: "examples",
-        title: "CSS and JavaScript both work by walking this tree",
+        after: "end",
+        title: "Why the names matter",
         body:
           "These names are not jargon for its own sake. CSS selectors and JavaScript both work by walking this tree, so <code>.card p</code> and <code>.card &gt; p</code> only differ because descendant and child are different positions.",
       },
@@ -282,20 +282,20 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "A block fills the line, an inline sits inside one",
+        after: "code",
+        title: "Taking up space",
         body:
           "A block element starts on a new line and stretches to fill its container. An inline element sits inside a line of text and is only as wide as the content it holds.",
       },
       {
-        after: "code",
-        title: "Width and height do nothing to an inline element",
+        after: "examples",
+        title: "Inline width and height",
         body:
           "Setting <code>width</code> or <code>height</code> on an inline element does nothing, and vertical padding on one overlaps its neighbours instead of pushing them away. This is a very common first confusion. The exception is an element holding a file rather than text, such as <code>&lt;img&gt;</code>: it is inline, but width and height do size it, which is why <code>&lt;img width=\"400\"&gt;</code> works.",
       },
       {
-        after: "examples",
-        title: "The tag sets the default, display can change it",
+        after: "end",
+        title: "Changing it with display",
         body:
           "The default comes from the tag, but CSS can change it with <code>display</code>. Choose the tag for its meaning and change the behaviour in CSS, never the other way round.",
       },

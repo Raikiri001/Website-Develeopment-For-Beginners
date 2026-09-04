@@ -42,19 +42,19 @@ const METHODS = [
     },
     notes: [
       {
-        after: "lead",
+        after: "meta",
         title: "How it works",
         body:
           "The <code>&lt;link&gt;</code> joins the file to the page, and every rule in that file applies. The selector decides which elements each rule reaches.",
       },
       {
-        after: "meta",
+        after: "code",
         title: "What it costs",
         body:
           "It is a second file and a second request. If the path in <code>href</code> is wrong the file never loads, and the page appears with no styling at all.",
       },
       {
-        after: "code",
+        after: "end",
         title: "When to use it",
         body:
           "Whenever the site has more than one page. One file styles all of them, so a colour change happens once and reaches everywhere.",
@@ -98,19 +98,19 @@ const METHODS = [
     },
     notes: [
       {
-        after: "lead",
+        after: "meta",
         title: "How it works",
         body:
           "The rules sit inside the page itself, written exactly as they would be in a <code>.css</code> file. The selector decides which elements each rule reaches.",
       },
       {
-        after: "meta",
+        after: "code",
         title: "What it costs",
         body:
           "It reaches no other page. A second page needs its own copy, so the same rules now exist twice and both have to be kept in step.",
       },
       {
-        after: "code",
+        after: "end",
         title: "When to use it",
         body:
           "Whenever there is only one page, or for a quick test where a second file is more trouble than it is worth.",
@@ -150,19 +150,19 @@ const METHODS = [
     },
     notes: [
       {
-        after: "lead",
+        after: "meta",
         title: "How it works",
         body:
           "The declarations sit in an attribute on the element, with no selector and no curly brackets. There is nothing to select, because the attribute is already attached to what it styles.",
       },
       {
-        after: "meta",
+        after: "code",
         title: "What it costs",
         body:
           "It reaches no other element. Every element that wants the same styling needs its own copy, and styling is mixed into markup meant to describe structure.",
       },
       {
-        after: "code",
+        after: "end",
         title: "When to use it",
         body:
           "Almost never by hand. It belongs to JavaScript setting styles as a page runs, and to HTML email, where stylesheets are often stripped out.",

@@ -41,22 +41,22 @@ const PARTS = [
     },
     notes: [
       {
-        after: "lead",
-        title: "The browser tests every element against the pattern",
+        after: "meta",
+        title: "How matching works",
         body:
           "The browser checks every element against the pattern and collects the ones that match. The declarations are then applied to all of them, however many that turns out to be.",
       },
       {
-        after: "meta",
-        title: "Selectors describe elements, never the words inside them",
-        body:
-          "Selectors describe elements, not content. You cannot select an element because of the words inside it, only because of what it is, where it sits, or what it carries.",
-      },
-      {
         after: "code",
-        title: "A selector that matches nothing is still valid CSS",
+        title: "A selector that matches nothing",
         body:
           "A selector that matches nothing is perfectly valid CSS, so nothing warns you. If a rule seems to do nothing, the selector is usually wrong before the declarations are.",
+      },
+      {
+        after: "end",
+        title: "What a selector can see",
+        body:
+          "Selectors describe elements, not content. You cannot select an element because of the words inside it, only because of what it is, where it sits, or what it carries.",
       },
     ],
     demo: {
@@ -115,20 +115,20 @@ li { }
     ],
     notes: [
       {
-        after: "meta",
-        title: "The marker character tells you what is being matched",
-        body:
-          "Each kind reads one thing about the element. The marker character tells you which: a full stop means a class, a hash means an id, square brackets mean an attribute, and a bare word means a tag name.",
-      },
-      {
         after: "code",
-        title: "A class does nothing until CSS selects it",
+        title: "Classes and ids",
         body:
           "Classes and ids do nothing on their own. They exist purely so CSS has something to select by, which is why you add a class to an element you intend to style.",
       },
       {
         after: "examples",
-        title: "Real stylesheets are built out of classes",
+        title: "The marker characters",
+        body:
+          "Each kind reads one thing about the element. The marker character tells you which: a full stop means a class, a hash means an id, square brackets mean an attribute, and a bare word means a tag name.",
+      },
+      {
+        after: "end",
+        title: "What to build with",
         body:
           "Classes are what real stylesheets are built from. Tag selectors are too broad to control, and ids are too specific to override comfortably.",
       },
@@ -188,20 +188,20 @@ h1 + p { }`,
     ],
     notes: [
       {
-        after: "meta",
-        title: "A separator says how two elements must be related",
-        body:
-          "With no separator, all parts must be true of the same element. With a separator, the parts describe different elements and the separator says how they must be related.",
-      },
-      {
         after: "code",
-        title: "A single space changes what a selector matches",
+        title: "The space",
         body:
           "A space is the easiest character in CSS to add or lose by accident, and it changes the meaning without ever causing an error. <code>li.item</code> and <code>li .item</code> match completely different things.",
       },
       {
         after: "examples",
-        title: "Combine only when an element has nothing to select by",
+        title: "With and without a separator",
+        body:
+          "With no separator, all parts must be true of the same element. With a separator, the parts describe different elements and the separator says how they must be related.",
+      },
+      {
+        after: "end",
+        title: "When to combine",
         body:
           "Combining is how you reach an element that has nothing useful of its own to select by. If it has a class, use the class; combine only when it does not.",
       },
@@ -257,20 +257,20 @@ p::before { }      /* content inserted at the start */`,
     ],
     notes: [
       {
-        after: "meta",
-        title: "A pseudo-class is tested while the page runs",
+        after: "code",
+        title: "States and parts",
         body:
           "A pseudo-class is tested as the page runs, so <code>:hover</code> matches and stops matching as the pointer moves. A pseudo-element addresses a slice of an element that has no tag, such as its first line.",
       },
       {
-        after: "code",
-        title: "nth-child counts every sibling, starting at 1",
+        after: "examples",
+        title: "How nth-child counts",
         body:
           "<code>:nth-child</code> counts from 1 rather than 0, and it counts <em>all</em> siblings, not only the ones your selector matches. That is the usual reason a striped list stripes the wrong rows.",
       },
       {
-        after: "examples",
-        title: "One colon or two is how you tell the two apart",
+        after: "end",
+        title: "One colon or two",
         body:
           "One colon is a class, two colons is an element. This is the only reliable way to tell which kind you are looking at, and it is why the doubled colon exists at all.",
       },
@@ -369,20 +369,20 @@ p::before { }      /* content inserted at the start */`,
     },
     notes: [
       {
-        after: "meta",
-        title: "Specificity is counted in three columns",
+        after: "code",
+        title: "Counting the columns",
         body:
           "Count the selector into three columns: ids on the left, then classes, attribute selectors and pseudo-classes, then type selectors and pseudo-elements. Compare the two scores left to right and stop at the first column that differs.",
       },
       {
-        after: "code",
-        title: "A long selector can still lose to a single class",
+        after: "examples",
+        title: "Length is not weight",
         body:
           "Length is not weight. A long selector made only of tag names loses to a single class, and source order settles nothing unless all three columns are exactly equal.",
       },
       {
         after: "ladder",
-        title: "Inline styles and !important are settled before specificity",
+        title: "Inline styles and !important",
         body:
           "Inline styles and <code>!important</code> are <strong>not</strong> specificity. The browser settles those first and only then compares specificity, which is why no selector you write can beat a <code>style</code> attribute. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity\" target=\"_blank\" rel=\"noopener\">MDN's specificity guide</a>.",
       },

@@ -303,20 +303,20 @@
             "</div></figure>"
           : "";
 
-        /* The parts of a section, in the order they are shown. A note names one
-           of these, and "lead" is the space under the key point, before the
-           summary, for a note that introduces the whole section. */
+        /* The parts of a section, in the order they are shown. A note names the
+           one it belongs beside, or "end" to close the section off. */
         const parts = [
-          { name: "lead", html: "" },
           { name: "meta", html: '<dl class="method-meta">' + meta + "</dl>" },
           { name: "code", html: code ? '<div class="method-code">' + code + "</div>" : "" },
           { name: "tree", html: tree },
           { name: "anatomy", html: anatomy },
           { name: "examples", html: examples },
           { name: "ladder", html: s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : "" },
-        ].filter(function (part) {
-          return part.html || part.name === "lead";
-        });
+        ]
+          .filter(function (part) {
+            return part.html;
+          })
+          .concat([{ name: "end", html: "" }]);
 
         return (
           '<section class="method" id="' + s.id + '" style="--accent:' + s.accent + '">' +

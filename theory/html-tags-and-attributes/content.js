@@ -56,20 +56,20 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "The browser applies its defaults by tag name",
+        after: "anatomy",
+        title: "What the tag name does",
         body:
           "The browser reads the tag name and applies its own defaults for that name, which is why a heading is already large and bold before you write any CSS at all.",
       },
       {
-        after: "anatomy",
-        title: "Void elements hold no content, so they never close",
+        after: "examples",
+        title: "Void elements",
         body:
           "Most elements need closing, but void elements never do, because there is no content to wrap. Trying to close one, or forgetting to close one that needs it, both cause trouble.",
       },
       {
-        after: "examples",
-        title: "Tag names are a fixed vocabulary you cannot add to",
+        after: "end",
+        title: "The tag vocabulary",
         body:
           "Tag names are a fixed vocabulary. You cannot invent one and expect meaning from it, because the meaning comes from the browser knowing the name already.",
       },
@@ -165,22 +165,22 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "An attribute is a name, an equals sign and a quoted value",
+        after: "anatomy",
+        title: "How an attribute is written",
         body:
           "Each attribute is a name, an equals sign, and a value in quotes. Some are global and work on any element, such as <code>class</code> and <code>id</code>; others only mean something on particular elements.",
       },
       {
-        after: "anatomy",
-        title: "A missing attribute leaves an element that does nothing",
-        body:
-          "Leaving out a required attribute usually produces no error, just an element that quietly does not work. A link with no destination still looks like a link.",
-      },
-      {
         after: "examples",
-        title: "A boolean attribute is on because it is there",
+        title: "Boolean attributes",
         body:
           "A few attributes are boolean: writing them at all turns them on, and there is no value to give. Their presence is the setting.",
+      },
+      {
+        after: "end",
+        title: "A missing attribute",
+        body:
+          "Leaving out a required attribute usually produces no error, just an element that quietly does not work. A link with no destination still looks like a link.",
       },
     ],
     demo: {
@@ -250,20 +250,20 @@ const PARTS = [
     },
     notes: [
       {
-        after: "meta",
-        title: "A landmark lays out like a div and announces a region",
-        body:
-          "A landmark lays out exactly like a <code>&lt;div&gt;</code>, so the page looks no different. What changes is that the browser now exposes a named region, and assistive software can list those regions and jump between them.",
-      },
-      {
         after: "code",
-        title: "Nothing on screen tells you whether you chose well",
+        title: "Semantic is not styled",
         body:
           "Semantic does not mean styled. <code>&lt;header&gt;</code> gets no special appearance, so nothing on screen tells you whether you chose well. The same applies to <code>&lt;h1&gt;</code> against a large <code>&lt;div&gt;</code>: identical on screen, and only one of them is a heading.",
       },
       {
         after: "examples",
-        title: "One main per page, and headings in order",
+        title: "What a landmark adds",
+        body:
+          "A landmark lays out exactly like a <code>&lt;div&gt;</code>, so the page looks no different. What changes is that the browser now exposes a named region, and assistive software can list those regions and jump between them.",
+      },
+      {
+        after: "end",
+        title: "Using them well",
         body:
           "Use <code>&lt;main&gt;</code> once per page, keep headings in order without skipping a level, and reach for <code>&lt;div&gt;</code> only when there is genuinely no meaning to express. Choose the tag for what the content <em>is</em>, then style it however you like.",
       },

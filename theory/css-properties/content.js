@@ -38,22 +38,22 @@ const PARTS = [
     },
     notes: [
       {
-        after: "lead",
-        title: "The property names what to change, the value how",
+        after: "meta",
+        title: "Property, value, semicolon",
         body:
           "The property name says what to change, the value says what to change it to, and the semicolon ends the declaration. The browser reads each one on its own and applies what it understands.",
       },
       {
-        after: "meta",
-        title: "Property names are a fixed vocabulary",
-        body:
-          "Property names are a fixed vocabulary defined by the CSS specification, so a made-up name is exactly as invisible as a misspelled one. There is one deliberate exception, custom properties, which is the last part of this lesson.",
-      },
-      {
         after: "code",
-        title: "A typo is thrown away without an error",
+        title: "A typo, thrown away",
         body:
           "If the browser does not understand a property name or a value, it silently throws that one declaration away and carries on. There is no error message, so a typo simply does nothing.",
+      },
+      {
+        after: "end",
+        title: "The property vocabulary",
+        body:
+          "Property names are a fixed vocabulary defined by the CSS specification, so a made-up name is exactly as invisible as a misspelled one. There is one deliberate exception, custom properties, which is the last part of this lesson.",
       },
     ],
     demo: {
@@ -113,20 +113,20 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "Every property accepts its own kind of value",
+        after: "code",
+        title: "Which values a property takes",
         body:
           "Every property defines which values it accepts. <code>display</code> takes a keyword from a fixed list, <code>width</code> takes a length, and giving one the other kind is simply ignored.",
       },
       {
-        after: "code",
-        title: "A number that is not zero needs its unit attached",
+        after: "examples",
+        title: "Numbers and units",
         body:
           "A number that is not zero almost always needs a unit, and the unit is joined on with no space: <code>16px</code>, never <code>16 px</code>. A few properties take a bare number on purpose, such as <code>line-height</code> and <code>font-weight</code>.",
       },
       {
-        after: "examples",
-        title: "Absolute units hold still, relative ones follow",
+        after: "end",
+        title: "Absolute and relative",
         body:
           "Absolute units like <code>px</code> stay the same size whatever happens around them. Relative units like <code>em</code>, <code>rem</code> and <code>%</code> are measured against something else, so they change when that thing does.",
       },
@@ -184,20 +184,20 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "A shorthand expands into the properties behind it",
-        body:
-          "A shorthand expands into the individual properties behind it. Some read positionally, so <code>margin: 10px 20px</code> means top and bottom, then left and right; others read by kind, so <code>border</code> works out which part is the width and which is the colour.",
-      },
-      {
         after: "code",
-        title: "A shorthand also resets what you left out",
+        title: "What a shorthand resets",
         body:
           "A shorthand sets <em>every</em> property it covers, including the ones you did not mention, which get their default back. Writing <code>background: red</code> after setting a background image throws the image away.",
       },
       {
         after: "examples",
-        title: "Shorthand values are separated by spaces, never commas",
+        title: "What a shorthand expands to",
+        body:
+          "A shorthand expands into the individual properties behind it. Some read positionally, so <code>margin: 10px 20px</code> means top and bottom, then left and right; others read by kind, so <code>border</code> works out which part is the width and which is the colour.",
+      },
+      {
+        after: "end",
+        title: "Spaces, not commas",
         body:
           "Values inside a shorthand are separated by spaces. Commas mean something different in CSS, and using them here makes the whole declaration invalid.",
       },
@@ -261,22 +261,22 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "Text properties inherit, box properties do not",
+        after: "code",
+        title: "What inherits",
         body:
           "Properties about text tend to inherit, so setting <code>color</code> on a container passes it down to everything inside. Properties about the box, such as <code>padding</code> and <code>border</code>, do not.",
       },
       {
-        after: "code",
-        title: "The browser had styled the page before your CSS ran",
-        body:
-          "Before any of your CSS runs, the browser has already applied its own default stylesheet. Headings are large and bold, and lists have bullets, because of that, not because nothing is set.",
-      },
-      {
         after: "examples",
-        title: "Four keywords let you ask for a value on any property",
+        title: "The CSS-wide keywords",
         body:
           "The keywords <code>inherit</code>, <code>initial</code>, <code>unset</code> and <code>revert</code> work on any property, so you can always ask for the parent's value or reset explicitly. Note <code>initial</code> is the CSS specification's value, not the browser's, which is what <code>revert</code> gets you. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Inheritance\" target=\"_blank\" rel=\"noopener\">MDN's inheritance guide</a>.",
+      },
+      {
+        after: "end",
+        title: "The browser's own stylesheet",
+        body:
+          "Before any of your CSS runs, the browser has already applied its own default stylesheet. Headings are large and bold, and lists have bullets, because of that, not because nothing is set.",
       },
     ],
     demo: {
@@ -331,20 +331,20 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "meta",
-        title: "var() reads the value rather than copying it",
+        after: "code",
+        title: "Declaring and reading one",
         body:
           "A custom property is declared on a selector like any other, and read back with <code>var()</code>. Change the declaration and every <code>var()</code> reading it updates, because it is genuinely the same value rather than a copy.",
       },
       {
-        after: "code",
-        title: "The name needs both dashes and its exact capitals",
+        after: "examples",
+        title: "Names and fallbacks",
         body:
           "The name needs both dashes and is case sensitive, so <code>--Brand</code> and <code>--brand</code> are different properties. A <code>var()</code> pointing at something undefined falls back to the second argument, or makes the declaration invalid if there is none.",
       },
       {
-        after: "examples",
-        title: "Custom properties inherit, so :root reaches the whole page",
+        after: "end",
+        title: "Declaring them on :root",
         body:
           "Custom properties inherit, so declaring them on <code>:root</code> makes them available to the whole page. That is exactly how this site's colours and spacing are defined.",
       },
