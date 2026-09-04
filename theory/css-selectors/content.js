@@ -39,14 +39,26 @@ const PARTS = [
       "Written as": "The part before the { brackets",
       "Why it matters": "It decides who a rule applies to",
     },
-    notes: {
-      "Checked against every element":
-        "The browser checks every element against the pattern and collects the ones that match. The declarations are then applied to all of them, however many that turns out to be.",
-      "Matching nothing is still valid":
-        "A selector that matches nothing is perfectly valid CSS, so nothing warns you. If a rule seems to do nothing, the selector is usually wrong before the declarations are.",
-      "Selectors describe elements, not words":
-        "Selectors describe elements, not content. You cannot select an element because of the words inside it, only because of what it is, where it sits, or what it carries.",
-    },
+    notes: [
+      {
+        after: "lead",
+        title: "The browser tests every element against the pattern",
+        body:
+          "The browser checks every element against the pattern and collects the ones that match. The declarations are then applied to all of them, however many that turns out to be.",
+      },
+      {
+        after: "meta",
+        title: "Selectors describe elements, never the words inside them",
+        body:
+          "Selectors describe elements, not content. You cannot select an element because of the words inside it, only because of what it is, where it sits, or what it carries.",
+      },
+      {
+        after: "code",
+        title: "A selector that matches nothing is still valid CSS",
+        body:
+          "A selector that matches nothing is perfectly valid CSS, so nothing warns you. If a rule seems to do nothing, the selector is usually wrong before the declarations are.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: ".item {\n  color: #0d9488;\n}",
@@ -101,14 +113,26 @@ li { }
       { syntax: '[attribute^="value"]', label: "Attribute starts with", code: '[href^="https"]', meaning: "Values beginning with it. Also <code>$=</code> ends with, <code>*=</code> contains." },
       { syntax: "*", label: "Universal", code: "*", meaning: "Every element, without exception. Adds <strong>no</strong> specificity at all." },
     ],
-    notes: {
-      "The marker character tells you the kind":
-        "Each kind reads one thing about the element. The marker character tells you which: a full stop means a class, a hash means an id, square brackets mean an attribute, and a bare word means a tag name.",
-      "A class does nothing on its own":
-        "Classes and ids do nothing on their own. They exist purely so CSS has something to select by, which is why you add a class to an element you intend to style.",
-      "Build with classes":
-        "Classes are what real stylesheets are built from. Tag selectors are too broad to control, and ids are too specific to override comfortably.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "The marker character tells you what is being matched",
+        body:
+          "Each kind reads one thing about the element. The marker character tells you which: a full stop means a class, a hash means an id, square brackets mean an attribute, and a bare word means a tag name.",
+      },
+      {
+        after: "code",
+        title: "A class does nothing until CSS selects it",
+        body:
+          "Classes and ids do nothing on their own. They exist purely so CSS has something to select by, which is why you add a class to an element you intend to style.",
+      },
+      {
+        after: "examples",
+        title: "Real stylesheets are built out of classes",
+        body:
+          "Classes are what real stylesheets are built from. Tag selectors are too broad to control, and ids are too specific to override comfortably.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: "#first {\n  font-weight: bold;\n  color: #b45309;\n}",
@@ -162,14 +186,26 @@ h1 + p { }`,
       { syntax: "A + B", label: "Adjacent sibling", code: "h1 + p", meaning: "The <code>B</code> immediately after an <code>A</code>, and only that one." },
       { syntax: "A ~ B", label: "General sibling", code: "h1 ~ p", meaning: "Every <code>B</code> after an <code>A</code> that shares its parent." },
     ],
-    notes: {
-      "With a separator, and without":
-        "With no separator, all parts must be true of the same element. With a separator, the parts describe different elements and the separator says how they must be related.",
-      "A space changes the meaning":
-        "A space is the easiest character in CSS to add or lose by accident, and it changes the meaning without ever causing an error. <code>li.item</code> and <code>li .item</code> match completely different things.",
-      "Combine only when you have to":
-        "Combining is how you reach an element that has nothing useful of its own to select by. If it has a class, use the class; combine only when it does not.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "A separator says how two elements must be related",
+        body:
+          "With no separator, all parts must be true of the same element. With a separator, the parts describe different elements and the separator says how they must be related.",
+      },
+      {
+        after: "code",
+        title: "A single space changes what a selector matches",
+        body:
+          "A space is the easiest character in CSS to add or lose by accident, and it changes the meaning without ever causing an error. <code>li.item</code> and <code>li .item</code> match completely different things.",
+      },
+      {
+        after: "examples",
+        title: "Combine only when an element has nothing to select by",
+        body:
+          "Combining is how you reach an element that has nothing useful of its own to select by. If it has a class, use the class; combine only when it does not.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: "ul > .item {\n  border-left: 3px solid #0d9488;\n  padding-left: 8px;\n}",
@@ -219,14 +255,26 @@ p::before { }      /* content inserted at the start */`,
       { syntax: "A::part", label: "Pseudo-element", code: "p::first-line", meaning: "Only the first line, however wide the window happens to be." },
       { syntax: "A::part", label: "Pseudo-element", code: "p::before", meaning: "A slot inserted before the element's own content." },
     ],
-    notes: {
-      "One is tested, the other is a slice":
-        "A pseudo-class is tested as the page runs, so <code>:hover</code> matches and stops matching as the pointer moves. A pseudo-element addresses a slice of an element that has no tag, such as its first line.",
-      "Counting starts at 1, and counts everything":
-        "<code>:nth-child</code> counts from 1 rather than 0, and it counts <em>all</em> siblings, not only the ones your selector matches. That is the usual reason a striped list stripes the wrong rows.",
-      "One colon or two":
-        "One colon is a class, two colons is an element. This is the only reliable way to tell which kind you are looking at, and it is why the doubled colon exists at all.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "A pseudo-class is tested while the page runs",
+        body:
+          "A pseudo-class is tested as the page runs, so <code>:hover</code> matches and stops matching as the pointer moves. A pseudo-element addresses a slice of an element that has no tag, such as its first line.",
+      },
+      {
+        after: "code",
+        title: "nth-child counts every sibling, starting at 1",
+        body:
+          "<code>:nth-child</code> counts from 1 rather than 0, and it counts <em>all</em> siblings, not only the ones your selector matches. That is the usual reason a striped list stripes the wrong rows.",
+      },
+      {
+        after: "examples",
+        title: "One colon or two is how you tell the two apart",
+        body:
+          "One colon is a class, two colons is an element. This is the only reliable way to tell which kind you are looking at, and it is why the doubled colon exists at all.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: ".item:first-child {\n  font-weight: bold;\n}\n\n.item:nth-child(even) {\n  background: #f1f5f9;\n}",
@@ -319,14 +367,26 @@ p::before { }      /* content inserted at the start */`,
       "Written as": "ID - CLASS - TYPE, counted not written",
       "Why it matters": "It explains why a rule you wrote is ignored",
     },
-    notes: {
-      "Counting the three columns":
-        "Count the selector into three columns: ids on the left, then classes, attribute selectors and pseudo-classes, then type selectors and pseudo-elements. Compare the two scores left to right and stop at the first column that differs.",
-      "Length is not weight":
-        "Length is not weight. A long selector made only of tag names loses to a single class, and source order settles nothing unless all three columns are exactly equal.",
-      "Inline styles are settled first":
-        "Inline styles and <code>!important</code> are <strong>not</strong> specificity. The browser settles those first and only then compares specificity, which is why no selector you write can beat a <code>style</code> attribute. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity\" target=\"_blank\" rel=\"noopener\">MDN's specificity guide</a>.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "Specificity is counted in three columns",
+        body:
+          "Count the selector into three columns: ids on the left, then classes, attribute selectors and pseudo-classes, then type selectors and pseudo-elements. Compare the two scores left to right and stop at the first column that differs.",
+      },
+      {
+        after: "code",
+        title: "A long selector can still lose to a single class",
+        body:
+          "Length is not weight. A long selector made only of tag names loses to a single class, and source order settles nothing unless all three columns are exactly equal.",
+      },
+      {
+        after: "ladder",
+        title: "Inline styles and !important are settled before specificity",
+        body:
+          "Inline styles and <code>!important</code> are <strong>not</strong> specificity. The browser settles those first and only then compares specificity, which is why no selector you write can beat a <code>style</code> attribute. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity\" target=\"_blank\" rel=\"noopener\">MDN's specificity guide</a>.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: "li { color: #2563eb; }        /* 0-0-1 */\n.item { color: #16a34a; }     /* 0-1-0 */\n#first { color: #db2777; }    /* 1-0-0 */",

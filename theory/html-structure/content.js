@@ -58,14 +58,26 @@ const PARTS = [
       { ref: "meta", syntax: '<meta charset="UTF-8">', label: "Character set", code: "Inside head", meaning: "Without it, accented and non-English characters can break." },
       { ref: "body", syntax: "<body>", label: "Visible page", code: "Inside html", meaning: "Everything a visitor actually sees lives here." },
     ],
-    notes: {
-      "What each part holds":
-        "The doctype tells the browser to use modern standards, <code>head</code> holds information about the page, and <code>body</code> holds everything a visitor actually sees.",
-      "Leaving out the doctype":
-        "Without the doctype the browser switches to a compatibility mode built for pages from the 1990s, and layouts start behaving in ways no amount of CSS will explain.",
-      "The browser builds it either way":
-        "The browser builds this skeleton whether or not you type it. Writing it yourself is how you keep control of what ends up in the head.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "The head describes the page, the body is the page",
+        body:
+          "The doctype tells the browser to use modern standards, <code>head</code> holds information about the page, and <code>body</code> holds everything a visitor actually sees.",
+      },
+      {
+        after: "anatomy",
+        title: "Without the doctype, the browser follows 1990s rules",
+        body:
+          "Without the doctype the browser switches to a compatibility mode built for pages from the 1990s, and layouts start behaving in ways no amount of CSS will explain.",
+      },
+      {
+        after: "examples",
+        title: "The browser builds this skeleton whether you type it or not",
+        body:
+          "The browser builds this skeleton whether or not you type it. Writing it yourself is how you keep control of what ends up in the head.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html (the body)",
@@ -118,14 +130,26 @@ const PARTS = [
       { syntax: "<img>...</img>", label: "Void, so no children", code: "<img>, <br>, <input>", meaning: "These hold no content, so nothing can be nested inside them." },
       { syntax: "  <p>", label: "Indentation", code: "Two spaces, or none", meaning: "Makes no difference at all. Only the tags decide what is inside what." },
     ],
-    notes: {
-      "Children, and the tree they build":
-        "An element inside another is its child, and the whole page is one tree of these relationships. Indentation is only for humans, but the nesting itself is real structure.",
-      "Closing in the wrong order":
-        "Tags must close in the reverse order they were opened. Cross them over and the browser repairs the markup by guessing, which is how a page ends up not matching the HTML you wrote.",
-      "Indentation proves nothing":
-        "Indentation is for people reading the file and means nothing to the browser. A page written entirely on one line nests exactly the same way, which is why a badly indented file can still be correct, and a neatly indented one can still be wrong.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "An element inside another is its child",
+        body:
+          "An element inside another is its child, and the whole page is one tree of these relationships. Indentation is only for humans, but the nesting itself is real structure.",
+      },
+      {
+        after: "code",
+        title: "Tags must close in the reverse order they were opened",
+        body:
+          "Tags must close in the reverse order they were opened. Cross them over and the browser repairs the markup by guessing, which is how a page ends up not matching the HTML you wrote.",
+      },
+      {
+        after: "examples",
+        title: "Indentation proves nothing about the nesting",
+        body:
+          "Indentation is for people reading the file and means nothing to the browser. A page written entirely on one line nests exactly the same way, which is why a badly indented file can still be correct, and a neatly indented one can still be wrong.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
@@ -182,14 +206,26 @@ const PARTS = [
       { syntax: "any level down", label: "Descendant", code: "strong is a descendant of div", meaning: "A child, a child of a child, and so on however deep it goes." },
       { syntax: "the same level", label: "Sibling", code: "h1 and p are siblings", meaning: "Two elements sharing the same parent. Order between them matters." },
     ],
-    notes: {
-      "Built before anything is drawn":
-        "The browser turns your markup into this tree before it draws anything, and from then on the tree is the page. Change the nesting and you have changed the tree, whatever the page looks like afterwards.",
-      "Child against descendant":
-        "A child and a descendant are not the same thing, and the difference is exactly where beginners lose an afternoon. <code>strong</code> is inside <code>div</code>, so it is a descendant, but its parent is <code>p</code>, so it is not a child of <code>div</code>.",
-      "Why the names matter later":
-        "These names are not jargon for its own sake. CSS selectors and JavaScript both work by walking this tree, so <code>.card p</code> and <code>.card &gt; p</code> only differ because descendant and child are different positions.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "The browser builds the tree before it draws anything",
+        body:
+          "The browser turns your markup into this tree before it draws anything, and from then on the tree is the page. Change the nesting and you have changed the tree, whatever the page looks like afterwards.",
+      },
+      {
+        after: "tree",
+        title: "Every child is a descendant, not every descendant a child",
+        body:
+          "A child and a descendant are not the same thing, and the difference is exactly where beginners lose an afternoon. <code>strong</code> is inside <code>div</code>, so it is a descendant, but its parent is <code>p</code>, so it is not a child of <code>div</code>.",
+      },
+      {
+        after: "examples",
+        title: "CSS and JavaScript both work by walking this tree",
+        body:
+          "These names are not jargon for its own sake. CSS selectors and JavaScript both work by walking this tree, so <code>.card p</code> and <code>.card &gt; p</code> only differ because descendant and child are different positions.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
@@ -244,14 +280,26 @@ const PARTS = [
       { syntax: "display: inline-block", label: "Change it", code: "a { display: inline-block }", meaning: "Flows inline, but accepts width, height and vertical padding." },
       { syntax: "display: none", label: "Change it", code: ".old { display: none }", meaning: "Removed from the layout entirely, leaving no gap." },
     ],
-    notes: {
-      "How each one takes up space":
-        "A block element starts on a new line and stretches to fill its container. An inline element sits inside a line of text and is only as wide as the content it holds.",
-      "Width and height on an inline element":
-        "Setting <code>width</code> or <code>height</code> on an inline element does nothing, and vertical padding on one overlaps its neighbours instead of pushing them away. This is a very common first confusion. The exception is an element holding a file rather than text, such as <code>&lt;img&gt;</code>: it is inline, but width and height do size it, which is why <code>&lt;img width=\"400\"&gt;</code> works.",
-      "The tag sets it, CSS can change it":
-        "The default comes from the tag, but CSS can change it with <code>display</code>. Choose the tag for its meaning and change the behaviour in CSS, never the other way round.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "A block fills the line, an inline sits inside one",
+        body:
+          "A block element starts on a new line and stretches to fill its container. An inline element sits inside a line of text and is only as wide as the content it holds.",
+      },
+      {
+        after: "code",
+        title: "Width and height do nothing to an inline element",
+        body:
+          "Setting <code>width</code> or <code>height</code> on an inline element does nothing, and vertical padding on one overlaps its neighbours instead of pushing them away. This is a very common first confusion. The exception is an element holding a file rather than text, such as <code>&lt;img&gt;</code>: it is inline, but width and height do size it, which is why <code>&lt;img width=\"400\"&gt;</code> works.",
+      },
+      {
+        after: "examples",
+        title: "The tag sets the default, display can change it",
+        body:
+          "The default comes from the tag, but CSS can change it with <code>display</code>. Choose the tag for its meaning and change the behaviour in CSS, never the other way round.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",

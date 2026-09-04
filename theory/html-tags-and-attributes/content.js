@@ -54,14 +54,26 @@ const PARTS = [
       { ref: "attribute", syntax: '<tag name="value">', label: "With an attribute", code: '<a href="x.html">Link</a>', meaning: "Attributes go in the opening tag, never the closing one." },
       { ref: "comment", syntax: "<!-- text -->", label: "Comment", code: "<!-- a note -->", meaning: "Ignored by the browser, but still visible in view-source." },
     ],
-    notes: {
-      "What the browser does with the name":
-        "The browser reads the tag name and applies its own defaults for that name, which is why a heading is already large and bold before you write any CSS at all.",
-      "Closing, and not closing":
-        "Most elements need closing, but void elements never do, because there is no content to wrap. Trying to close one, or forgetting to close one that needs it, both cause trouble.",
-      "You cannot invent a tag name":
-        "Tag names are a fixed vocabulary. You cannot invent one and expect meaning from it, because the meaning comes from the browser knowing the name already.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "The browser applies its defaults by tag name",
+        body:
+          "The browser reads the tag name and applies its own defaults for that name, which is why a heading is already large and bold before you write any CSS at all.",
+      },
+      {
+        after: "anatomy",
+        title: "Void elements hold no content, so they never close",
+        body:
+          "Most elements need closing, but void elements never do, because there is no content to wrap. Trying to close one, or forgetting to close one that needs it, both cause trouble.",
+      },
+      {
+        after: "examples",
+        title: "Tag names are a fixed vocabulary you cannot add to",
+        body:
+          "Tag names are a fixed vocabulary. You cannot invent one and expect meaning from it, because the meaning comes from the browser knowing the name already.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
@@ -151,14 +163,26 @@ const PARTS = [
       { ref: "alt", syntax: 'alt="text"', label: "Element specific", code: '<img alt="A dog">', meaning: "Read out, or shown, when the image cannot be." },
       { ref: "checked", syntax: "checked", label: "Boolean", code: "<input checked>", meaning: "Present means on. There is no value to give it." },
     ],
-    notes: {
-      "Name, equals sign, quoted value":
-        "Each attribute is a name, an equals sign, and a value in quotes. Some are global and work on any element, such as <code>class</code> and <code>id</code>; others only mean something on particular elements.",
-      "A missing attribute fails quietly":
-        "Leaving out a required attribute usually produces no error, just an element that quietly does not work. A link with no destination still looks like a link.",
-      "Boolean attributes have no value":
-        "A few attributes are boolean: writing them at all turns them on, and there is no value to give. Their presence is the setting.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "An attribute is a name, an equals sign and a quoted value",
+        body:
+          "Each attribute is a name, an equals sign, and a value in quotes. Some are global and work on any element, such as <code>class</code> and <code>id</code>; others only mean something on particular elements.",
+      },
+      {
+        after: "anatomy",
+        title: "A missing attribute leaves an element that does nothing",
+        body:
+          "Leaving out a required attribute usually produces no error, just an element that quietly does not work. A link with no destination still looks like a link.",
+      },
+      {
+        after: "examples",
+        title: "A boolean attribute is on because it is there",
+        body:
+          "A few attributes are boolean: writing them at all turns them on, and there is no value to give. Their presence is the setting.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
@@ -224,14 +248,26 @@ const PARTS = [
       "Written as": "<header>, <nav>, <main>, <footer>",
       "Why it matters": "It names regions nothing else can name",
     },
-    notes: {
-      "A landmark that lays out like a div":
-        "A landmark lays out exactly like a <code>&lt;div&gt;</code>, so the page looks no different. What changes is that the browser now exposes a named region, and assistive software can list those regions and jump between them.",
-      "Nothing on screen tells you":
-        "Semantic does not mean styled. <code>&lt;header&gt;</code> gets no special appearance, so nothing on screen tells you whether you chose well. The same applies to <code>&lt;h1&gt;</code> against a large <code>&lt;div&gt;</code>: identical on screen, and only one of them is a heading.",
-      "Using them well":
-        "Use <code>&lt;main&gt;</code> once per page, keep headings in order without skipping a level, and reach for <code>&lt;div&gt;</code> only when there is genuinely no meaning to express. Choose the tag for what the content <em>is</em>, then style it however you like.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "A landmark lays out like a div and announces a region",
+        body:
+          "A landmark lays out exactly like a <code>&lt;div&gt;</code>, so the page looks no different. What changes is that the browser now exposes a named region, and assistive software can list those regions and jump between them.",
+      },
+      {
+        after: "code",
+        title: "Nothing on screen tells you whether you chose well",
+        body:
+          "Semantic does not mean styled. <code>&lt;header&gt;</code> gets no special appearance, so nothing on screen tells you whether you chose well. The same applies to <code>&lt;h1&gt;</code> against a large <code>&lt;div&gt;</code>: identical on screen, and only one of them is a heading.",
+      },
+      {
+        after: "examples",
+        title: "One main per page, and headings in order",
+        body:
+          "Use <code>&lt;main&gt;</code> once per page, keep headings in order without skipping a level, and reach for <code>&lt;div&gt;</code> only when there is genuinely no meaning to express. Choose the tag for what the content <em>is</em>, then style it however you like.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",

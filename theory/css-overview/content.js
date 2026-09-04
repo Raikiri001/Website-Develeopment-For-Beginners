@@ -48,14 +48,26 @@ const PARTS = [
       { syntax: "Set a size", label: "CSS", code: "font-size: 18px;", meaning: "Changes how large the text is drawn, not how important it is." },
       { syntax: "Set the spacing", label: "CSS", code: "padding: 12px;", meaning: "Changes the room around the content inside the element." },
     ],
-    notes: {
-      "Two languages, two jobs":
-        "The browser reads the HTML to work out what is on the page, then reads the CSS to work out how to draw it. Neither one can do the other's job: there is no HTML tag that means \"teal\", and no CSS property that means \"this is a heading\".",
-      "You are always changing a default":
-        "Every element already looks like something before you write a line of CSS. Browsers apply their own default styling, which is why an <code>h1</code> is large and bold on a blank page. You are always changing a default, never starting from nothing.",
-      "Restyling without touching the markup":
-        "Because the meaning lives in the HTML, you can restyle a whole site without touching a single tag, and anything that reads the page rather than looking at it still understands it.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "Neither language can do the other's job",
+        body:
+          "The browser reads the HTML to work out what is on the page, then reads the CSS to work out how to draw it. Neither one can do the other's job: there is no HTML tag that means \"teal\", and no CSS property that means \"this is a heading\".",
+      },
+      {
+        after: "code",
+        title: "Every element already looks like something",
+        body:
+          "Every element already looks like something before you write a line of CSS. Browsers apply their own default styling, which is why an <code>h1</code> is large and bold on a blank page. You are always changing a default, never starting from nothing.",
+      },
+      {
+        after: "examples",
+        title: "Meaning lives in the HTML, so anything can be restyled",
+        body:
+          "Because the meaning lives in the HTML, you can restyle a whole site without touching a single tag, and anything that reads the page rather than looking at it still understands it.",
+      },
+    ],
   },
 
   {
@@ -113,14 +125,26 @@ const PARTS = [
       { ref: "value", syntax: "value", label: "Value", code: "#0d9488", meaning: "What the setting is being changed to. Each property accepts its own kinds." },
       { ref: "comment", syntax: "/* ... */", label: "Comment", code: "/* a note to yourself */", meaning: "Ignored by the browser. CSS has no single line comment form." },
     ],
-    notes: {
-      "Selector first, declarations after":
-        "The browser reads a rule as \"find everything matching this selector, then apply these declarations to all of it\". The two halves are always in that order, and a rule with no declarations is valid but does nothing.",
-      "The punctuation does real work":
-        "The punctuation is doing real work. A colon separates a property from its value, a semicolon ends a declaration, and the braces mark where the block starts and stops. A stray brace can silently swallow every rule after it.",
-      "The layout is for people to read":
-        "Whitespace and line breaks mean nothing to the browser, so a rule can be written on one line. The usual layout, selector and brace on one line and one declaration per line after it, is a convention for people to read, not a requirement.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "A rule is a selector and then a block",
+        body:
+          "The browser reads a rule as \"find everything matching this selector, then apply these declarations to all of it\". The two halves are always in that order, and a rule with no declarations is valid but does nothing.",
+      },
+      {
+        after: "anatomy",
+        title: "A stray brace can swallow every rule after it",
+        body:
+          "The punctuation is doing real work. A colon separates a property from its value, a semicolon ends a declaration, and the braces mark where the block starts and stops. A stray brace can silently swallow every rule after it.",
+      },
+      {
+        after: "examples",
+        title: "Line breaks are for people, not for the browser",
+        body:
+          "Whitespace and line breaks mean nothing to the browser, so a rule can be written on one line. The usual layout, selector and brace on one line and one declaration per line after it, is a convention for people to read, not a requirement.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: ".heading {\n  color: #0d9488;\n  font-size: 32px;\n}",
@@ -196,14 +220,26 @@ const PARTS = [
       { ref: "href", syntax: 'href="..."', label: "Path", code: 'href="css/styles.css"', meaning: "Where the file is, written as directions from the HTML file to it." },
       { ref: "head", syntax: "<head>", label: "Where it goes", code: "<head> ... </head>", meaning: "Linking in the head means the styling is ready before the page is drawn." },
     ],
-    notes: {
-      "What the link tag does":
-        "When the browser meets the <code>link</code> tag it fetches that file, reads the rules in it, and applies them to the page. One stylesheet can be linked by as many pages as you like, which is how a whole site ends up looking consistent.",
-      "A broken path looks like no CSS":
-        "The <code>href</code> is a path, written from the HTML file to the stylesheet, so moving either file breaks it. A page with a broken stylesheet path looks like a page with no CSS at all, which is the usual first sign something is wrong.",
-      "Why a shared file wins":
-        "A separate file is not the only place CSS can sit, and the alternatives have their own trade-offs. It is the one to start with, because it is the only one that lets many pages share the same rules.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "The link tag fetches the file and applies its rules",
+        body:
+          "When the browser meets the <code>link</code> tag it fetches that file, reads the rules in it, and applies them to the page. One stylesheet can be linked by as many pages as you like, which is how a whole site ends up looking consistent.",
+      },
+      {
+        after: "tree",
+        title: "A broken path looks exactly like no CSS at all",
+        body:
+          "The <code>href</code> is a path, written from the HTML file to the stylesheet, so moving either file breaks it. A page with a broken stylesheet path looks like a page with no CSS at all, which is the usual first sign something is wrong.",
+      },
+      {
+        after: "examples",
+        title: "One shared file is how a whole site stays consistent",
+        body:
+          "A separate file is not the only place CSS can sit, and the alternatives have their own trade-offs. It is the one to start with, because it is the only one that lets many pages share the same rules.",
+      },
+    ],
   },
 
   {
@@ -236,14 +272,26 @@ p {
       "Written as": "One rule, however many elements match",
       "Why it matters": "A page is styled without repeating yourself",
     },
-    notes: {
-      "Matching is checked element by element":
-        "The browser checks every element on the page against the selector and applies the declarations to all of them. Nothing is applied to elements that do not match, and a selector matching nothing at all is not an error.",
-      "Widening a selector reaches further than you meant":
-        "This cuts both ways. Widening a selector to fix one element quietly restyles every other element it now matches, and those are often somewhere else on the page where you will not notice.",
-      "Choosing how wide to aim":
-        "A selector can be as broad or as narrow as you need, from every paragraph on the site down to one single element. Choosing how wide to aim is most of the skill in writing CSS.",
-    },
+    notes: [
+      {
+        after: "lead",
+        title: "The browser tests the selector against every element",
+        body:
+          "The browser checks every element on the page against the selector and applies the declarations to all of them. Nothing is applied to elements that do not match, and a selector matching nothing at all is not an error.",
+      },
+      {
+        after: "meta",
+        title: "A selector can aim at a whole site or at one element",
+        body:
+          "A selector can be as broad or as narrow as you need, from every paragraph on the site down to one single element. Choosing how wide to aim is most of the skill in writing CSS.",
+      },
+      {
+        after: "code",
+        title: "Widening a selector restyles elements you never looked at",
+        body:
+          "This cuts both ways. Widening a selector to fix one element quietly restyles every other element it now matches, and those are often somewhere else on the page where you will not notice.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: "p {\n  color: #7c3aed;\n}",
@@ -317,14 +365,26 @@ p {
         code: `font-size: 18px;   /* this one wins */`,
       },
     ],
-    notes: {
-      "Declarations stack up":
-        "Declarations from different rules stack up on the element, so its final appearance is the total of all of them. Only where two rules set the very same property does anything have to be resolved.",
-      "When a change seems to do nothing":
-        "A rule you have just written may not be the one you can see on screen. If a change appears to do nothing, another matching rule is setting the same property and winning, and the answer is to find that rule rather than to write the declaration again.",
-      "Conflicts come down to selectors":
-        "How a conflict is settled comes down to the selectors involved, so it is worth learning what selectors can do before worrying about which rule wins.",
-    },
+    notes: [
+      {
+        after: "meta",
+        title: "An element's look is the total of every rule that matched",
+        body:
+          "Declarations from different rules stack up on the element, so its final appearance is the total of all of them. Only where two rules set the very same property does anything have to be resolved.",
+      },
+      {
+        after: "code",
+        title: "A change that seems to do nothing is losing to another rule",
+        body:
+          "A rule you have just written may not be the one you can see on screen. If a change appears to do nothing, another matching rule is setting the same property and winning, and the answer is to find that rule rather than to write the declaration again.",
+      },
+      {
+        after: "ladder",
+        title: "Which rule wins comes down to its selector",
+        body:
+          "How a conflict is settled comes down to the selectors involved, so it is worth learning what selectors can do before worrying about which rule wins.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: "p {\n  color: #334155;\n  font-size: 16px;\n}\n\n.text {\n  font-size: 22px;\n  padding: 8px;\n}",

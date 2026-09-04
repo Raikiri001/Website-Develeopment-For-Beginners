@@ -64,24 +64,36 @@
   }
 
   // ── Rendering ────────────────────────────────────────
-  // A section's own note headings, in the order it wrote them.
-  function noteLabels(lesson, section) {
-    return section.notes ? Object.keys(section.notes) : lesson.noteLabels || [];
-  }
-
-  /* A note reads next to the thing it is explaining, so each one follows one
-     of the section's parts instead of all of them piling up at the bottom. */
-  function spread(shows, notes) {
-    if (!shows.length) return notes.join("");
-    /* One note after each part. A section with fewer parts than notes puts the
-       spare ones above the first part, so two never end up back to back. */
-    const lead = notes.slice(0, Math.max(0, notes.length - shows.length));
-    const rest = notes.slice(lead.length);
+  /* Each note names the part of the section it sits after, so an explanation
+     is read next to the thing it explains. A note naming a part this section
+     does not have falls to the end rather than disappearing. */
+  function placeNotes(parts, notes) {
+    const names = parts.map(function (part) {
+      return part.name;
+    });
+    const placed = parts
+      .map(function (part) {
+        return (
+          part.html +
+          notes
+            .filter(function (note) {
+              return note.after === part.name;
+            })
+            .map(function (note) {
+              return note.html;
+            })
+            .join("")
+        );
+      })
+      .join("");
     return (
-      lead.join("") +
-      shows
-        .map(function (show, k) {
-          return show + (rest[k] || "");
+      placed +
+      notes
+        .filter(function (note) {
+          return names.indexOf(note.after) === -1;
+        })
+        .map(function (note) {
+          return note.html;
         })
         .join("")
     );
@@ -109,8 +121,8 @@
           name: s.name,
           number: s.number,
           accent: s.accent,
-          subs: noteLabels(lesson, s).map(function (label, i) {
-            return { id: s.id + "-note-" + i, name: label };
+          subs: (s.notes || []).map(function (note, i) {
+            return { id: s.id + "-note-" + i, name: note.title };
           }),
         };
       })
@@ -219,14 +231,16 @@
           })
           .join("");
 
-        /* Each section names its own notes, so a subheading says what this part
-           of the concept is about rather than repeating the same three words. */
-        const notes = noteLabels(lesson, s).map(function (label, i) {
-          return (
-            '<div class="note" id="' + s.id + "-note-" + i + '">' +
-            '<h3 class="note-label">' + escapeHtml(label) + "</h3>" +
-            "<p>" + s.notes[label] + "</p></div>"
-          );
+        /* Each note carries its own heading, stating the point it makes, so the
+           headings alone still teach something to someone skimming. */
+        const notes = (s.notes || []).map(function (note, i) {
+          return {
+            after: note.after,
+            html:
+              '<div class="note" id="' + s.id + "-note-" + i + '">' +
+              '<h3 class="note-label">' + escapeHtml(note.title) + "</h3>" +
+              "<p>" + note.body + "</p></div>",
+          };
         });
 
         /* The one line someone skimming has to come away with. */
@@ -289,14 +303,20 @@
             "</div></figure>"
           : "";
 
-        /* What the section shows, in the order it shows it: the summary, then
-           whatever it draws, then its reference table. The notes are spread
-           over these rather than stacked after the last of them. */
-        const shows = [
-          '<dl class="method-meta">' + meta + "</dl>",
-          (code ? '<div class="method-code">' + code + "</div>" : "") + tree + anatomy,
-          examples + (s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : ""),
-        ].filter(Boolean);
+        /* The parts of a section, in the order they are shown. A note names one
+           of these, and "lead" is the space under the key point, before the
+           summary, for a note that introduces the whole section. */
+        const parts = [
+          { name: "lead", html: "" },
+          { name: "meta", html: '<dl class="method-meta">' + meta + "</dl>" },
+          { name: "code", html: code ? '<div class="method-code">' + code + "</div>" : "" },
+          { name: "tree", html: tree },
+          { name: "anatomy", html: anatomy },
+          { name: "examples", html: examples },
+          { name: "ladder", html: s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : "" },
+        ].filter(function (part) {
+          return part.html || part.name === "lead";
+        });
 
         return (
           '<section class="method" id="' + s.id + '" style="--accent:' + s.accent + '">' +
@@ -304,7 +324,7 @@
           "<div><h2>" + s.name + '</h2><p class="method-tagline">' + s.tagline + "</p></div></header>" +
           '<p class="method-lead">' + s.lead + "</p>" +
           keyPoint +
-          spread(shows, notes) +
+          placeNotes(parts, notes) +
           (s.demo ? '<div class="tryit" data-section="' + s.id + '"></div>' : "") +
           "</section>"
         );
