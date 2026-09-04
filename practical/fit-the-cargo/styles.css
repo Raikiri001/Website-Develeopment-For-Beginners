@@ -279,6 +279,31 @@ body {
   text-align: left;
 }
 
+.ledger .ledger-subtotal th,
+.ledger .ledger-subtotal td {
+  color: var(--text-primary);
+  border-top: 1px solid var(--border-color);
+}
+
+/* No room left for the load once the padding and border are taken out. */
+.ledger .is-impossible th,
+.ledger .is-impossible td {
+  color: var(--accent-danger);
+}
+
+.ledger-set {
+  display: inline-block;
+  margin-left: var(--space-2);
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background-color: var(--accent-primary-tint-strong);
+  color: var(--accent-primary);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
 .ledger .ledger-total th,
 .ledger .ledger-total td {
   color: var(--text-primary);

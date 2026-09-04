@@ -273,57 +273,85 @@
       </tr>`;
   }
 
-  function refreshLedger(level, values, footprint) {
-    const rows = [];
-    const doubled = (n) => (n === null ? "&mdash;" : `+ 2 &times; ${n}px`);
+  /** The row the learner's own width and height land on, marked as theirs. */
+  function ledgerLabel(label, isTyped) {
+    return isTyped
+      ? `${label}<span class="ledger-set">you set this</span>`
+      : label;
+  }
 
-    if (level.boxSizing === "border-box") {
-      rows.push(
-        ledgerRow("width / height", px(values.width), px(values.height))
-      );
-      rows.push(ledgerRow("margin", doubled(values.margin), doubled(values.margin)));
-    } else {
-      rows.push(
-        ledgerRow("width / height", px(values.width), px(values.height))
-      );
-      rows.push(ledgerRow("padding", doubled(values.padding), doubled(values.padding)));
-      rows.push(ledgerRow("border", doubled(values.border), doubled(values.border)));
-      rows.push(ledgerRow("margin", doubled(values.margin), doubled(values.margin)));
+  /** The content box: what is left once the padding and the border are taken out. */
+  function contentFor(level, values) {
+    if (level.boxSizing === "content-box") {
+      return { width: values.width, height: values.height };
     }
+    const inside = sum([values.padding, values.border]);
+    return {
+      width: values.width === null || inside === null ? null : values.width - 2 * inside,
+      height: values.height === null || inside === null ? null : values.height - 2 * inside,
+    };
+  }
 
+  /** The border box: the content with the padding and the border wrapped around it. */
+  function borderBoxFor(level, values) {
+    if (level.boxSizing === "border-box") {
+      return { width: values.width, height: values.height };
+    }
+    const inside = sum([values.padding, values.border]);
+    return {
+      width: values.width === null || inside === null ? null : values.width + 2 * inside,
+      height: values.height === null || inside === null ? null : values.height + 2 * inside,
+    };
+  }
+
+  function refreshLedger(level, values, footprint) {
+    const doubled = (n) => (n === null ? "&mdash;" : `+ 2 &times; ${n}px`);
+    const typedIsContent = level.boxSizing === "content-box";
+    const content = contentFor(level, values);
+    const borderBox = borderBoxFor(level, values);
     const exact =
       footprint.width === level.gap.width && footprint.height === level.gap.height;
-    rows.push(
+
+    // Every part shows in both modes; only which row the learner types into changes.
+    const rows = [
+      ledgerRow(
+        ledgerLabel("the load", typedIsContent),
+        px(content.width),
+        px(content.height),
+        content.width !== null && content.width <= 0 ? "is-impossible" : ""
+      ),
+      ledgerRow("padding", doubled(values.padding), doubled(values.padding)),
+      ledgerRow("border", doubled(values.border), doubled(values.border)),
+      ledgerRow(
+        ledgerLabel("= the crate", !typedIsContent),
+        px(borderBox.width),
+        px(borderBox.height),
+        "ledger-subtotal"
+      ),
+      ledgerRow("margin", doubled(values.margin), doubled(values.margin)),
       ledgerRow(
         "= footprint",
         px(footprint.width),
         px(footprint.height),
         "ledger-total" + (exact ? " is-exact" : "")
-      )
-    );
-    rows.push(
-      ledgerRow(
-        "the slot",
-        level.gap.width + "px",
-        level.gap.height + "px",
-        "ledger-target"
-      )
-    );
+      ),
+      ledgerRow("the slot", level.gap.width + "px", level.gap.height + "px", "ledger-target"),
+    ];
 
     dom.ledgerBody.innerHTML = rows.join("");
     dom.ledgerModeBadge.textContent = level.boxSizing;
-    dom.ledgerNote.innerHTML = ledgerNoteText(level, values);
+    dom.ledgerNote.innerHTML = ledgerNoteText(level, content);
   }
 
-  function ledgerNoteText(level, values) {
-    if (level.boxSizing !== "border-box") {
-      return "With <code>content-box</code>, <code>width</code> measures the content only, so padding, border and margin are all added on top of it.";
+  function ledgerNoteText(level, content) {
+    if (level.boxSizing === "content-box") {
+      return "With <code>content-box</code>, the <code>width</code> you set is the load, so the padding, the border and the margin are all added to it.";
     }
-    const inside = sum([values.padding, values.border]);
-    if (values.width === null || inside === null) {
-      return "With <code>border-box</code>, <code>width</code> already contains the padding and the border, so only the margin is added on top of it.";
-    }
-    return `With <code>border-box</code>, <code>width</code> already contains the padding and the border, so only the margin is added on top of it. Of your ${values.width}px across, 2 &times; ${values.border}px is border and 2 &times; ${values.padding}px is padding, leaving ${values.width - 2 * inside}px of content.`;
+    const short =
+      content.width !== null && content.width <= 0
+        ? " Right now the padding and the border use up the whole width, so there is nothing left for the load."
+        : "";
+    return `With <code>border-box</code>, the <code>width</code> you set is the crate, so the padding and the border come out of it and only the margin is added to it.${short}`;
   }
 
   // -- The rules ---------------------------------------
