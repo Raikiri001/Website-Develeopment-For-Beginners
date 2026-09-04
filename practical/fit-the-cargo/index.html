@@ -165,8 +165,11 @@
                     <div class="void-wrap">
                       <div class="void-caption" id="voidCaption">The slot</div>
                       <div class="void" id="void">
+                        <div class="margin-band" id="marginBand" aria-hidden="true"></div>
                         <div class="crate" id="crate">
-                          <span class="crate-badge" id="crateBadge">Glassware</span>
+                          <div class="crate-core">
+                            <span class="crate-badge" id="crateBadge">Glassware</span>
+                          </div>
                         </div>
                       </div>
                       <div class="void-readout" id="voidReadout"></div>
@@ -177,6 +180,24 @@
                   </div>
                   <div class="bay-floor" aria-hidden="true"></div>
                 </div>
+                <ul class="legend">
+                  <li class="legend-item">
+                    <span class="swatch part-content" aria-hidden="true"></span>
+                    content (width &times; height)
+                  </li>
+                  <li class="legend-item">
+                    <span class="swatch part-padding" aria-hidden="true"></span>
+                    padding
+                  </li>
+                  <li class="legend-item">
+                    <span class="swatch part-border" aria-hidden="true"></span>
+                    border
+                  </li>
+                  <li class="legend-item">
+                    <span class="swatch part-margin" aria-hidden="true"></span>
+                    margin
+                  </li>
+                </ul>
               </div>
             </div>
           </div>

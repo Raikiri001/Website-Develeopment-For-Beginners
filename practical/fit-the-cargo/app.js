@@ -9,11 +9,11 @@
   const FIELD_WIDTH = 7;
 
   const FIELDS = [
-    { name: "width", label: "width" },
-    { name: "height", label: "height" },
-    { name: "padding", label: "padding" },
-    { name: "border", label: "border" },
-    { name: "margin", label: "margin" },
+    { name: "width", label: "width", part: "content" },
+    { name: "height", label: "height", part: "content" },
+    { name: "padding", label: "padding", part: "padding" },
+    { name: "border", label: "border", part: "border" },
+    { name: "margin", label: "margin", part: "margin" },
   ];
 
   const state = {
@@ -47,6 +47,7 @@
     scene: document.getElementById("scene"),
     voidEl: document.getElementById("void"),
     voidReadout: document.getElementById("voidReadout"),
+    marginBand: document.getElementById("marginBand"),
     crate: document.getElementById("crate"),
     crateBadge: document.getElementById("crateBadge"),
     blockLeft: document.getElementById("blockLeft"),
@@ -156,7 +157,7 @@
     FIELDS.forEach((field) => {
       const parts = [
         document.createTextNode("  "),
-        makeSpan("attr", field.label),
+        makeSpan(`attr part-${field.part}`, field.label),
         document.createTextNode(": "),
         makeField(field.name),
       ];
@@ -229,6 +230,13 @@
     );
 
     const footprint = footprintFor(level, values);
+    const bandable = footprint.width !== null && footprint.height !== null;
+    dom.marginBand.hidden = !bandable;
+    if (bandable) {
+      dom.marginBand.style.width = footprint.width + "px";
+      dom.marginBand.style.height = footprint.height + "px";
+    }
+
     const overWidth =
       footprint.width === null ? 0 : footprint.width - level.gap.width;
     const overHeight =
@@ -264,10 +272,13 @@
   }
 
   // -- The ledger --------------------------------------
-  function ledgerRow(label, across, down, className) {
+  function ledgerRow(label, across, down, className, part) {
+    const swatch = part
+      ? `<span class="ledger-swatch part-${part}" aria-hidden="true"></span>`
+      : "";
     return `
       <tr class="${className || ""}">
-        <th scope="row">${label}</th>
+        <th scope="row">${swatch}${label}</th>
         <td>${across}</td>
         <td>${down}</td>
       </tr>`;
@@ -318,17 +329,18 @@
         ledgerLabel("the load", typedIsContent),
         px(content.width),
         px(content.height),
-        content.width !== null && content.width <= 0 ? "is-impossible" : ""
+        content.width !== null && content.width <= 0 ? "is-impossible" : "",
+        "content"
       ),
-      ledgerRow("padding", doubled(values.padding), doubled(values.padding)),
-      ledgerRow("border", doubled(values.border), doubled(values.border)),
+      ledgerRow("padding", doubled(values.padding), doubled(values.padding), "", "padding"),
+      ledgerRow("border", doubled(values.border), doubled(values.border), "", "border"),
       ledgerRow(
         ledgerLabel("= the crate", !typedIsContent),
         px(borderBox.width),
         px(borderBox.height),
         "ledger-subtotal"
       ),
-      ledgerRow("margin", doubled(values.margin), doubled(values.margin)),
+      ledgerRow("margin", doubled(values.margin), doubled(values.margin), "", "margin"),
       ledgerRow(
         "= footprint",
         px(footprint.width),
