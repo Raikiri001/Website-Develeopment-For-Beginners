@@ -407,12 +407,15 @@
         "padding"
       ),
       ledgerRow("border", doubled(values.border), doubled(values.border), "ledger-add", "border"),
-      ledgerRow(
-        ledgerLabel("border box", !typedIsContent),
-        px(borderBox.width),
-        px(borderBox.height),
-        "ledger-subtotal"
-      ),
+      // Only border-box needs this row, since there it is the number the learner types.
+      typedIsContent
+        ? ""
+        : ledgerRow(
+            ledgerLabel("border box", true),
+            px(borderBox.width),
+            px(borderBox.height),
+            "ledger-subtotal"
+          ),
       ledgerRow("margin", doubled(values.margin), doubled(values.margin), "ledger-add", "margin"),
       ledgerRow(
         "footprint",
