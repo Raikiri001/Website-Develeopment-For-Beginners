@@ -43,6 +43,7 @@
     ledgerNote: document.getElementById("ledgerNote"),
     ledgerModeBadge: document.getElementById("ledgerModeBadge"),
     gapSizeBadge: document.getElementById("gapSizeBadge"),
+    bay: document.getElementById("bay"),
     scene: document.getElementById("scene"),
     voidEl: document.getElementById("void"),
     voidReadout: document.getElementById("voidReadout"),
@@ -195,7 +196,8 @@
   }
 
   // -- The scene ---------------------------------------
-  function buildScene(level) {
+  function buildScene(category, level) {
+    dom.bay.dataset.theme = category.id;
     dom.blockLeft.textContent = level.left;
     dom.blockRight.textContent = level.right;
     dom.crateBadge.innerHTML = level.badge;
@@ -676,7 +678,7 @@
     dom.briefBody.textContent = level.brief;
     buildRules(level);
     buildCssEditor(level);
-    buildScene(level);
+    buildScene(category, level);
 
     // A solved level comes back filled in and marked.
     if (state.solved.has(level.id)) {

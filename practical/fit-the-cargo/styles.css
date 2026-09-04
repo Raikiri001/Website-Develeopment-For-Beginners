@@ -87,6 +87,12 @@ body {
   gap: var(--space-4);
 }
 
+/* .panel clips its overflow, so nothing here may be squashed below its content. */
+.workspace > *,
+.work-column > * {
+  flex: none;
+}
+
 .brief-body {
   padding: var(--space-4) var(--space-5) 0;
   margin: 0;
@@ -101,7 +107,7 @@ body {
   margin: 0;
   padding: var(--space-4) var(--space-5) var(--space-5);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-3);
 }
 
@@ -304,28 +310,51 @@ body {
   overflow: auto;
 }
 
+/* One bay per category, told apart by its structure rather than by new colours. */
+.bay {
+  --bay-line: var(--border-color);
+  --bay-face: var(--bg-sunken);
+  --bay-mark: var(--accent-warning);
+  width: max-content;
+  min-width: 100%;
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--bay-face);
+  border: 1px solid var(--border-color);
+}
+
+.bay-roof,
+.bay-floor {
+  height: 14px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--bay-line);
+}
+
+.bay-roof {
+  margin-bottom: var(--space-4);
+}
+
+.bay-floor {
+  margin-top: var(--space-4);
+}
+
 .scene {
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  width: max-content;
-  min-width: 100%;
   justify-content: center;
 }
 
 /* The rigid blocks either side: as tall as the slot, and not moving. */
 .block {
   flex: none;
-  width: 64px;
+  width: 68px;
   height: var(--block-height, 200px);
   border-radius: var(--radius-sm);
-  background-color: var(--bg-sunken);
-  border: 1px solid var(--border-color);
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0 10px,
-    var(--border-color) 10px 11px
-  );
+  background-color: var(--bg-surface);
+  border: 1px solid var(--bay-line);
+  background-image: var(--block-pattern, none);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -337,6 +366,125 @@ body {
   font-size: 11px;
   letter-spacing: 0.04em;
   color: var(--text-muted);
+  background-color: var(--bg-surface);
+  padding: var(--space-2) 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Loading bay: timber crates under a roller door, on a marked-out dock floor. */
+.bay[data-theme="loading-bay"] {
+  --block-pattern: repeating-linear-gradient(
+      180deg,
+      transparent 0 21px,
+      var(--bay-line) 21px 22px
+    ),
+    repeating-linear-gradient(45deg, transparent 0 13px, var(--bay-line) 13px 14px);
+}
+
+.bay[data-theme="loading-bay"] .bay-roof {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 7px,
+    var(--bay-line) 7px 8px
+  );
+}
+
+.bay[data-theme="loading-bay"] .bay-floor {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--bay-mark) 0 26px,
+    transparent 26px 52px
+  );
+  opacity: 0.85;
+}
+
+/* Freight deck: corrugated steel containers lashed to a plated deck. */
+.bay[data-theme="freight-deck"] {
+  --block-pattern: repeating-linear-gradient(
+    90deg,
+    transparent 0 6px,
+    var(--bay-line) 6px 7px
+  );
+}
+
+.bay[data-theme="freight-deck"] .block {
+  border-radius: var(--radius-sm);
+  border-width: 2px;
+}
+
+.bay[data-theme="freight-deck"] .bay-roof {
+  visibility: hidden;
+}
+
+.bay[data-theme="freight-deck"] .bay-floor {
+  background-image: repeating-linear-gradient(
+      45deg,
+      transparent 0 5px,
+      var(--bay-line) 5px 6px
+    ),
+    repeating-linear-gradient(-45deg, transparent 0 5px, var(--bay-line) 5px 6px);
+}
+
+/* Container yard: stacks in the open air, over crane rails set into the tarmac. */
+.bay[data-theme="container-yard"] {
+  --block-pattern: repeating-linear-gradient(
+      90deg,
+      transparent 0 5px,
+      var(--bay-line) 5px 6px
+    ),
+    linear-gradient(180deg, transparent 46%, var(--bay-mark) 46% 54%, transparent 54%);
+}
+
+.bay[data-theme="container-yard"] .block {
+  border-width: 2px;
+}
+
+.bay[data-theme="container-yard"] .bay-roof {
+  visibility: hidden;
+}
+
+.bay[data-theme="container-yard"] .bay-floor {
+  height: 18px;
+  background-image: linear-gradient(
+    180deg,
+    transparent 22%,
+    var(--text-dim) 22% 30%,
+    transparent 30% 70%,
+    var(--text-dim) 70% 78%,
+    transparent 78%
+  );
+}
+
+/* Air freight: ULDs with a cut corner, under the curve of the fuselage, on roller track. */
+.bay[data-theme="air-freight"] {
+  --block-pattern: radial-gradient(
+    circle at center,
+    var(--bay-line) 1.5px,
+    transparent 1.6px
+  );
+}
+
+.bay[data-theme="air-freight"] .block {
+  background-size: 16px 16px;
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 78% 100%, 0 100%);
+}
+
+.bay[data-theme="air-freight"] .block-right {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 22% 100%, 0 82%);
+}
+
+.bay[data-theme="air-freight"] .bay-roof {
+  height: 22px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  border-bottom: none;
+}
+
+.bay[data-theme="air-freight"] .bay-floor {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--bay-line) 0 2px,
+    transparent 2px 18px
+  );
 }
 
 .void-wrap {
@@ -484,6 +632,12 @@ body {
 /* ---------- Responsive ---------- */
 @media (max-width: 1180px) {
   .work-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .rule-list {
     grid-template-columns: 1fr;
   }
 }
