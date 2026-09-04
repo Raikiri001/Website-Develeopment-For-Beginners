@@ -962,6 +962,14 @@
   color: var(--text-primary);
   overflow-x: auto;
   white-space: pre;
+  text-align: center;
+}
+
+/* The block is centred as a whole, so its lines still line up with each
+   other rather than each one centring on its own. */
+.anatomy-lines {
+  display: inline-block;
+  text-align: left;
 }
 
 .anatomy-specimen .tag {
@@ -996,14 +1004,20 @@
   box-shadow: inset 0 -1px 0 0 var(--border-color);
 }
 
+/* The lit state has to be obvious at a glance from either side, so it is a
+   ring rather than a wash of colour that a pale tint alone would give. */
 .anatomy-part.is-lit,
 .ref-table tbody tr.is-lit {
-  background-color: var(--accent-primary-tint);
+  background-color: var(--accent-primary-tint-strong);
 }
 
 .anatomy-part.is-lit {
-  box-shadow: inset 0 -2px 0 0 var(--accent-primary);
+  box-shadow: inset 0 0 0 2px var(--accent-primary);
   color: var(--text-primary);
+}
+
+.ref-table tbody tr.is-lit {
+  box-shadow: inset 3px 0 0 0 var(--accent-primary);
 }
 
 .ref-table tbody tr.is-lit .ref-syntax code,
@@ -1017,6 +1031,7 @@
   padding: var(--space-2) var(--space-4) var(--space-3);
   font-size: var(--text-xs);
   color: var(--text-dim);
+  text-align: center;
 }
 
 @media (max-width: 640px) {

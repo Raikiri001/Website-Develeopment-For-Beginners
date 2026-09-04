@@ -243,7 +243,7 @@
         const anatomy = s.anatomy
           ? '<figure class="anatomy"><figcaption>' + escapeHtml(s.anatomy.label) +
             '</figcaption><pre class="anatomy-specimen">' +
-            anatomyParts(s.anatomy.parts) + "</pre>" +
+            '<span class="anatomy-lines">' + anatomyParts(s.anatomy.parts) + "</span></pre>" +
             '<p class="anatomy-hint">' + escapeHtml(s.anatomy.hint ||
               "Hover a part to light up its row in the table below.") + "</p></figure>"
           : "";

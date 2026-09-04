@@ -75,6 +75,31 @@ About us
             { ref: "close", text: "</p>", tone: "tag" },
           ],
         },
+        { text: "\n\n" },
+        { text: "<", tone: "tag" },
+        { ref: "name", text: "p", tone: "tag" },
+        { text: " " },
+        {
+          ref: "attribute",
+          parts: [
+            { text: "class", tone: "attr" },
+            { text: "=" },
+            { text: '"intro"', tone: "string" },
+          ],
+        },
+        { text: ">", tone: "tag" },
+        { text: "Hello World!" },
+        { text: "</p>\n", tone: "tag" },
+        {
+          ref: "void",
+          parts: [
+            { text: "<img ", tone: "tag" },
+            { text: "src", tone: "attr" },
+            { text: "=" },
+            { text: '"a.jpg"', tone: "string" },
+            { text: " />", tone: "tag" },
+          ],
+        },
       ],
     },
     keyPoint:
@@ -90,9 +115,9 @@ About us
       { ref: "open", syntax: "<tag>", label: "Opening tag", code: "<p>", meaning: "Marks where the element starts. Attributes go here, and nowhere else." },
       { ref: "close", syntax: "</tag>", label: "Closing tag", code: "</p>", meaning: "Marks where it ends. The same name again, with a slash." },
       { ref: "content", syntax: "content", label: "Content", code: "Hello World!", meaning: "What sits between the two tags. Text, other elements, or both." },
-      { syntax: "tag", label: "Tag name", code: "p", meaning: "Says what the content is. This is where the meaning lives." },
-      { syntax: 'name="value"', label: "Attribute", code: 'class="intro"', meaning: "An extra setting the tag name alone cannot carry." },
-      { syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "Holds no content, so there is nothing to close." },
+      { ref: "name", syntax: "tag", label: "Tag name", code: "p", meaning: "Says what the content is. This is where the meaning lives." },
+      { ref: "attribute", syntax: 'name="value"', label: "Attribute", code: 'class="intro"', meaning: "An extra setting the tag name alone cannot carry." },
+      { ref: "void", syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "Holds no content, so there is nothing to close." },
     ],
     notes: {
       "How it works":

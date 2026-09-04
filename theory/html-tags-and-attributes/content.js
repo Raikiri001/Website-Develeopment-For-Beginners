@@ -105,6 +105,15 @@ const PARTS = [
         { text: "A link" },
         { text: "</a>\n<img ", tone: "tag" },
         {
+          ref: "id",
+          parts: [
+            { text: "id", tone: "attr" },
+            { text: "=" },
+            { text: '"logo"', tone: "string" },
+          ],
+        },
+        { text: " " },
+        {
           ref: "src",
           parts: [
             { text: "src", tone: "attr" },
@@ -136,7 +145,7 @@ const PARTS = [
     exampleHeadings: ["Written", "Kind", "Example", "What it does"],
     examples: [
       { ref: "class", syntax: 'class="name"', label: "Global", code: 'class="card"', meaning: "A hook for CSS and JavaScript. Any number of elements may share it." },
-      { syntax: 'id="name"', label: "Global", code: 'id="main"', meaning: "Also a hook, but meant to appear once on the page." },
+      { ref: "id", syntax: 'id="name"', label: "Global", code: 'id="main"', meaning: "Also a hook, but meant to appear once on the page." },
       { ref: "href", syntax: 'href="url"', label: "Element specific", code: '<a href="p.html">', meaning: "Where a link goes. Without it, the element is not a link at all." },
       { ref: "src", syntax: 'src="url"', label: "Element specific", code: '<img src="a.jpg">', meaning: "What to load. Required for the element to show anything." },
       { ref: "alt", syntax: 'alt="text"', label: "Element specific", code: '<img alt="A dog">', meaning: "Read out, or shown, when the image cannot be." },
