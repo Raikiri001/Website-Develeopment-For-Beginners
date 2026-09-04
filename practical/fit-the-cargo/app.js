@@ -395,7 +395,7 @@
     // Every part shows in both modes; only which row the learner types into changes.
     const rows = [
       ledgerRow(
-        ledgerLabel("the load", typedIsContent),
+        ledgerLabel("the content", typedIsContent),
         px(content.width),
         px(content.height),
         content.width !== null && content.width <= 0 ? "is-impossible" : "",
