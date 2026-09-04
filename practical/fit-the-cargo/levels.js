@@ -52,8 +52,8 @@ const FIT_CARGO_CATEGORIES = [
         right: "Shelf B",
         hazard: "Loose shelving",
         brief:
-          "A box of vinyl records has to sit on the van shelf between shelf A and shelf B. The shelves are welded brackets, so the space they leave is exactly 280px by 160px.",
-        gap: { width: 280, height: 160 },
+          "A box of vinyl records travels on its edge, so it needs a space taller than it is wide. Between shelf A and shelf B there is exactly 170px by 300px, and the shelves are welded brackets.",
+        gap: { width: 170, height: 300 },
         require: { padding: 8, border: 2, margin: 10 },
         boxSizing: "content-box",
       },
@@ -85,8 +85,8 @@ const FIT_CARGO_CATEGORIES = [
         right: "Bulkhead",
         hazard: "A hot pipe",
         brief:
-          "The produce crate goes between the chiller unit and the bulkhead, into a slot of 296px by 188px. The chiller is plumbed in and the bulkhead is the side of the truck.",
-        gap: { width: 296, height: 188 },
+          "The produce crate goes between the chiller unit and the bulkhead, into an upright slot of 190px by 290px. The chiller is plumbed in and the bulkhead is the side of the truck.",
+        gap: { width: 190, height: 290 },
         require: { padding: 14, border: 6, margin: 12 },
         boxSizing: "content-box",
       },
@@ -144,8 +144,8 @@ const FIT_CARGO_CATEGORIES = [
         right: "Stack 42",
         hazard: "A crane lane",
         brief:
-          "Out in the container yard the spare parts have to go into the one space left in row 40, between two stacks that are four containers high. The space is 334px by 197px, and the numbers are not going to be friendly.",
-        gap: { width: 334, height: 197 },
+          "Out in the container yard the spare parts have to go into the one space left in row 40, between two stacks that are four containers high. The space is a narrow 210px by 330px, and the numbers are not going to be friendly.",
+        gap: { width: 210, height: 330 },
         require: { padding: 13, border: 7, margin: 17 },
         boxSizing: "content-box",
       },
@@ -242,8 +242,8 @@ const FIT_CARGO_CATEGORIES = [
         right: "Dry ULD",
         hazard: "A refrigerant line",
         brief:
-          "The frozen stock is border-box and flies between a cooled container and a dry one, in a space of 288px by 224px. Get the clearance right and the rest of the sum is shorter than you think.",
-        gap: { width: 288, height: 224 },
+          "The frozen stock is border-box and flies between a cooled container and a dry one, in an upright space of 224px by 288px. Get the clearance right and the rest of the sum is shorter than you think.",
+        gap: { width: 224, height: 288 },
         require: { padding: 16, border: 8, margin: 12 },
         boxSizing: "border-box",
       },

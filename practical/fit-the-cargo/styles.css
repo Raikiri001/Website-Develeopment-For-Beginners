@@ -825,14 +825,6 @@ body {
   background-size: 30px 18px;
 }
 
-.bay[data-theme="air-freight"] .props-left .block.is-adjacent {
-  clip-path: polygon(0 0, 100% 0, 100% 89%, 82% 100%, 0 100%);
-}
-
-.bay[data-theme="air-freight"] .props-right .block.is-adjacent {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 18% 100%, 0 89%);
-}
-
 .bay[data-theme="air-freight"] .block::before {
   opacity: 0.5;
   background-image: radial-gradient(
