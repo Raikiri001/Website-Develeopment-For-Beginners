@@ -60,13 +60,13 @@
     cssEditor: document.getElementById("cssEditor"),
     ledgerBody: document.getElementById("ledgerBody"),
     ledgerModeBadge: document.getElementById("ledgerModeBadge"),
-    gapSizeBadge: document.getElementById("gapSizeBadge"),
     bay: document.getElementById("bay"),
     bayBack: document.getElementById("bayBack"),
     propsLeft: document.getElementById("propsLeft"),
     propsRight: document.getElementById("propsRight"),
     scene: document.getElementById("scene"),
     voidEl: document.getElementById("void"),
+    slotDims: document.getElementById("slotDims"),
     voidReadout: document.getElementById("voidReadout"),
     marginBand: document.getElementById("marginBand"),
     crate: document.getElementById("crate"),
@@ -270,7 +270,7 @@
     dom.crateBadge.textContent = titleCase(level.cargo);
     dom.voidEl.style.width = level.gap.width + "px";
     dom.voidEl.style.height = level.gap.height + "px";
-    dom.gapSizeBadge.innerHTML = `${level.gap.width} &times; ${level.gap.height}`;
+    dom.slotDims.innerHTML = `${level.gap.width} &times; ${level.gap.height}`;
 
     // The slot including its hazard frame, which is exactly what the neighbours beside it match.
     const slotHeight = level.gap.height + 2 * VOID_BORDER;
