@@ -351,13 +351,6 @@
       </tr>`;
   }
 
-  /** The row the learner's own width and height land on, marked as theirs. */
-  function ledgerLabel(label, isTyped) {
-    return isTyped
-      ? `${label}<span class="ledger-set">you set this</span>`
-      : label;
-  }
-
   /** The content box: what is left once the padding and the border are taken out. */
   function contentFor(level, values) {
     if (level.boxSizing === "content-box") {
@@ -393,7 +386,7 @@
     // Every part shows in both modes; only which row the learner types into changes.
     const rows = [
       ledgerRow(
-        ledgerLabel("content", typedIsContent),
+        "content",
         px(content.width),
         px(content.height),
         content.width !== null && content.width <= 0 ? "is-impossible" : "",
@@ -411,7 +404,7 @@
       typedIsContent
         ? ""
         : ledgerRow(
-            "what you set",
+            "content + padding + border",
             px(borderBox.width),
             px(borderBox.height),
             "ledger-subtotal"
