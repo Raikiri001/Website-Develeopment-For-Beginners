@@ -994,6 +994,10 @@ body {
   outline-offset: 0;
 }
 
+.void-readout:empty {
+  display: none;
+}
+
 .void-readout {
   margin-top: var(--space-4);
   font-family: var(--font-mono);

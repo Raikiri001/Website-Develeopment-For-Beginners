@@ -328,9 +328,7 @@
   }
 
   function readoutText(level, footprint, overWidth, overHeight) {
-    if (footprint.width === null || footprint.height === null) {
-      return "Footprint &mdash; fill in every value to measure it.";
-    }
+    if (footprint.width === null || footprint.height === null) return "";
     const size = `Footprint ${footprint.width} &times; ${footprint.height}`;
     const notes = [];
     if (overWidth > 0) notes.push(`${overWidth}px too wide`);
@@ -395,7 +393,7 @@
     // Every part shows in both modes; only which row the learner types into changes.
     const rows = [
       ledgerRow(
-        ledgerLabel("the content", typedIsContent),
+        ledgerLabel("content", typedIsContent),
         px(content.width),
         px(content.height),
         content.width !== null && content.width <= 0 ? "is-impossible" : "",
@@ -410,19 +408,19 @@
       ),
       ledgerRow("border", doubled(values.border), doubled(values.border), "ledger-add", "border"),
       ledgerRow(
-        ledgerLabel("the crate", !typedIsContent),
+        ledgerLabel("border box", !typedIsContent),
         px(borderBox.width),
         px(borderBox.height),
         "ledger-subtotal"
       ),
       ledgerRow("margin", doubled(values.margin), doubled(values.margin), "ledger-add", "margin"),
       ledgerRow(
-        "the footprint",
+        "footprint",
         px(footprint.width),
         px(footprint.height),
         "ledger-total" + (exact ? " is-exact" : "")
       ),
-      ledgerRow("the slot", level.gap.width + "px", level.gap.height + "px", "ledger-target"),
+      ledgerRow("slot", level.gap.width + "px", level.gap.height + "px", "ledger-target"),
     ];
 
     dom.ledgerBody.innerHTML = rows.join("");
