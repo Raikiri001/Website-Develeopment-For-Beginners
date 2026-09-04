@@ -793,6 +793,109 @@ body {
     linear-gradient(180deg, transparent 46%, var(--bay-mark) 46% 53%, transparent 53%);
 }
 
+/* Rail yard: wagons on bogies, under the overhead wire, standing on rail and ballast. */
+.bay[data-theme="rail-yard"] {
+  --prop-a: var(--slate-300);
+  --prop-b: var(--slate-500);
+  --prop-edge: var(--slate-700);
+  --bay-ground-a: var(--slate-400);
+  --bay-ground-b: var(--slate-500);
+}
+
+@media (prefers-color-scheme: dark) {
+  .bay[data-theme="rail-yard"] {
+    --prop-a: var(--slate-700);
+    --prop-b: var(--slate-800);
+    --prop-edge: var(--slate-500);
+    --bay-ground-a: var(--slate-800);
+    --bay-ground-b: var(--slate-950);
+  }
+}
+
+.bay[data-theme="rail-yard"] .bay-roof {
+  display: none;
+}
+
+/* The catenary and its contact wire, with droppers between the two. */
+.bay[data-theme="rail-yard"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 34px;
+  opacity: 0.55;
+  background-repeat: repeat-x;
+  background-image: linear-gradient(
+      180deg,
+      transparent 0 12px,
+      var(--bay-line) 12px 14px,
+      transparent 14px
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 30px,
+      var(--bay-line) 30px 32px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 76px,
+      var(--bay-line) 76px 78px,
+      transparent 78px 154px
+    );
+  background-size: 100% 100%, 100% 100%, 100% 32px;
+}
+
+.bay[data-theme="rail-yard"] .bay-floor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+      90deg,
+      var(--bay-line) 0 7px,
+      transparent 7px 28px
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 13px,
+      var(--slate-700) 13px 18px,
+      transparent 18px
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 36px,
+      var(--slate-700) 36px 41px,
+      transparent 41px
+    );
+}
+
+.bay[data-theme="rail-yard"] .block::before {
+  opacity: 0.4;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--prop-edge) 0 2px,
+    transparent 2px 13px
+  );
+}
+
+/* The underframe, and the bogies under it. */
+.bay[data-theme="rail-yard"] .block::after {
+  opacity: 0.75;
+  background-image: linear-gradient(0deg, var(--prop-edge) 0 15px, transparent 15px),
+    radial-gradient(
+      circle at 24px calc(100% - 23px),
+      var(--prop-edge) 0 9px,
+      transparent 9.5px
+    ),
+    radial-gradient(
+      circle at calc(100% - 24px) calc(100% - 23px),
+      var(--prop-edge) 0 9px,
+      transparent 9.5px
+    );
+}
+
 /* Air freight: ULDs with a cut corner, under fuselage ribs, on roller track. */
 .bay[data-theme="air-freight"] .bay-roof {
   height: 62px;

@@ -170,7 +170,7 @@
   {
     "id": "fit-the-cargo",
     "title": "Fit the Cargo",
-    "description": "Pack a crate into a slot that will not move. Eighteen box model puzzles where you set width, height, padding, border and margin so the whole footprint fills a fixed space exactly, with a live loading bay and a running footprint sum.",
+    "description": "Pack a crate into a slot that will not move. Twenty-three box model puzzles where you set width, height, padding, border and margin so the whole footprint fills a fixed space exactly, ending with slots whose four sides each want something different.",
     "category": "practical",
     "topic": "css",
     "order": 4,

@@ -27,13 +27,22 @@
     { left: [[0.95, 72], [0.58, 54]], right: [[0.76, 68], [1.08, 82]] },
   ];
 
-  const FIELDS = [
-    { name: "width", label: "width", part: "content" },
-    { name: "height", label: "height", part: "content" },
-    { name: "padding", label: "padding", part: "padding" },
-    { name: "border", label: "border", part: "border" },
-    { name: "margin", label: "margin", part: "margin" },
-  ];
+  // The three ring properties, in the order the shorthand writes them.
+  const RINGS = ["padding", "border", "margin"];
+  const SIDES = ["top", "right", "bottom", "left"];
+
+  // How many values a shorthand is written with, and which sides each of them sets.
+  const SHORTHAND = {
+    1: [["top", "right", "bottom", "left"]],
+    2: [["top", "bottom"], ["left", "right"]],
+    4: [["top"], ["right"], ["bottom"], ["left"]],
+  };
+
+  const SLOT_LABELS = {
+    1: ["every side"],
+    2: ["top and bottom", "left and right"],
+    4: ["top", "right", "bottom", "left"],
+  };
 
   const state = {
     currentCategoryId: null,
@@ -90,37 +99,64 @@
     return { empty: false, value: Number(match[1]) };
   }
 
+  /** A required value as four sides, whether it was written as one number or as sides. */
+  function sidesOf(value) {
+    if (typeof value === "number") {
+      return { top: value, right: value, bottom: value, left: value };
+    }
+    return value;
+  }
+
+  /** How many values the shorthand needs: one, one per axis, or one per side. */
+  function shorthandOf(sides) {
+    if (sides.top === sides.right && sides.right === sides.bottom && sides.bottom === sides.left) {
+      return 1;
+    }
+    return sides.top === sides.bottom && sides.left === sides.right ? 2 : 4;
+  }
+
+  function requiredSides(level, ring) {
+    return sidesOf(level.require[ring]);
+  }
+
+  /** What the three rings add on one edge, or null if any of them is unset. */
+  function ringTotal(level, values, side, includeInner) {
+    const rings = includeInner ? RINGS : ["margin"];
+    let total = 0;
+    for (const ring of rings) {
+      const value = values[ring][side];
+      if (value === null) return null;
+      total += value;
+    }
+    return total;
+  }
+
   /** The width and height that make the footprint match the slot exactly. */
   function solutionFor(level) {
-    const { padding, border, margin } = level.require;
-    if (level.boxSizing === "border-box") {
-      return {
-        width: level.gap.width - 2 * margin,
-        height: level.gap.height - 2 * margin,
-      };
-    }
-    const ring = padding + border + margin;
+    const inner = level.boxSizing === "content-box";
+    const edge = (side) => {
+      const rings = inner ? RINGS : ["margin"];
+      return rings.reduce((total, ring) => total + requiredSides(level, ring)[side], 0);
+    };
     return {
-      width: level.gap.width - 2 * ring,
-      height: level.gap.height - 2 * ring,
+      width: level.gap.width - edge("left") - edge("right"),
+      height: level.gap.height - edge("top") - edge("bottom"),
     };
   }
 
   /** What the typed values actually take up, or null on either axis that isn't set yet. */
   function footprintFor(level, values) {
-    const outside =
-      level.boxSizing === "border-box"
-        ? values.margin
-        : sum([values.padding, values.border, values.margin]);
-    if (outside === null) return { width: null, height: null };
-    return {
-      width: values.width === null ? null : values.width + 2 * outside,
-      height: values.height === null ? null : values.height + 2 * outside,
+    const inner = level.boxSizing === "content-box";
+    const axis = (a, b, size) => {
+      const one = ringTotal(level, values, a, inner);
+      const two = ringTotal(level, values, b, inner);
+      if (one === null || two === null || size === null) return null;
+      return size + one + two;
     };
-  }
-
-  function sum(list) {
-    return list.some((n) => n === null) ? null : list.reduce((a, b) => a + b, 0);
+    return {
+      width: axis("left", "right", values.width),
+      height: axis("top", "bottom", values.height),
+    };
   }
 
   /** The load's name as it reads on a label. */
@@ -140,16 +176,17 @@
     return el;
   }
 
-  function makeField(name) {
+  function makeField(prop, slot, placeholder) {
     const input = document.createElement("input");
     input.type = "text";
     input.className = "field";
-    input.dataset.field = name;
+    input.dataset.prop = prop;
+    input.dataset.slot = String(slot);
     input.autocomplete = "off";
     input.spellcheck = false;
-    input.placeholder = "0px";
-    input.setAttribute("aria-label", name);
-    input.style.width = FIELD_WIDTH + "ch";
+    input.placeholder = placeholder;
+    input.setAttribute("aria-label", placeholder === "0px" ? prop : `${prop}, ${placeholder}`);
+    input.style.width = Math.max(FIELD_WIDTH, placeholder.length + 1) + "ch";
     return input;
   }
 
@@ -178,14 +215,31 @@
       );
     }
 
-    FIELDS.forEach((field) => {
+    ["width", "height"].forEach((prop) => {
+      dom.cssEditor.appendChild(
+        makeLine([
+          document.createTextNode("  "),
+          makeSpan("attr part-content", prop),
+          document.createTextNode(": "),
+          makeField(prop, 0, "0px"),
+          document.createTextNode(";"),
+        ])
+      );
+    });
+
+    // A ring is written with as many values as its sides need, and the blanks say which is which.
+    RINGS.forEach((ring) => {
+      const count = shorthandOf(requiredSides(level, ring));
       const parts = [
         document.createTextNode("  "),
-        makeSpan(`attr part-${field.part}`, field.label),
+        makeSpan(`attr part-${ring}`, ring),
         document.createTextNode(": "),
-        makeField(field.name),
       ];
-      if (field.name === "border") {
+      SLOT_LABELS[count].forEach((label, slot) => {
+        if (slot > 0) parts.push(document.createTextNode(" "));
+        parts.push(makeField(ring, slot, count === 1 ? "0px" : label));
+      });
+      if (ring === "border") {
         parts.push(document.createTextNode(" "));
         parts.push(makeSpan("string", "solid #1f6f68"));
       }
@@ -200,11 +254,31 @@
     return Array.from(dom.cssEditor.querySelectorAll("input.field"));
   }
 
-  /** Every typed value as a number, with null for blank or unreadable. */
-  function readValues() {
-    const values = {};
+  /** Which sides a blank sets, from the shorthand it belongs to. */
+  function sidesForField(level, input) {
+    const count = shorthandOf(requiredSides(level, input.dataset.prop));
+    return SHORTHAND[count][Number(input.dataset.slot)];
+  }
+
+  /** Every typed value: width and height as numbers, each ring as its four sides. */
+  function readValues(level) {
+    const values = {
+      width: null,
+      height: null,
+      padding: {},
+      border: {},
+      margin: {},
+    };
+    RINGS.forEach((ring) => SIDES.forEach((side) => (values[ring][side] = null)));
+
     getFields().forEach((input) => {
-      values[input.dataset.field] = parsePx(input.value).value;
+      const value = parsePx(input.value).value;
+      const prop = input.dataset.prop;
+      if (prop === "width" || prop === "height") {
+        values[prop] = value;
+        return;
+      }
+      sidesForField(level, input).forEach((side) => (values[prop][side] = value));
     });
     return values;
   }
@@ -213,11 +287,18 @@
     input.style.width = Math.max(FIELD_WIDTH, input.value.length + 2) + "ch";
   }
 
-  function setFieldValue(name, value) {
-    const input = getFields().find((i) => i.dataset.field === name);
-    if (!input) return;
-    input.value = value === null ? "" : value + "px";
-    fitFieldWidth(input);
+  /** Fill every blank with the value it is asking for. */
+  function fillWithSolution(level) {
+    const solution = solutionFor(level);
+    getFields().forEach((input) => {
+      const prop = input.dataset.prop;
+      const value =
+        prop === "width" || prop === "height"
+          ? solution[prop]
+          : requiredSides(level, prop)[sidesForField(level, input)[0]];
+      input.value = value + "px";
+      fitFieldWidth(input);
+    });
   }
 
   // -- The scene ---------------------------------------
@@ -282,20 +363,27 @@
   }
 
   /** Push whatever is typed onto the crate, so the box model does the drawing. */
+  /** The four sides as a CSS shorthand, or "" while any of them is unset. */
+  function shorthandValue(sides) {
+    if (SIDES.some((side) => sides[side] === null)) return "";
+    return SIDES.map((side) => sides[side] + "px").join(" ");
+  }
+
   function refreshScene(level) {
-    const values = readValues();
+    const values = readValues(level);
     const crate = dom.crate;
 
     crate.style.boxSizing = level.boxSizing;
     crate.style.width = values.width === null ? "" : values.width + "px";
     crate.style.height = values.height === null ? "" : values.height + "px";
-    crate.style.padding = values.padding === null ? "" : values.padding + "px";
-    crate.style.borderWidth = values.border === null ? "" : values.border + "px";
-    crate.style.margin = values.margin === null ? "" : values.margin + "px";
+    crate.style.padding = shorthandValue(values.padding);
+    crate.style.borderWidth = shorthandValue(values.border);
+    crate.style.margin = shorthandValue(values.margin);
 
+    const wanted = requiredSides(level, "margin");
     crate.classList.toggle(
       "is-touching",
-      values.margin !== null && values.margin < level.require.margin
+      SIDES.some((side) => values.margin[side] !== null && values.margin[side] < wanted[side])
     );
 
     const footprint = footprintFor(level, values);
@@ -356,11 +444,7 @@
     if (level.boxSizing === "content-box") {
       return { width: values.width, height: values.height };
     }
-    const inside = sum([values.padding, values.border]);
-    return {
-      width: values.width === null || inside === null ? null : values.width - 2 * inside,
-      height: values.height === null || inside === null ? null : values.height - 2 * inside,
-    };
+    return insetBy(values, -1);
   }
 
   /** The border box: the content with the padding and the border wrapped around it. */
@@ -368,15 +452,38 @@
     if (level.boxSizing === "border-box") {
       return { width: values.width, height: values.height };
     }
-    const inside = sum([values.padding, values.border]);
+    return insetBy(values, 1);
+  }
+
+  /** Take the padding and the border off the typed size, or add them onto it. */
+  function insetBy(values, sign) {
+    const edge = (side) => {
+      const padding = values.padding[side];
+      const border = values.border[side];
+      return padding === null || border === null ? null : padding + border;
+    };
+    const axis = (a, b, size) => {
+      const one = edge(a);
+      const two = edge(b);
+      if (one === null || two === null || size === null) return null;
+      return size + sign * (one + two);
+    };
     return {
-      width: values.width === null || inside === null ? null : values.width + 2 * inside,
-      height: values.height === null || inside === null ? null : values.height + 2 * inside,
+      width: axis("left", "right", values.width),
+      height: axis("top", "bottom", values.height),
     };
   }
 
   function refreshLedger(level, values, footprint) {
-    const doubled = (n) => (n === null ? "&mdash;" : `2 &times; ${n}px`);
+    // Two equal sides read as a doubling; two different ones read as the sum they are.
+    const pair = (sides, a, b) => {
+      if (sides[a] === null || sides[b] === null) return "&mdash;";
+      return sides[a] === sides[b]
+        ? `2 &times; ${sides[a]}px`
+        : `${sides[a]}px + ${sides[b]}px`;
+    };
+    const across = (ring) => pair(values[ring], "left", "right");
+    const down = (ring) => pair(values[ring], "top", "bottom");
     const typedIsContent = level.boxSizing === "content-box";
     const content = contentFor(level, values);
     const borderBox = borderBoxFor(level, values);
@@ -392,14 +499,8 @@
         content.width !== null && content.width <= 0 ? "is-impossible" : "",
         "content"
       ),
-      ledgerRow(
-        "padding",
-        doubled(values.padding),
-        doubled(values.padding),
-        "ledger-add",
-        "padding"
-      ),
-      ledgerRow("border", doubled(values.border), doubled(values.border), "ledger-add", "border"),
+      ledgerRow("padding", across("padding"), down("padding"), "ledger-add", "padding"),
+      ledgerRow("border", across("border"), down("border"), "ledger-add", "border"),
       // Only border-box needs this row, since there it is the number the learner types.
       typedIsContent
         ? ""
@@ -409,7 +510,7 @@
             px(borderBox.height),
             "ledger-subtotal"
           ),
-      ledgerRow("margin", doubled(values.margin), doubled(values.margin), "ledger-add", "margin"),
+      ledgerRow("margin", across("margin"), down("margin"), "ledger-add", "margin"),
       ledgerRow(
         "footprint",
         px(footprint.width),
@@ -424,24 +525,34 @@
   }
 
   // -- The rules ---------------------------------------
+  /** "exactly 14px on every side", or the sides spelled out when they differ. */
+  function demand(level, ring) {
+    const sides = requiredSides(level, ring);
+    const count = shorthandOf(sides);
+    if (count === 1) return `exactly ${sides.top}px on every side`;
+    if (count === 2) {
+      return `exactly ${sides.top}px top and bottom, and ${sides.left}px left and right`;
+    }
+    return `exactly ${sides.top}px top, ${sides.right}px right, ${sides.bottom}px bottom and ${sides.left}px left`;
+  }
+
   /** The three fixed demands plus the fit, worded the same way every level. */
   function rulesFor(level) {
-    const r = level.require;
     return [
       {
         key: "padding",
         name: "Packing foam",
-        text: `Nothing is stopping the ${level.cargo} from rattling around inside the crate. Set <code>padding</code> to exactly ${r.padding}px on every side.`,
+        text: `Nothing is stopping the ${level.cargo} from rattling around inside the crate. Set <code>padding</code> to ${demand(level, "padding")}.`,
       },
       {
         key: "border",
         name: "Crate wall",
-        text: `The crate is not rated for transit until its wall is built. Set <code>border</code> to exactly ${r.border}px on every side.`,
+        text: `The crate is not rated for transit until its wall is built. Set <code>border</code> to ${demand(level, "border")}.`,
       },
       {
         key: "margin",
         name: "Clearance",
-        text: `${level.hazard} runs down every edge of the slot, and the crate must not touch it. Set <code>margin</code> to exactly ${r.margin}px on every side.`,
+        text: `${level.hazard} runs down every edge of the slot, and the crate must not touch it. Set <code>margin</code> to ${demand(level, "margin")}.`,
       },
       {
         key: "fit",
@@ -463,11 +574,17 @@
       .join("");
   }
 
+  /** True once every side of a ring matches what the story asked for. */
+  function ringIsRight(level, values, ring) {
+    const wanted = requiredSides(level, ring);
+    return SIDES.every((side) => values[ring][side] === wanted[side]);
+  }
+
   function refreshRuleTicks(level, values, footprint) {
     const met = {
-      padding: values.padding === level.require.padding,
-      border: values.border === level.require.border,
-      margin: values.margin === level.require.margin,
+      padding: ringIsRight(level, values, "padding"),
+      border: ringIsRight(level, values, "border"),
+      margin: ringIsRight(level, values, "margin"),
       fit:
         footprint.width === level.gap.width &&
         footprint.height === level.gap.height,
@@ -485,54 +602,49 @@
     if (!level) return;
 
     const inputs = getFields();
-    const parsed = {};
     let emptyCount = 0;
     let badCount = 0;
 
     inputs.forEach((input) => {
       const result = parsePx(input.value);
-      parsed[input.dataset.field] = result;
       input.classList.remove("is-correct", "is-wrong");
       if (result.empty) emptyCount++;
-      else if (result.value === null) badCount++;
+      else if (result.value === null) {
+        badCount++;
+        input.classList.add("is-wrong");
+      }
     });
 
     if (emptyCount > 0 || badCount > 0) {
-      inputs.forEach((input) => {
-        const result = parsed[input.dataset.field];
-        if (!result.empty && result.value === null) input.classList.add("is-wrong");
-      });
       setFeedback(
         badCount > 0
           ? "One of those is not a length. Type a number of pixels, such as 12 or 12px, and nothing else."
           : emptyCount === inputs.length
-          ? "Nothing set yet. Every one of the five properties needs a value before the crate has a size."
-          : `${emptyCount} of the five properties are still empty, so the crate has no measurable footprint yet.`,
+          ? "Nothing set yet. Every blank needs a value before the crate has a size."
+          : `${emptyCount} of the ${inputs.length} blanks are still empty, so the crate has no measurable footprint yet.`,
         "is-wrong"
       );
       return;
     }
 
-    const values = readValues();
+    const values = readValues(level);
     const solution = solutionFor(level);
     const footprint = footprintFor(level, values);
-    const correct = {
-      padding: values.padding === level.require.padding,
-      border: values.border === level.require.border,
-      margin: values.margin === level.require.margin,
-      width: values.width === solution.width,
-      height: values.height === solution.height,
-    };
 
     inputs.forEach((input) => {
-      const name = input.dataset.field;
-      input.classList.toggle("is-correct", correct[name] === true);
-      input.classList.toggle("is-wrong", correct[name] === false);
+      const prop = input.dataset.prop;
+      const typed = parsePx(input.value).value;
+      const wanted =
+        prop === "width" || prop === "height"
+          ? solution[prop]
+          : requiredSides(level, prop)[sidesForField(level, input)[0]];
+      input.classList.toggle("is-correct", typed === wanted);
+      input.classList.toggle("is-wrong", typed !== wanted);
     });
 
     state.attempted.add(level.id);
 
-    const allRight = Object.keys(correct).every((key) => correct[key]);
+    const allRight = inputs.every((input) => input.classList.contains("is-correct"));
     if (allRight) {
       state.solved.add(level.id);
       setFeedback(explainSolution(level, values), "is-correct");
@@ -541,7 +653,7 @@
       dom.btnHint.disabled = true;
       dom.btnNext.focus();
     } else {
-      setFeedback(diagnose(level, values, footprint, solution), "is-wrong");
+      setFeedback(diagnose(level, values, footprint), "is-wrong");
       const firstWrong = inputs.find((i) => i.classList.contains("is-wrong"));
       if (firstWrong) firstWrong.focus();
     }
@@ -550,24 +662,47 @@
     updateProgress();
   }
 
-  /** Name the one thing that is most wrong, in the story's own terms. */
-  function diagnose(level, values, footprint, solution) {
-    const r = level.require;
+  /** The first side of a ring that does not match, with what was asked and what was typed. */
+  function firstMismatch(level, values, ring) {
+    const wanted = requiredSides(level, ring);
+    const side = SIDES.find((s) => values[ring][s] !== wanted[s]);
+    return side ? { side, wanted: wanted[side], typed: values[ring][side] } : null;
+  }
 
-    if (values.padding !== r.padding) {
-      return values.padding < r.padding
-        ? `Not enough packing foam around the ${level.cargo}. The rule asks for exactly ${r.padding}px of padding and you have given ${values.padding}px.`
-        : `That is more packing foam than the rule allows. It asks for exactly ${r.padding}px of padding and you have given ${values.padding}px.`;
+  /** Name the sides a wrong blank sets, or say nothing when every side wants the same. */
+  function whichSide(level, ring, side) {
+    const count = shorthandOf(requiredSides(level, ring));
+    if (count === 1) return "";
+    if (count === 2) {
+      return side === "top" || side === "bottom" ? " top and bottom" : " left and right";
     }
-    if (values.border !== r.border) {
-      return values.border < r.border
-        ? `The crate wall is too thin to survive transit. The rule asks for exactly ${r.border}px of border and you have given ${values.border}px.`
-        : `The crate wall is thicker than the rule allows. It asks for exactly ${r.border}px of border and you have given ${values.border}px.`;
+    return ` on the ${side}`;
+  }
+
+  /** Name the one thing that is most wrong, in the story's own terms. */
+  function diagnose(level, values, footprint) {
+    const padding = firstMismatch(level, values, "padding");
+    if (padding) {
+      const where = whichSide(level, "padding", padding.side);
+      return padding.typed < padding.wanted
+        ? `Not enough packing foam around the ${level.cargo}. The rule asks for exactly ${padding.wanted}px of padding${where} and you have given ${padding.typed}px.`
+        : `That is more packing foam than the rule allows. It asks for exactly ${padding.wanted}px of padding${where} and you have given ${padding.typed}px.`;
     }
-    if (values.margin !== r.margin) {
-      return values.margin < r.margin
-        ? `Too close to the edge. ${level.hazard} needs exactly ${r.margin}px of margin between it and the crate, and you have left ${values.margin}px.`
-        : `That is further from the edge than the rule wants. It asks for exactly ${r.margin}px of margin and you have left ${values.margin}px.`;
+
+    const border = firstMismatch(level, values, "border");
+    if (border) {
+      const where = whichSide(level, "border", border.side);
+      return border.typed < border.wanted
+        ? `The crate wall is too thin to survive transit. The rule asks for exactly ${border.wanted}px of border${where} and you have given ${border.typed}px.`
+        : `The crate wall is thicker than the rule allows. It asks for exactly ${border.wanted}px of border${where} and you have given ${border.typed}px.`;
+    }
+
+    const margin = firstMismatch(level, values, "margin");
+    if (margin) {
+      const where = whichSide(level, "margin", margin.side);
+      return margin.typed < margin.wanted
+        ? `Too close to the edge. ${level.hazard} needs exactly ${margin.wanted}px of margin${where}, and you have left ${margin.typed}px.`
+        : `That is further from the edge than the rule wants. It asks for exactly ${margin.wanted}px of margin${where} and you have left ${margin.typed}px.`;
     }
 
     const notes = [];
@@ -588,41 +723,53 @@
       );
     }
 
-    const rings =
-      level.boxSizing === "border-box"
-        ? `2 &times; ${r.margin}px of margin`
-        : `2 &times; ${r.padding}px of padding, 2 &times; ${r.border}px of border and 2 &times; ${r.margin}px of margin`;
+    return `The three rules are right, but the footprint is ${notes.join(
+      " and "
+    )}. ${axisSums(level)}`;
+  }
 
-    return `The three rules are right, but the footprint is ${notes.join(" and ")}. Remember the footprint is your width and height plus ${rings}.`;
+  /** What the rings take off each axis, spelled out side by side. */
+  function axisSums(level) {
+    const rings = level.boxSizing === "border-box" ? ["margin"] : RINGS;
+    const edge = (side) =>
+      rings.reduce((total, ring) => total + requiredSides(level, ring)[side], 0);
+    return `Across, the sides take off ${edge("left")} + ${edge("right")} = ${
+      edge("left") + edge("right")
+    }px. Down, they take off ${edge("top")} + ${edge("bottom")} = ${
+      edge("top") + edge("bottom")
+    }px.`;
   }
 
   function explainSolution(level, values) {
-    const r = level.require;
+    const across = level.gap.width - values.width;
+    const down = level.gap.height - values.height;
     if (level.boxSizing === "border-box") {
-      return `Exactly right. With <code>border-box</code> the ${values.width}px you set already contains the ${r.border}px border and the ${r.padding}px padding on each side, so the only thing added outside is the margin: ${values.width} + 2 &times; ${r.margin} = ${level.gap.width}px across, and ${values.height} + 2 &times; ${r.margin} = ${level.gap.height}px down. The ${level.cargo} ships with nothing touching the slot walls.`;
+      return `Exactly right. With <code>border-box</code> the ${values.width}px you set already contains the padding and the border, so the only thing added outside is the margin: ${values.width} + ${across} = ${level.gap.width}px across, and ${values.height} + ${down} = ${level.gap.height}px down. The ${level.cargo} ships with nothing touching the slot walls.`;
     }
-    const ring = r.padding + r.border + r.margin;
-    return `Exactly right. Each side adds ${r.padding} + ${r.border} + ${r.margin} = ${ring}px, so across it is ${values.width} + 2 &times; ${ring} = ${level.gap.width}px, and down it is ${values.height} + 2 &times; ${ring} = ${level.gap.height}px. With <code>content-box</code>, <code>width</code> only ever measures the content, which is why the crate ends up ${2 * ring}px wider than the number you typed.`;
+    return `Exactly right. ${axisSums(level)} So across it is ${values.width} + ${across} = ${level.gap.width}px, and down it is ${values.height} + ${down} = ${level.gap.height}px. With <code>content-box</code>, <code>width</code> only ever measures the content, which is why the crate ends up ${across}px wider than the number you typed.`;
   }
 
   // -- Hints -------------------------------------------
   function hintsFor(level) {
-    const r = level.require;
     const solution = solutionFor(level);
+    const fixed = `Start with the three the story fixes for you: padding ${demand(
+      level,
+      "padding"
+    )}, border ${demand(level, "border")}, margin ${demand(level, "margin")}.`;
+
     if (level.boxSizing === "border-box") {
       return [
-        `Start with the three the story fixes for you: padding ${r.padding}px, border ${r.border}px, margin ${r.margin}px.`,
-        `With <code>border-box</code>, padding and border sit inside the width, so the footprint is just width + 2 &times; margin.`,
-        `Across: ${level.gap.width} &minus; 2 &times; ${r.margin} = ${solution.width}. Down works the same way.`,
+        fixed,
+        `With <code>border-box</code>, padding and border sit inside the width, so the footprint is the width plus the margin on each side.`,
+        axisSums(level),
         `The answers are width ${solution.width}px and height ${solution.height}px.`,
       ];
     }
-    const ring = r.padding + r.border + r.margin;
     return [
-      `Start with the three the story fixes for you: padding ${r.padding}px, border ${r.border}px, margin ${r.margin}px.`,
-      `The footprint is width + 2 &times; (padding + border + margin), and the same again for height.`,
-      `Each side adds ${r.padding} + ${r.border} + ${r.margin} = ${ring}px, so both sides together take ${2 * ring}px off the slot.`,
-      `Across: ${level.gap.width} &minus; ${2 * ring} = ${solution.width}. Down: ${level.gap.height} &minus; ${2 * ring} = ${solution.height}.`,
+      fixed,
+      `The footprint across is your width plus the padding, border and margin on the left and on the right. Down works the same way, with the top and the bottom.`,
+      axisSums(level),
+      `Across: ${level.gap.width} &minus; ${level.gap.width - solution.width} = ${solution.width}. Down: ${level.gap.height} &minus; ${level.gap.height - solution.height} = ${solution.height}.`,
     ];
   }
 
@@ -779,14 +926,9 @@
 
     // A solved level comes back filled in and marked.
     if (state.solved.has(level.id)) {
-      const solution = solutionFor(level);
-      setFieldValue("width", solution.width);
-      setFieldValue("height", solution.height);
-      setFieldValue("padding", level.require.padding);
-      setFieldValue("border", level.require.border);
-      setFieldValue("margin", level.require.margin);
+      fillWithSolution(level);
       getFields().forEach((input) => input.classList.add("is-correct"));
-      setFeedback(explainSolution(level, solution), "is-correct");
+      setFeedback(explainSolution(level, solutionFor(level)), "is-correct");
       dom.btnCheck.hidden = true;
       dom.btnNext.hidden = false;
       dom.btnHint.disabled = true;

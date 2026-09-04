@@ -100,7 +100,7 @@ const FIT_CARGO_CATEGORIES = [
         brief:
           "A pallet of fired tiles is lashed to the freight deck between the deck rail and the bulkhead. The lashing points give it 372px by 244px, and neither the rail nor the bulkhead is going anywhere.",
         gap: { width: 372, height: 244 },
-        require: { padding: 18, border: 7, margin: 9 },
+        require: { padding: 32, border: 6, margin: 8 },
         boxSizing: "content-box",
       },
       {
@@ -126,7 +126,7 @@ const FIT_CARGO_CATEGORIES = [
         brief:
           "The scoreboard crate has to sit inside the square painted on the freight deck. The square is 260px by 260px and it is painted on, so arguing with it is not an option.",
         gap: { width: 260, height: 260 },
-        require: { padding: 15, border: 5, margin: 10 },
+        require: { padding: 8, border: 26, margin: 6 },
         boxSizing: "content-box",
       },
     ],
@@ -172,7 +172,7 @@ const FIT_CARGO_CATEGORIES = [
         brief:
           "The lighting crate is going on a flat rack in the yard, in the gap between two loads already chained down. The gap is 412px by 186px, which is wide and not at all tall.",
         gap: { width: 412, height: 186 },
-        require: { padding: 21, border: 3, margin: 11 },
+        require: { padding: 10, border: 6, margin: 38 },
         boxSizing: "content-box",
       },
       {
@@ -185,7 +185,7 @@ const FIT_CARGO_CATEGORIES = [
         brief:
           "The seedling trays are booked into the shaded row of the yard, in a space of 275px by 255px between two stacks. Everything here is stacked by crane, so nothing shifts to make room.",
         gap: { width: 275, height: 255 },
-        require: { padding: 17, border: 8, margin: 14 },
+        require: { padding: 10, border: 6, margin: 36 },
         boxSizing: "content-box",
       },
       {
@@ -231,7 +231,7 @@ const FIT_CARGO_CATEGORIES = [
         brief:
           "The engine block ships border-box too, and the curved walls of the aircraft hold leave a 280px square. The padding and the border are inside the width now, so the only thing still added on the outside is the margin.",
         gap: { width: 280, height: 280 },
-        require: { padding: 20, border: 5, margin: 15 },
+        require: { padding: 20, border: 5, margin: 36 },
         boxSizing: "border-box",
       },
       {
@@ -258,6 +258,98 @@ const FIT_CARGO_CATEGORIES = [
           "The last space on the aircraft pallet run is 200px by 344px, tall enough to take the slab on its edge, with a loaded pallet either side. The marble crate is border-box and the clearance rule up here is the strictest anywhere.",
         gap: { width: 200, height: 344 },
         require: { padding: 18, border: 6, margin: 19 },
+        boxSizing: "border-box",
+      },
+    ],
+  },
+  {
+    id: "rail-yard",
+    name: "Rail Yard",
+    color: "#059669",
+    levels: [
+      {
+        id: "fc19",
+        difficulty: "hard",
+        cargo: "signal gear",
+        left: "Wagon 4",
+        right: "Wagon 6",
+        hazard: "The overhead wire",
+        brief:
+          "In the rail yard the sides of a wagon are closer in than its roof and its underframe, so the clearance is not the same all the way round any more. The space between wagon 4 and wagon 6 is 300px by 280px.",
+        gap: { width: 300, height: 280 },
+        require: {
+          padding: 14,
+          border: 6,
+          margin: { top: 24, right: 10, bottom: 24, left: 10 },
+        },
+        boxSizing: "content-box",
+      },
+      {
+        id: "fc20",
+        difficulty: "hard",
+        cargo: "track panels",
+        left: "Wagon 11",
+        right: "Buffer stop",
+        hazard: "A live rail",
+        brief:
+          "Track panels slide sideways every time the wagon shunts, so they need far more packing at the sides than at the ends. The space on the flat wagon is 340px by 220px.",
+        gap: { width: 340, height: 220 },
+        require: {
+          padding: { top: 10, right: 26, bottom: 10, left: 26 },
+          border: 5,
+          margin: 12,
+        },
+        boxSizing: "content-box",
+      },
+      {
+        id: "fc21",
+        difficulty: "hard",
+        cargo: "a transformer",
+        left: "Wagon 8",
+        right: "Wagon 10",
+        hazard: "A hoist chain",
+        brief:
+          "The transformer is lifted by a hoist from above and stood down hard, so its crate is reinforced top and bottom and only lightly framed at the sides. The space is 280px by 300px.",
+        gap: { width: 280, height: 300 },
+        require: {
+          padding: 12,
+          border: { top: 20, right: 6, bottom: 20, left: 6 },
+          margin: 10,
+        },
+        boxSizing: "content-box",
+      },
+      {
+        id: "fc22",
+        difficulty: "hard",
+        cargo: "rail clips",
+        left: "Wagon 2",
+        right: "Loading ramp",
+        hazard: "A shunting lane",
+        brief:
+          "This end of the wagon has the hoist above it, the ramp on one side and a walkway on the other, so all four clearances are different. The space is 320px by 300px.",
+        gap: { width: 320, height: 300 },
+        require: {
+          padding: 12,
+          border: 4,
+          margin: { top: 30, right: 18, bottom: 10, left: 6 },
+        },
+        boxSizing: "content-box",
+      },
+      {
+        id: "fc23",
+        difficulty: "hard",
+        cargo: "sleepers",
+        left: "Wagon 1",
+        right: "Wagon 3",
+        hazard: "A shunting lane",
+        brief:
+          "The last load of the day: a stack of sleepers, measured border-box, with packing at the ends, a frame all round and four different clearances outside it. The space is 300px by 320px.",
+        gap: { width: 300, height: 320 },
+        require: {
+          padding: { top: 20, right: 10, bottom: 20, left: 10 },
+          border: 6,
+          margin: { top: 30, right: 18, bottom: 10, left: 6 },
+        },
         boxSizing: "border-box",
       },
     ],
