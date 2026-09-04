@@ -64,39 +64,38 @@
   }
 
   // ── Rendering ────────────────────────────────────────
-  /* Each note names the part of the section it sits after, so an explanation
-     is read next to the thing it explains. A note naming a part this section
-     does not have falls to the end rather than disappearing. */
+  /* Each note names the part of the section it explains. A note on a framed
+     part is rendered as that frame's caption, inside it, so the two read as
+     one block rather than as a paragraph that happens to follow a figure. A
+     note naming a part this section does not have closes the section instead
+     of disappearing. */
   function placeNotes(parts, notes) {
     const names = parts.map(function (part) {
       return part.name;
     });
-    const placed = parts
+    const orphans = notes.filter(function (note) {
+      return names.indexOf(note.after) === -1;
+    });
+    return parts
       .map(function (part) {
+        const mine = notes
+          .filter(function (note) {
+            return note.after === part.name;
+          })
+          .concat(part.name === "end" ? orphans : []);
+        if (!mine.length) return part.html;
+        const captions = mine
+          .map(function (note) {
+            return note.html;
+          })
+          .join("");
+        if (!part.framed) return part.html + captions;
         return (
-          part.html +
-          notes
-            .filter(function (note) {
-              return note.after === part.name;
-            })
-            .map(function (note) {
-              return note.html;
-            })
-            .join("")
+          '<div class="block">' + part.html +
+          '<div class="block-notes">' + captions + "</div></div>"
         );
       })
       .join("");
-    return (
-      placed +
-      notes
-        .filter(function (note) {
-          return names.indexOf(note.after) === -1;
-        })
-        .map(function (note) {
-          return note.html;
-        })
-        .join("")
-    );
   }
 
   /* A contents rail listing every section, with its notes nested underneath.
@@ -307,10 +306,10 @@
            one it belongs beside, or "end" to close the section off. */
         const parts = [
           { name: "meta", html: '<dl class="method-meta">' + meta + "</dl>" },
-          { name: "code", html: code ? '<div class="method-code">' + code + "</div>" : "" },
-          { name: "tree", html: tree },
-          { name: "anatomy", html: anatomy },
-          { name: "examples", html: examples },
+          { name: "code", html: code ? '<div class="method-code">' + code + "</div>" : "", framed: true },
+          { name: "tree", html: tree, framed: true },
+          { name: "anatomy", html: anatomy, framed: true },
+          { name: "examples", html: examples, framed: true },
           { name: "ladder", html: s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : "" },
         ]
           .filter(function (part) {

@@ -56,16 +56,16 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "anatomy",
-        title: "What the tag name does",
-        body:
-          "The browser reads the tag name and applies its own defaults for that name, which is why a heading is already large and bold before you write any CSS at all.",
-      },
-      {
         after: "examples",
         title: "Void elements",
         body:
           "Most elements need closing, but void elements never do, because there is no content to wrap. Trying to close one, or forgetting to close one that needs it, both cause trouble.",
+      },
+      {
+        after: "end",
+        title: "What the tag name does",
+        body:
+          "The browser reads the tag name and applies its own defaults for that name, which is why a heading is already large and bold before you write any CSS at all.",
       },
     ],
     demo: {

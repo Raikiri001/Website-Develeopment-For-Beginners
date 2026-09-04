@@ -341,6 +341,52 @@
   font-style: italic;
 }
 
+/* ---------- A block, and the note captioning it ---------- */
+/* A note about a figure or a table is that block's caption, so the two are
+   framed together and a note can never read as a paragraph wedged between two
+   unrelated things. */
+.block {
+  margin: 0 0 var(--space-10);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--bg-surface);
+}
+
+/* The framed part gives up its own frame and margin to the block around it. */
+.block > .anatomy,
+.block > .tree-figure,
+.block > .ref-scroll,
+.block > .method-code,
+.block > .method-code > .code-figure {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* Several code figures inside one block are separated by a rule rather than
+   by a gap, so the block reads as one surface. */
+.block > .method-code {
+  gap: 0;
+}
+
+.block > .method-code > .code-figure + .code-figure {
+  border-top: 1px solid var(--border-color);
+}
+
+.block-notes {
+  padding: var(--space-5) var(--space-6);
+  border-top: 1px solid var(--border-color);
+}
+
+.block-notes .note:last-child {
+  margin-bottom: 0;
+}
+
+.block-notes .note {
+  margin-bottom: var(--space-6);
+}
+
 /* ---------- A note ---------- */
 /* Each note is a subheading naming what this part of the concept is about,
    with its paragraph under it, and it sits in the section next to whatever
