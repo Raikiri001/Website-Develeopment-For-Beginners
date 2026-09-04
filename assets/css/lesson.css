@@ -971,6 +971,22 @@
   border-bottom: none;
 }
 
+/* Hovering a row lights that one detail up, so the formula, its name, the
+   example and the meaning read as a single line rather than four columns. */
+.ref-table tbody tr {
+  transition: background-color 0.12s ease;
+}
+
+.ref-table tbody tr:hover {
+  background-color: var(--bg-sunken);
+}
+
+.ref-table tbody tr:hover .ref-syntax code,
+.ref-table tbody tr:hover .ref-code code {
+  background-color: var(--bg-surface);
+  border-color: var(--accent, var(--border-active));
+}
+
 /* The formula is what you look up, so it carries the strongest emphasis. */
 .ref-syntax code {
   font-family: var(--font-mono);
