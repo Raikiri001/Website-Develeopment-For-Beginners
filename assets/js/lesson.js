@@ -64,6 +64,11 @@
   }
 
   // ── Rendering ────────────────────────────────────────
+  // A section's own note headings, in the order it wrote them.
+  function noteLabels(lesson, section) {
+    return section.notes ? Object.keys(section.notes) : lesson.noteLabels || [];
+  }
+
   /* A contents rail listing every section, with its notes nested underneath.
      Only the section being read is expanded; the rest stay collapsed and
      dimmed, so the rail says where you are rather than just where you could
@@ -86,7 +91,7 @@
           name: s.name,
           number: s.number,
           accent: s.accent,
-          subs: lesson.noteLabels.map(function (label, i) {
+          subs: noteLabels(lesson, s).map(function (label, i) {
             return { id: s.id + "-note-" + i, name: label };
           }),
         };
@@ -196,13 +201,14 @@
           })
           .join("");
 
-        // Same questions, same order, labelled so they can be read across.
-        const notes = lesson.noteLabels
+        /* Each section names its own notes, so a subheading says what this part
+           of the concept is about rather than repeating the same three words. */
+        const notes = noteLabels(lesson, s)
           .map(function (label, i) {
             return (
-              '<p class="note" id="' + s.id + "-note-" + i + '">' +
-              '<strong class="note-label">' + escapeHtml(label) + ".</strong> " +
-              s.notes[label] + "</p>"
+              '<div class="note" id="' + s.id + "-note-" + i + '">' +
+              '<h3 class="note-label">' + escapeHtml(label) + "</h3>" +
+              "<p>" + s.notes[label] + "</p></div>"
             );
           })
           .join("");

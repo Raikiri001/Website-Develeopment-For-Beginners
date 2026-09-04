@@ -48,11 +48,11 @@ const PARTS = [
       "Resolved from": "The file the path is written in",
     },
     notes: {
-      "How it works":
+      "From the path to the file":
         "The browser reads the path, works out which file it points at, and requests that file. If nothing is there, the request fails and whatever depended on it does not appear.",
-      "What to watch for":
+      "Most failures are invisible":
         "Only images announce themselves when they fail. A stylesheet, a script or a link that points nowhere gives you no marker on the page, so the symptom you see is unstyled text, a dead button, or a click that goes to a missing page, rather than anything naming the path.",
-      "Worth remembering":
+      "Case matters once it is published":
         "Paths are case sensitive on most web servers, even where they are not on your own computer, so <code>Logo.png</code> and <code>logo.png</code> become different files once the site is published. Note also that a path in a URL no longer has to match real folders on the server: MDN describes it as <a href=\"https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_URL\" target=\"_blank\" rel=\"noopener\">mostly an abstraction</a> the server handles however it likes.",
     },
   },
@@ -120,11 +120,11 @@ const PARTS = [
       "Resolved from": "The folder of the file it is written in",
     },
     notes: {
-      "How it works":
+      "Down a folder, or up one":
         "The browser looks for the file in a subfolder of the one holding the current file. A plain name or a folder name goes down; <code>../</code> goes up.",
-      "What to watch for":
+      "The same path means different files":
         "The same text means different files in different places. <code>css/styles.css</code> is correct in <code>index.html</code> and wrong in <code>blog/post.html</code>, which needs <code>../css/styles.css</code>.",
-      "Worth remembering":
+      "They survive being moved":
         "Relative paths survive being moved. Copy the whole folder anywhere, or publish it under any domain or subfolder, and every one of them still works, because none of them names the site root.",
     },
   },
@@ -172,11 +172,11 @@ const PARTS = [
       "Resolved from": "The server root, or the named site",
     },
     notes: {
-      "How it works":
+      "Starting from the root":
         "A leading slash tells the browser to start at the root of whatever server it is talking to. A full URL goes further and names the server too, so it works from any site at all.",
-      "What to watch for":
+      "Tied to sitting at the root":
         "Root-relative paths look tidier but tie the site to sitting at the root of its domain. This project uses relative paths everywhere for exactly that reason, so it also works from a subfolder.",
-      "Worth remembering":
+      "Which one to reach for":
         "Use a full URL when linking to somebody else's site, since there is no relative route to it. Use a relative path within your own.",
     },
   },
@@ -251,11 +251,11 @@ const PARTS = [
       "Resolved from": "The current file's folder",
     },
     notes: {
-      "How it works":
+      "One segment at a time":
         "Take the current file's folder, then read the path left to right. Each <code>../</code> removes one folder from the end, each folder name adds one, and the last segment is the file.",
-      "What to watch for":
+      "Climbing too far is silent":
         "Climbing above the top of the site does not warn you. Any <code>../</code> with nothing left to climb is silently thrown away, so <code>../../../logo.png</code> at the root lands on <code>logo.png</code>. A path with too many of them can therefore still work, which hides the mistake until you move the file.",
-      "Worth remembering":
+      "Resolve it by hand":
         "When something will not load, resolve its path by hand and compare the answer with where the file actually sits. The gap between the two is your mistake, and usually it is one level.",
     },
   },
@@ -311,11 +311,11 @@ const PARTS = [
       "Resolved from": "Whichever file contains the path",
     },
     notes: {
-      "How it works":
+      "Every file counts from itself":
         "Each file resolves its own paths. An <code>href</code> in a page counts from the page's folder, and a <code>url()</code> in a stylesheet counts from the stylesheet's folder, even though both end up on the same screen.",
-      "What to watch for":
+      "Moving a stylesheet breaks its images":
         "This is why a background image breaks when a stylesheet is reorganised while the HTML is untouched. Nothing about the page changed, but the starting point for every <code>url()</code> in that file did.",
-      "Worth remembering":
+      "Ask which file it is written in":
         "Ask which <em>file</em> the path is written in, not which page is open. That one question resolves nearly every path that mysteriously does not work.",
     },
   },
@@ -326,7 +326,6 @@ const METAKEYS = ["What it is", "Written as", "Resolved from"];
 const LESSON = {
   id: "file-paths",
   metaKeys: METAKEYS,
-  noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   exampleHeadings: ["Syntax", "Kind", "Example", "What it means"],
   demoHint: "Edit the HTML and watch the page rebuild",
   sections: PARTS,

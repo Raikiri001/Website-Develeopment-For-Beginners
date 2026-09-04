@@ -59,11 +59,11 @@ const PARTS = [
       { ref: "body", syntax: "<body>", label: "Visible page", code: "Inside html", meaning: "Everything a visitor actually sees lives here." },
     ],
     notes: {
-      "How it works":
+      "What each part holds":
         "The doctype tells the browser to use modern standards, <code>head</code> holds information about the page, and <code>body</code> holds everything a visitor actually sees.",
-      "What to watch for":
+      "Leaving out the doctype":
         "Without the doctype the browser switches to a compatibility mode built for pages from the 1990s, and layouts start behaving in ways no amount of CSS will explain.",
-      "Worth remembering":
+      "The browser builds it either way":
         "The browser builds this skeleton whether or not you type it. Writing it yourself is how you keep control of what ends up in the head.",
     },
     demo: {
@@ -119,11 +119,11 @@ const PARTS = [
       { syntax: "  <p>", label: "Indentation", code: "Two spaces, or none", meaning: "Makes no difference at all. Only the tags decide what is inside what." },
     ],
     notes: {
-      "How it works":
+      "Children, and the tree they build":
         "An element inside another is its child, and the whole page is one tree of these relationships. Indentation is only for humans, but the nesting itself is real structure.",
-      "What to watch for":
+      "Closing in the wrong order":
         "Tags must close in the reverse order they were opened. Cross them over and the browser repairs the markup by guessing, which is how a page ends up not matching the HTML you wrote.",
-      "Worth remembering":
+      "Indentation proves nothing":
         "Indentation is for people reading the file and means nothing to the browser. A page written entirely on one line nests exactly the same way, which is why a badly indented file can still be correct, and a neatly indented one can still be wrong.",
     },
     demo: {
@@ -183,11 +183,11 @@ const PARTS = [
       { syntax: "the same level", label: "Sibling", code: "h1 and p are siblings", meaning: "Two elements sharing the same parent. Order between them matters." },
     ],
     notes: {
-      "How it works":
+      "Built before anything is drawn":
         "The browser turns your markup into this tree before it draws anything, and from then on the tree is the page. Change the nesting and you have changed the tree, whatever the page looks like afterwards.",
-      "What to watch for":
+      "Child against descendant":
         "A child and a descendant are not the same thing, and the difference is exactly where beginners lose an afternoon. <code>strong</code> is inside <code>div</code>, so it is a descendant, but its parent is <code>p</code>, so it is not a child of <code>div</code>.",
-      "Worth remembering":
+      "Why the names matter later":
         "These names are not jargon for its own sake. CSS selectors and JavaScript both work by walking this tree, so <code>.card p</code> and <code>.card &gt; p</code> only differ because descendant and child are different positions.",
     },
     demo: {
@@ -245,11 +245,11 @@ const PARTS = [
       { syntax: "display: none", label: "Change it", code: ".old { display: none }", meaning: "Removed from the layout entirely, leaving no gap." },
     ],
     notes: {
-      "How it works":
+      "How each one takes up space":
         "A block element starts on a new line and stretches to fill its container. An inline element sits inside a line of text and is only as wide as the content it holds.",
-      "What to watch for":
+      "Width and height on an inline element":
         "Setting <code>width</code> or <code>height</code> on an inline element does nothing, and vertical padding on one overlaps its neighbours instead of pushing them away. This is a very common first confusion. The exception is an element holding a file rather than text, such as <code>&lt;img&gt;</code>: it is inline, but width and height do size it, which is why <code>&lt;img width=\"400\"&gt;</code> works.",
-      "Worth remembering":
+      "The tag sets it, CSS can change it":
         "The default comes from the tag, but CSS can change it with <code>display</code>. Choose the tag for its meaning and change the behaviour in CSS, never the other way round.",
     },
     demo: {
@@ -268,7 +268,6 @@ const METAKEYS = ["What it is", "Written as", "Why it matters"];
 const LESSON = {
   id: "html-structure",
   metaKeys: METAKEYS,
-  noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   exampleHeadings: ["Syntax", "Kind", "Example", "What it does"],
   demoHint: "Edit the HTML and watch the page rebuild",
   sections: PARTS,

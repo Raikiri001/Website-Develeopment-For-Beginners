@@ -55,11 +55,11 @@ const PARTS = [
       { ref: "comment", syntax: "<!-- text -->", label: "Comment", code: "<!-- a note -->", meaning: "Ignored by the browser, but still visible in view-source." },
     ],
     notes: {
-      "How it works":
+      "What the browser does with the name":
         "The browser reads the tag name and applies its own defaults for that name, which is why a heading is already large and bold before you write any CSS at all.",
-      "What to watch for":
+      "Closing, and not closing":
         "Most elements need closing, but void elements never do, because there is no content to wrap. Trying to close one, or forgetting to close one that needs it, both cause trouble.",
-      "Worth remembering":
+      "You cannot invent a tag name":
         "Tag names are a fixed vocabulary. You cannot invent one and expect meaning from it, because the meaning comes from the browser knowing the name already.",
     },
     demo: {
@@ -152,11 +152,11 @@ const PARTS = [
       { ref: "checked", syntax: "checked", label: "Boolean", code: "<input checked>", meaning: "Present means on. There is no value to give it." },
     ],
     notes: {
-      "How it works":
+      "Name, equals sign, quoted value":
         "Each attribute is a name, an equals sign, and a value in quotes. Some are global and work on any element, such as <code>class</code> and <code>id</code>; others only mean something on particular elements.",
-      "What to watch for":
+      "A missing attribute fails quietly":
         "Leaving out a required attribute usually produces no error, just an element that quietly does not work. A link with no destination still looks like a link.",
-      "Worth remembering":
+      "Boolean attributes have no value":
         "A few attributes are boolean: writing them at all turns them on, and there is no value to give. Their presence is the setting.",
     },
     demo: {
@@ -225,11 +225,11 @@ const PARTS = [
       "Why it matters": "It names regions nothing else can name",
     },
     notes: {
-      "How it works":
+      "A landmark that lays out like a div":
         "A landmark lays out exactly like a <code>&lt;div&gt;</code>, so the page looks no different. What changes is that the browser now exposes a named region, and assistive software can list those regions and jump between them.",
-      "What to watch for":
+      "Nothing on screen tells you":
         "Semantic does not mean styled. <code>&lt;header&gt;</code> gets no special appearance, so nothing on screen tells you whether you chose well. The same applies to <code>&lt;h1&gt;</code> against a large <code>&lt;div&gt;</code>: identical on screen, and only one of them is a heading.",
-      "Worth remembering":
+      "Using them well":
         "Use <code>&lt;main&gt;</code> once per page, keep headings in order without skipping a level, and reach for <code>&lt;div&gt;</code> only when there is genuinely no meaning to express. Choose the tag for what the content <em>is</em>, then style it however you like.",
     },
     demo: {
@@ -248,7 +248,6 @@ const METAKEYS = ["What it is", "Written as", "Why it matters"];
 const LESSON = {
   id: "html-tags-and-attributes",
   metaKeys: METAKEYS,
-  noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   exampleHeadings: ["Syntax", "Kind", "Example", "What it does"],
   demoHint: "Edit the HTML and watch the page rebuild",
   sections: PARTS,

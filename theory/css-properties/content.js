@@ -37,11 +37,11 @@ const PARTS = [
       "Why it matters": "It is the unit every rule is built from",
     },
     notes: {
-      "How it works":
+      "Property, value, semicolon":
         "The property name says what to change, the value says what to change it to, and the semicolon ends the declaration. The browser reads each one on its own and applies what it understands.",
-      "What to watch for":
+      "A typo is thrown away in silence":
         "If the browser does not understand a property name or a value, it silently throws that one declaration away and carries on. There is no error message, so a typo simply does nothing.",
-      "Worth remembering":
+      "The vocabulary is fixed":
         "Property names are a fixed vocabulary defined by the CSS specification, so a made-up name is exactly as invisible as a misspelled one. There is one deliberate exception, custom properties, which is the last part of this lesson.",
     },
     demo: {
@@ -100,11 +100,11 @@ const PARTS = [
       { syntax: "a, b, c", label: "List", code: "Arial, sans-serif", meaning: "Tried in order. The first one available is used." },
     ],
     notes: {
-      "How it works":
+      "Every property accepts its own kind of value":
         "Every property defines which values it accepts. <code>display</code> takes a keyword from a fixed list, <code>width</code> takes a length, and giving one the other kind is simply ignored.",
-      "What to watch for":
+      "Numbers need their unit attached":
         "A number that is not zero almost always needs a unit, and the unit is joined on with no space: <code>16px</code>, never <code>16 px</code>. A few properties take a bare number on purpose, such as <code>line-height</code> and <code>font-weight</code>.",
-      "Worth remembering":
+      "Absolute against relative":
         "Absolute units like <code>px</code> stay the same size whatever happens around them. Relative units like <code>em</code>, <code>rem</code> and <code>%</code> are measured against something else, so they change when that thing does.",
     },
     demo: {
@@ -159,11 +159,11 @@ const PARTS = [
       { syntax: "font: ...", label: "Several at once", code: "font: 16px Arial", meaning: "Resets line-height, weight and style back to their defaults too." },
     ],
     notes: {
-      "How it works":
+      "What a shorthand expands to":
         "A shorthand expands into the individual properties behind it. Some read positionally, so <code>margin: 10px 20px</code> means top and bottom, then left and right; others read by kind, so <code>border</code> works out which part is the width and which is the colour.",
-      "What to watch for":
+      "It also sets what you left out":
         "A shorthand sets <em>every</em> property it covers, including the ones you did not mention, which get their default back. Writing <code>background: red</code> after setting a background image throws the image away.",
-      "Worth remembering":
+      "Spaces, never commas":
         "Values inside a shorthand are separated by spaces. Commas mean something different in CSS, and using them here makes the whole declaration invalid.",
     },
     demo: {
@@ -224,11 +224,11 @@ const PARTS = [
       { syntax: "padding", label: "Does not inherit", code: ".box { padding: 8px }", meaning: "Children get the initial value instead, which for padding is zero." },
     ],
     notes: {
-      "How it works":
+      "What passes down and what does not":
         "Properties about text tend to inherit, so setting <code>color</code> on a container passes it down to everything inside. Properties about the box, such as <code>padding</code> and <code>border</code>, do not.",
-      "What to watch for":
+      "The browser styled it first":
         "Before any of your CSS runs, the browser has already applied its own default stylesheet. Headings are large and bold, and lists have bullets, because of that, not because nothing is set.",
-      "Worth remembering":
+      "Asking for a value explicitly":
         "The keywords <code>inherit</code>, <code>initial</code>, <code>unset</code> and <code>revert</code> work on any property, so you can always ask for the parent's value or reset explicitly. Note <code>initial</code> is the CSS specification's value, not the browser's, which is what <code>revert</code> gets you. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Inheritance\" target=\"_blank\" rel=\"noopener\">MDN's inheritance guide</a>.",
     },
     demo: {
@@ -282,11 +282,11 @@ const PARTS = [
       { syntax: ":root { --name: v }", label: "Make it global", code: ":root { --brand: teal }", meaning: "Custom properties inherit, so the whole page can read it." },
     ],
     notes: {
-      "How it works":
+      "Declared once, read back with var()":
         "A custom property is declared on a selector like any other, and read back with <code>var()</code>. Change the declaration and every <code>var()</code> reading it updates, because it is genuinely the same value rather than a copy.",
-      "What to watch for":
+      "Names are exact and case sensitive":
         "The name needs both dashes and is case sensitive, so <code>--Brand</code> and <code>--brand</code> are different properties. A <code>var()</code> pointing at something undefined falls back to the second argument, or makes the declaration invalid if there is none.",
-      "Worth remembering":
+      "Declare them on :root":
         "Custom properties inherit, so declaring them on <code>:root</code> makes them available to the whole page. That is exactly how this site's colours and spacing are defined.",
     },
     demo: {
@@ -303,7 +303,6 @@ const METAKEYS = ["What it is", "Written as", "Why it matters"];
 const LESSON = {
   id: "css-properties",
   metaKeys: METAKEYS,
-  noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   exampleHeadings: ["Syntax", "Kind", "Example", "What it means"],
   demoHint: "Edit the CSS and watch what each declaration does",
   sections: PARTS,

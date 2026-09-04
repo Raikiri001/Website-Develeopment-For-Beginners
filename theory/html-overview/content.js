@@ -39,11 +39,11 @@ About us
       { syntax: "Make it do something", label: "JavaScript", code: "button.addEventListener", meaning: "Not HTML's job either. HTML has no logic in it at all." },
     ],
     notes: {
-      "How it works":
+      "Wrapping content in names":
         "You write the content, then wrap parts of it in tags that name what those parts are. The browser reads those names and knows it is looking at a heading, a paragraph, a link or an image.",
-      "What to watch for":
+      "It is neither plain nor styled":
         "Marked-up content is not plain text and it is not styled either. Every element already has an appearance before you write any CSS, because browsers apply defaults to the tags they recognise, and those defaults are a starting point rather than a design.",
-      "Worth remembering":
+      "More than browsers read it":
         "HTML is read by more than browsers. Search engines and screen readers use the same markup to work out what a page contains, so the meaning you put in is the meaning they get out.",
     },
     demo: {
@@ -159,11 +159,11 @@ About us
       { ref: "void", syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "Holds no content, so there is nothing to close." },
     ],
     notes: {
-      "How it works":
+      "The name decides the defaults":
         "The browser reads the tag name, works out what the element is, and applies its own defaults for that name. This is why a heading is already large and bold on a page with no CSS attached to it.",
-      "What to watch for":
+      "Some elements have nothing to close":
         "Most elements need a closing tag, but a few hold no content and so have nothing to close. Forgetting to close one that needs it leaves the browser guessing where it was supposed to end.",
-      "Worth remembering":
+      "One element, then a page of them":
         "Everything else in HTML is elements arranged in some way. Once you can read one element, a whole page is the same thing repeated and nested.",
     },
     demo: {
@@ -210,11 +210,11 @@ About us
       "Why it matters": "It decides what appears where, before any CSS",
     },
     notes: {
-      "How it works":
+      "Top to bottom, once":
         "The browser starts at the first line and works down, turning each element it meets into part of the page. By the time it reaches the end of the file, the page exists.",
-      "What to watch for":
+      "Nothing can be used before it is read":
         "Because it only reads forwards, anything referred to before it has been read is a problem. This is why stylesheets are linked near the top, so the styling is ready before there is a page to apply it to.",
-      "Worth remembering":
+      "Source order outlives the layout":
         "CSS can move things around later, but the source order is the starting point and it is also the order the page is read aloud in. Getting it right in the HTML matters even when CSS is going to rearrange it.",
     },
     demo: {
@@ -270,11 +270,11 @@ About us
       { syntax: "A picture", label: "<img alt>", code: "A background image", meaning: "Nothing can describe it, so it is invisible to anyone not looking." },
     ],
     notes: {
-      "How it works":
+      "Meaning brings behaviour with it":
         "Each tag comes with meaning and, for some of them, behaviour: a link can be followed and a button can be pressed with a keyboard, and you get all of that without writing anything extra. Recreating it on a <code>div</code> means rebuilding it yourself, badly.",
-      "What to watch for":
+      "The failure is invisible on screen":
         "The failure here is silent. A styled <code>div</code> and a real heading look identical on screen, so nothing prompts you to fix it, and the cost falls entirely on people using a screen reader or a keyboard.",
-      "Worth remembering":
+      "Pick the tag, then style it":
         "Choose the tag for what the content <em>is</em>, then style it however you like. Going the other way, choosing a tag for how it looks and then fixing the meaning later, almost never gets fixed.",
     },
   },
@@ -333,11 +333,11 @@ About us
       { syntax: '<script src="...">', label: "A JavaScript file", code: 'src="js/app.js"', meaning: "Loaded and run, which is how a page gains behaviour." },
     ],
     notes: {
-      "How it works":
+      "Pulled in, or only pointed at":
         "Some of these are pulled in as the page loads, so they are part of what you see. A link is different: it only points, and nothing happens until someone follows it.",
-      "What to watch for":
+      "Every one of them is a path":
         "Every one of these is a path, written from the file doing the pointing to the file being pointed at, so moving either file breaks it. A broken path fails quietly, which is why a page with no styling on it is usually a path problem rather than a CSS one.",
-      "Worth remembering":
+      "What makes a folder a site":
         "This is what makes a set of pages a site rather than a folder of files. The same stylesheet can serve every page, and the links between pages are what turn them into something you can move around in.",
     },
   },
@@ -348,7 +348,6 @@ const METAKEYS = ["What it is", "Written as", "Why it matters"];
 const LESSON = {
   id: "html-overview",
   metaKeys: METAKEYS,
-  noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   exampleHeadings: ["Part", "What it is called", "Example", "What it does"],
   demoHint: "Edit the HTML and watch the page rebuild",
   sections: PARTS,
