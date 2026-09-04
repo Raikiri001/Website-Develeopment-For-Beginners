@@ -411,7 +411,7 @@
       typedIsContent
         ? ""
         : ledgerRow(
-            ledgerLabel("border box", true),
+            "what you set",
             px(borderBox.width),
             px(borderBox.height),
             "ledger-subtotal"
