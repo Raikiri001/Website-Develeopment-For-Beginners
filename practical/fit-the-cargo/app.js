@@ -59,7 +59,6 @@
     ruleList: document.getElementById("ruleList"),
     cssEditor: document.getElementById("cssEditor"),
     ledgerBody: document.getElementById("ledgerBody"),
-    ledgerNote: document.getElementById("ledgerNote"),
     ledgerModeBadge: document.getElementById("ledgerModeBadge"),
     gapSizeBadge: document.getElementById("gapSizeBadge"),
     bay: document.getElementById("bay"),
@@ -426,18 +425,6 @@
 
     dom.ledgerBody.innerHTML = rows.join("");
     dom.ledgerModeBadge.textContent = level.boxSizing;
-    dom.ledgerNote.innerHTML = ledgerNoteText(level, content);
-  }
-
-  function ledgerNoteText(level, content) {
-    if (level.boxSizing === "content-box") {
-      return "With <code>content-box</code>, the <code>width</code> you set is the load, so the padding, the border and the margin are all added to it.";
-    }
-    const short =
-      content.width !== null && content.width <= 0
-        ? " Right now the padding and the border use up the whole width, so there is nothing left for the load."
-        : "";
-    return `With <code>border-box</code>, the <code>width</code> you set is the crate, so the padding and the border come out of it and only the margin is added to it.${short}`;
   }
 
   // -- The rules ---------------------------------------

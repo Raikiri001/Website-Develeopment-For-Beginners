@@ -204,7 +204,6 @@ body {
 }
 
 .rule-body code,
-.ledger-note code,
 .feedback-note code {
   font-family: var(--font-mono);
   font-size: 0.92em;
@@ -403,13 +402,6 @@ body {
 .ledger .ledger-target td {
   border-bottom: none;
   color: var(--text-muted);
-}
-
-.ledger-note {
-  margin: var(--space-4) 0 0;
-  font-size: var(--text-xs);
-  line-height: var(--leading-normal);
-  color: var(--text-secondary);
 }
 
 /* ---------- The scene ---------- */
@@ -930,13 +922,15 @@ body {
 
 .crate-badge {
   display: inline-block;
+  max-width: 100%;
   padding: 3px 7px;
   border-radius: var(--radius-sm);
   background-color: var(--bg-surface);
   color: var(--text-primary);
   font-family: var(--font-mono);
   font-size: 12px;
-  white-space: nowrap;
+  line-height: 1.4;
+  text-align: center;
 }
 
 /* Not enough padding: the label is pressed into the crate wall. */
