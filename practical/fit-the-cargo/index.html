@@ -158,10 +158,10 @@
               <div class="scene-body">
                 <div class="bay" id="bay">
                   <div class="bay-roof" aria-hidden="true"></div>
+                  <div class="bay-back" id="bayBack" aria-hidden="true"></div>
                   <div class="scene" id="scene">
-                    <div class="block block-left">
-                      <span class="block-label" id="blockLeft">Crate 11</span>
-                    </div>
+                    <!-- Both rows of neighbours are built per level by app.js. -->
+                    <div class="props props-left" id="propsLeft"></div>
                     <div class="void-wrap">
                       <div class="void-caption" id="voidCaption">The slot</div>
                       <div class="void" id="void">
@@ -173,9 +173,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="block block-right">
-                      <span class="block-label" id="blockRight">Crate 13</span>
-                    </div>
+                    <div class="props props-right" id="propsRight"></div>
                   </div>
                   <div class="bay-floor" aria-hidden="true"></div>
                 </div>

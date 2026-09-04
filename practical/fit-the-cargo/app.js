@@ -8,6 +8,25 @@
   // Starting width of a value input, in characters.
   const FIELD_WIDTH = 7;
 
+  // Matches .void's border-width in styles.css, so a neighbour can stand exactly as tall as the slot.
+  const VOID_BORDER = 5;
+
+  // A different row of neighbours per level: height as a share of the slot, and width in px.
+  // The one nearest the slot is always the slot's own height, since it is what makes the slot.
+  // The far row along the back wall: widths in px, heights as a share of the slot.
+  const FAR_WIDTHS = [96, 72, 118, 84, 64, 104, 78, 132];
+  const FAR_HEIGHTS = [0.58, 0.78, 0.44, 0.68, 0.86, 0.5, 0.72, 0.4];
+  const FAR_COUNT = 16;
+
+  const NEIGHBOUR_ROWS = [
+    { left: [[0.72, 62]], right: [[0.55, 74]] },
+    { left: [[0.54, 58], [0.86, 78]], right: [[0.7, 66]] },
+    { left: [[0.9, 70]], right: [[1.12, 84], [0.62, 56]] },
+    { left: [[1.1, 76], [0.66, 60]], right: [[0.84, 72]] },
+    { left: [[0.63, 66]], right: [[1.06, 80], [0.7, 58]] },
+    { left: [[0.95, 72], [0.58, 54]], right: [[0.76, 68], [1.08, 82]] },
+  ];
+
   const FIELDS = [
     { name: "width", label: "width", part: "content" },
     { name: "height", label: "height", part: "content" },
@@ -44,14 +63,15 @@
     ledgerModeBadge: document.getElementById("ledgerModeBadge"),
     gapSizeBadge: document.getElementById("gapSizeBadge"),
     bay: document.getElementById("bay"),
+    bayBack: document.getElementById("bayBack"),
+    propsLeft: document.getElementById("propsLeft"),
+    propsRight: document.getElementById("propsRight"),
     scene: document.getElementById("scene"),
     voidEl: document.getElementById("void"),
     voidReadout: document.getElementById("voidReadout"),
     marginBand: document.getElementById("marginBand"),
     crate: document.getElementById("crate"),
     crateBadge: document.getElementById("crateBadge"),
-    blockLeft: document.getElementById("blockLeft"),
-    blockRight: document.getElementById("blockRight"),
     feedbackNote: document.getElementById("feedbackNote"),
     welcomeState: document.getElementById("welcomeState"),
     welcomeStats: document.getElementById("welcomeStats"),
@@ -197,15 +217,64 @@
   }
 
   // -- The scene ---------------------------------------
+  /** One neighbour: as tall as it is told to be, standing on the floor. */
+  function makeBlock(height, width, label) {
+    const block = document.createElement("div");
+    block.className = "block";
+    block.style.height = Math.round(height) + "px";
+    block.style.width = width + "px";
+    if (label) {
+      const tag = document.createElement("span");
+      tag.className = "block-label";
+      tag.textContent = label;
+      block.appendChild(tag);
+    }
+    return block;
+  }
+
+  /** A row of neighbours, the one against the slot built to the slot's own height. */
+  function buildProps(container, others, slotHeight, label, sideIsLeft) {
+    container.innerHTML = "";
+    const adjacent = makeBlock(slotHeight, 88, label);
+    adjacent.classList.add("is-adjacent");
+    const rest = others.map(([share, width]) => makeBlock(slotHeight * share, width, ""));
+    const row = sideIsLeft ? rest.concat([adjacent]) : [adjacent].concat(rest);
+    row.forEach((block) => container.appendChild(block));
+  }
+
+  function levelIndex(id) {
+    return allLevels().findIndex((item) => item.level.id === id);
+  }
+
+  /** The freight stacked along the back wall, offset per level so no two bays repeat. */
+  function buildFarRow(container, slotHeight, offset) {
+    container.innerHTML = "";
+    for (let i = 0; i < FAR_COUNT; i++) {
+      const step = i + offset;
+      const block = makeBlock(
+        slotHeight * FAR_HEIGHTS[step % FAR_HEIGHTS.length],
+        FAR_WIDTHS[step % FAR_WIDTHS.length],
+        ""
+      );
+      block.classList.add("is-far");
+      container.appendChild(block);
+    }
+  }
+
   function buildScene(category, level) {
     dom.bay.dataset.theme = category.id;
-    dom.blockLeft.textContent = level.left;
-    dom.blockRight.textContent = level.right;
     dom.crateBadge.innerHTML = level.badge;
     dom.voidEl.style.width = level.gap.width + "px";
     dom.voidEl.style.height = level.gap.height + "px";
     dom.gapSizeBadge.innerHTML = `${level.gap.width} &times; ${level.gap.height}`;
-    dom.scene.style.setProperty("--block-height", level.gap.height + "px");
+
+    // The slot including its hazard frame, which is exactly what the neighbours beside it match.
+    const slotHeight = level.gap.height + 2 * VOID_BORDER;
+    const index = levelIndex(level.id);
+    const row = NEIGHBOUR_ROWS[index % NEIGHBOUR_ROWS.length];
+    buildProps(dom.propsLeft, row.left, slotHeight, level.left, true);
+    buildProps(dom.propsRight, row.right, slotHeight, level.right, false);
+    buildFarRow(dom.bayBack, slotHeight, index);
   }
 
   /** Push whatever is typed onto the crate, so the box model does the drawing. */

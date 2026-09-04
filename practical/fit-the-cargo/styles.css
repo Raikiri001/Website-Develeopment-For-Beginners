@@ -431,8 +431,9 @@ body {
   --prop-edge: var(--slate-500);
 
   position: relative;
-  width: max-content;
-  min-width: 100%;
+  /* Never wider than the panel: the neighbours crop at the edges, the slot never does. */
+  width: 100%;
+  min-width: 470px;
   padding: var(--space-10) var(--space-6) 64px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
@@ -461,6 +462,35 @@ body {
   height: 40px;
 }
 
+/* A far row of freight along the back wall, so the bay is never bare at the edges. */
+.bay-back {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 62px;
+  z-index: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  padding-left: var(--space-4);
+  opacity: 0.55;
+  filter: saturate(0.75);
+}
+
+.bay-back .block {
+  box-shadow: none;
+  border-radius: 2px 2px 0 0;
+}
+
+/* Stacked higher out in the open, and there is no back row inside a hold. */
+.bay[data-theme="container-yard"] .bay-back {
+  opacity: 0.62;
+}
+
+.bay[data-theme="air-freight"] .bay-back {
+  display: none;
+}
+
 .bay-floor {
   position: absolute;
   left: 0;
@@ -474,19 +504,34 @@ body {
 .scene {
   position: relative;
   z-index: 1;
+  width: 100%;
   display: flex;
   align-items: flex-end;
-  gap: var(--space-5);
   justify-content: center;
 }
 
-/* The neighbours: rigid, as tall as the slot, standing on the same floor. */
+/* A row of neighbours per side, shoulder to shoulder with the slot between them. */
+/* The rows shrink before the slot does, so a narrow panel crops freight, never the maths. */
+.props {
+  display: flex;
+  align-items: flex-end;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.props-left {
+  justify-content: flex-end;
+}
+
+.props-right {
+  justify-content: flex-start;
+}
+
+/* The neighbours: rigid, sized per level by app.js, standing on the same floor. */
 .block {
   position: relative;
   flex: none;
-  width: 88px;
-  height: var(--block-height, 200px);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   border: 1px solid var(--prop-edge);
   background-image: linear-gradient(180deg, var(--prop-a), var(--prop-b));
   box-shadow: var(--shadow-md);
@@ -503,6 +548,14 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
+}
+
+.props-left .block:first-child {
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.props-right .block:last-child {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .block-label {
@@ -785,11 +838,11 @@ body {
   background-size: 30px 18px;
 }
 
-.bay[data-theme="air-freight"] .block {
+.bay[data-theme="air-freight"] .props-left .block.is-adjacent {
   clip-path: polygon(0 0, 100% 0, 100% 89%, 82% 100%, 0 100%);
 }
 
-.bay[data-theme="air-freight"] .block-right {
+.bay[data-theme="air-freight"] .props-right .block.is-adjacent {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 18% 100%, 0 89%);
 }
 
@@ -841,7 +894,7 @@ body {
   position: relative;
   box-sizing: content-box;
   border: 5px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: 4px;
   display: flow-root;
   background:
     linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
