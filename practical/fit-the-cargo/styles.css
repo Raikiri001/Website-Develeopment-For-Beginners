@@ -434,7 +434,7 @@ body {
   /* Never wider than the panel: the neighbours crop at the edges, the slot never does. */
   width: 100%;
   min-width: 470px;
-  padding: var(--space-10) var(--space-6) 64px;
+  padding: var(--space-16) var(--space-6) 64px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   overflow: hidden;
@@ -709,7 +709,6 @@ body {
   --bay-ground-a: var(--slate-400);
   --bay-ground-b: var(--slate-500);
   --bay-line: var(--slate-600);
-  padding-top: var(--space-16);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -805,10 +804,6 @@ body {
 }
 
 /* Air freight: ULDs with a cut corner, under fuselage ribs, on roller track. */
-.bay[data-theme="air-freight"] {
-  padding-top: var(--space-16);
-}
-
 .bay[data-theme="air-freight"] .bay-roof {
   height: 62px;
   border-bottom: 2px solid var(--bay-line);
@@ -875,18 +870,6 @@ body {
   align-items: center;
   gap: var(--space-2);
   flex: none;
-}
-
-.void-caption {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  background-color: var(--bg-surface);
-  padding: 2px var(--space-3);
-  border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-sm);
 }
 
 /* Hazard striping sits in the border, so the inner area stays exactly the slot's size. */

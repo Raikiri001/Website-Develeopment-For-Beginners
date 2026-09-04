@@ -124,6 +124,11 @@
     return list.some((n) => n === null) ? null : list.reduce((a, b) => a + b, 0);
   }
 
+  /** The load's name as it reads on a label. */
+  function titleCase(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
   function px(value) {
     return value === null ? "&mdash;" : value + "px";
   }
@@ -263,7 +268,7 @@
 
   function buildScene(category, level) {
     dom.bay.dataset.theme = category.id;
-    dom.crateBadge.innerHTML = level.badge;
+    dom.crateBadge.textContent = titleCase(level.cargo);
     dom.voidEl.style.width = level.gap.width + "px";
     dom.voidEl.style.height = level.gap.height + "px";
     dom.gapSizeBadge.innerHTML = `${level.gap.width} &times; ${level.gap.height}`;
