@@ -295,23 +295,45 @@
       const table = section.querySelector(".ref-table");
       if (!figure || !table) return;
 
-      function light(ref) {
-        Array.prototype.forEach.call(section.querySelectorAll("[data-ref]"), function (el) {
-          el.classList.toggle("is-lit", !!ref && el.getAttribute("data-ref") === ref);
+      function clear() {
+        Array.prototype.forEach.call(section.querySelectorAll(".is-lit"), function (el) {
+          el.classList.remove("is-lit");
         });
       }
 
-      function over(selector) {
-        return function (event) {
-          const hit = event.target.closest(selector);
-          light(hit ? hit.getAttribute("data-ref") : null);
-        };
+      function row(ref) {
+        return table.querySelector('tr[data-ref="' + ref + '"]');
       }
 
-      figure.addEventListener("mouseover", over(".anatomy-part"));
-      table.addEventListener("mouseover", over("tr[data-ref]"));
-      figure.addEventListener("mouseleave", function () { light(null); });
-      table.addEventListener("mouseleave", function () { light(null); });
+      /* A part lights on its own. Two paragraphs on two lines are two
+         separate elements, so hovering one must not light the other. */
+      figure.addEventListener("mouseover", function (event) {
+        const part = event.target.closest(".anatomy-part");
+        clear();
+        if (!part) return;
+        part.classList.add("is-lit");
+        const match = row(part.getAttribute("data-ref"));
+        if (match) match.classList.add("is-lit");
+      });
+
+      /* A row names a kind of part rather than one instance of it, so it
+         lights every part of that kind in the specimen. */
+      table.addEventListener("mouseover", function (event) {
+        const hit = event.target.closest("tr[data-ref]");
+        clear();
+        if (!hit) return;
+        hit.classList.add("is-lit");
+        const ref = hit.getAttribute("data-ref");
+        Array.prototype.forEach.call(
+          figure.querySelectorAll('.anatomy-part[data-ref="' + ref + '"]'),
+          function (part) {
+            part.classList.add("is-lit");
+          }
+        );
+      });
+
+      figure.addEventListener("mouseleave", clear);
+      table.addEventListener("mouseleave", clear);
     });
   }
 
