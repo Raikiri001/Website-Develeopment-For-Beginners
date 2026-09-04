@@ -66,23 +66,36 @@ const PARTS = [
     accent: "#d97706",
     lead:
       "A stylesheet is a list of <strong>rules</strong>. Every rule has the same two halves: a <strong>selector</strong> saying which elements it is about, and a <strong>declaration block</strong> saying what to do to them.",
-    blocks: [
-      {
-        label: "styles.css",
-        lang: "css",
-        code: `.heading {
-  color: #0d9488;
-  font-size: 32px;
-}
-/*
-.heading            the selector: which elements this is about
-{ ... }             the declaration block: what to do to them
-color: #0d9488;     one declaration
-color               the property, the setting being changed
-#0d9488             the value, what it is being changed to
-*/`,
-      },
-    ],
+    anatomy: {
+      label: "One rule, taken apart",
+      parts: [
+        {
+          ref: "rule",
+          parts: [
+            { ref: "selector", text: ".heading", tone: "keyword" },
+            { text: " " },
+            {
+              ref: "block",
+              parts: [
+                { text: "{\n  " },
+                {
+                  ref: "declaration",
+                  parts: [
+                    { ref: "property", text: "color", tone: "attr" },
+                    { text: ": " },
+                    { ref: "value", text: "#0d9488", tone: "string" },
+                    { text: ";" },
+                  ],
+                },
+                { text: "\n}" },
+              ],
+            },
+          ],
+        },
+        { text: "\n" },
+        { ref: "comment", text: "/* a note to yourself */", tone: "comment" },
+      ],
+    },
     keyPoint:
       "Every declaration ends with a <strong>semicolon</strong>, and the whole block is wrapped in <strong>braces</strong>. Miss either one and the browser loses track of where the rule ends, so declarations after the mistake are thrown away too.",
     meta: {
@@ -92,13 +105,13 @@ color               the property, the setting being changed
     },
     exampleHeadings: ["Part", "What it is called", "Example", "What it does"],
     examples: [
-      { syntax: "selector { ... }", label: "Rule", code: ".heading { color: #0d9488; }", meaning: "One complete instruction: who it applies to, and what it changes." },
-      { syntax: "selector", label: "Selector", code: ".heading", meaning: "The pattern deciding which elements the rule applies to." },
-      { syntax: "{ ... }", label: "Declaration block", code: "{ color: #0d9488; }", meaning: "The braces and everything between them. Holds any number of declarations." },
-      { syntax: "property: value;", label: "Declaration", code: "color: #0d9488;", meaning: "One setting and what it is set to. Changes exactly one thing." },
-      { syntax: "property", label: "Property", code: "color", meaning: "The name of the setting being changed. Comes from a fixed vocabulary." },
-      { syntax: "value", label: "Value", code: "#0d9488", meaning: "What the setting is being changed to. Each property accepts its own kinds." },
-      { syntax: "/* ... */", label: "Comment", code: "/* a note to yourself */", meaning: "Ignored by the browser. CSS has no single line comment form." },
+      { ref: "rule", syntax: "selector { ... }", label: "Rule", code: ".heading { color: #0d9488; }", meaning: "One complete instruction: who it applies to, and what it changes." },
+      { ref: "selector", syntax: "selector", label: "Selector", code: ".heading", meaning: "The pattern deciding which elements the rule applies to." },
+      { ref: "block", syntax: "{ ... }", label: "Declaration block", code: "{ color: #0d9488; }", meaning: "The braces and everything between them. Holds any number of declarations." },
+      { ref: "declaration", syntax: "property: value;", label: "Declaration", code: "color: #0d9488;", meaning: "One setting and what it is set to. Changes exactly one thing." },
+      { ref: "property", syntax: "property", label: "Property", code: "color", meaning: "The name of the setting being changed. Comes from a fixed vocabulary." },
+      { ref: "value", syntax: "value", label: "Value", code: "#0d9488", meaning: "What the setting is being changed to. Each property accepts its own kinds." },
+      { ref: "comment", syntax: "/* ... */", label: "Comment", code: "/* a note to yourself */", meaning: "Ignored by the browser. CSS has no single line comment form." },
     ],
     notes: {
       "How it works":
@@ -124,19 +137,42 @@ color               the property, the setting being changed
     accent: "#0d9488",
     lead:
       "Rules are kept in a file of their own, ending in <code>.css</code>. A page does not find that file on its own: the HTML has to <strong>link</strong> to it, and a stylesheet that is never linked has no effect at all.",
-    blocks: [
-      {
-        label: "index.html",
-        lang: "html",
-        code: `<head>
-  <meta charset="UTF-8" />
-  <title>My page</title>
-
-  <!-- The path is written from this file to the stylesheet. -->
-  <link rel="stylesheet" href="css/styles.css" />
-</head>`,
-      },
-    ],
+    anatomy: {
+      label: "One link, taken apart",
+      parts: [
+        {
+          ref: "head",
+          parts: [
+            { text: "<head>\n  ", tone: "tag" },
+            {
+              ref: "tag",
+              parts: [
+                { text: "<link ", tone: "tag" },
+                {
+                  ref: "rel",
+                  parts: [
+                    { text: "rel", tone: "attr" },
+                    { text: "=" },
+                    { text: '"stylesheet"', tone: "string" },
+                  ],
+                },
+                { text: " " },
+                {
+                  ref: "href",
+                  parts: [
+                    { text: "href", tone: "attr" },
+                    { text: "=" },
+                    { text: '"css/styles.css"', tone: "string" },
+                  ],
+                },
+                { text: " />", tone: "tag" },
+              ],
+            },
+            { text: "\n</head>", tone: "tag" },
+          ],
+        },
+      ],
+    },
     tree: {
       label: "index.html linking css/styles.css",
       lines: [
@@ -155,10 +191,10 @@ color               the property, the setting being changed
     },
     exampleHeadings: ["Part", "What it is called", "Example", "What it does"],
     examples: [
-      { syntax: "<link />", label: "The tag", code: "<link ... />", meaning: "Connects the page to another file. Goes in the <code>head</code>, and has no closing tag." },
-      { syntax: 'rel="..."', label: "Relationship", code: 'rel="stylesheet"', meaning: "Says what the linked file is. Without this the browser will not treat it as CSS." },
-      { syntax: 'href="..."', label: "Path", code: 'href="css/styles.css"', meaning: "Where the file is, written as directions from the HTML file to it." },
-      { syntax: "<head>", label: "Where it goes", code: "<head> ... </head>", meaning: "Linking in the head means the styling is ready before the page is drawn." },
+      { ref: "tag", syntax: "<link />", label: "The tag", code: "<link ... />", meaning: "Connects the page to another file. Goes in the <code>head</code>, and has no closing tag." },
+      { ref: "rel", syntax: 'rel="..."', label: "Relationship", code: 'rel="stylesheet"', meaning: "Says what the linked file is. Without this the browser will not treat it as CSS." },
+      { ref: "href", syntax: 'href="..."', label: "Path", code: 'href="css/styles.css"', meaning: "Where the file is, written as directions from the HTML file to it." },
+      { ref: "head", syntax: "<head>", label: "Where it goes", code: "<head> ... </head>", meaning: "Linking in the head means the styling is ready before the page is drawn." },
     ],
     notes: {
       "How it works":

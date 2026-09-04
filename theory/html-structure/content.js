@@ -9,28 +9,39 @@ const PARTS = [
     accent: "#2563eb",
     lead:
       "Every page is one big nested element, and its shape is <strong>always the same</strong>: a doctype, an <code>html</code> element, a <code>head</code> for information about the page, and a <code>body</code> for what is shown.",
-    blocks: [
-      {
-        label: "index.html",
-        lang: "html",
-        code: `<!-- Not a tag. It tells the browser which HTML this is. -->
-<!DOCTYPE html>
-
-<!-- Everything else lives inside this one element. -->
-<html lang="en">
-  <!-- ABOUT the page. None of this is displayed. -->
-  <head>
-    <meta charset="UTF-8" />
-    <title>Shown in the browser tab</title>
-  </head>
-
-  <!-- The page itself. Everything visible goes here. -->
-  <body>
-    <h1>A heading</h1>
-  </body>
-</html>`,
-      },
-    ],
+    anatomy: {
+      label: "One page, taken apart",
+      parts: [
+        { ref: "doctype", text: "<!DOCTYPE html>", tone: "keyword" },
+        { text: "\n" },
+        {
+          ref: "html",
+          parts: [
+            { text: '<html lang="en">\n  ', tone: "tag" },
+            {
+              ref: "head",
+              parts: [
+                { text: "<head>\n    ", tone: "tag" },
+                { ref: "meta", text: '<meta charset="UTF-8" />', tone: "tag" },
+                { text: "\n    " },
+                { ref: "title", text: "<title>Shown in the browser tab</title>", tone: "tag" },
+                { text: "\n  </head>", tone: "tag" },
+              ],
+            },
+            { text: "\n  " },
+            {
+              ref: "body",
+              parts: [
+                { text: "<body>\n    ", tone: "tag" },
+                { text: "<h1>A heading</h1>" },
+                { text: "\n  </body>", tone: "tag" },
+              ],
+            },
+            { text: "\n</html>", tone: "tag" },
+          ],
+        },
+      ],
+    },
     keyPoint:
       "Without the doctype the browser drops into a compatibility mode built for 1990s pages, and layouts start behaving in ways <strong>no amount of CSS will explain</strong>.",
     meta: {
@@ -40,12 +51,12 @@ const PARTS = [
     },
     exampleHeadings: ["Written", "Part", "Where", "What it does"],
     examples: [
-      { syntax: "<!DOCTYPE html>", label: "Doctype", code: "The first line", meaning: "Not a tag. Tells the browser to use modern standards mode." },
-      { syntax: '<html lang="en">', label: "Root element", code: "Wraps everything", meaning: "<code>lang</code> helps screen readers and translation tools." },
-      { syntax: "<head>", label: "Page information", code: "Inside html", meaning: "Never displayed. Holds the title, charset and links to CSS." },
-      { syntax: "<title>", label: "Tab title", code: "Inside head", meaning: "Shown in the browser tab and as the search result heading." },
-      { syntax: '<meta charset="UTF-8">', label: "Character set", code: "Inside head", meaning: "Without it, accented and non-English characters can break." },
-      { syntax: "<body>", label: "Visible page", code: "Inside html", meaning: "Everything a visitor actually sees lives here." },
+      { ref: "doctype", syntax: "<!DOCTYPE html>", label: "Doctype", code: "The first line", meaning: "Not a tag. Tells the browser to use modern standards mode." },
+      { ref: "html", syntax: '<html lang="en">', label: "Root element", code: "Wraps everything", meaning: "<code>lang</code> helps screen readers and translation tools." },
+      { ref: "head", syntax: "<head>", label: "Page information", code: "Inside html", meaning: "Never displayed. Holds the title, charset and links to CSS." },
+      { ref: "title", syntax: "<title>", label: "Tab title", code: "Inside head", meaning: "Shown in the browser tab and as the search result heading." },
+      { ref: "meta", syntax: '<meta charset="UTF-8">', label: "Character set", code: "Inside head", meaning: "Without it, accented and non-English characters can break." },
+      { ref: "body", syntax: "<body>", label: "Visible page", code: "Inside html", meaning: "Everything a visitor actually sees lives here." },
     ],
     notes: {
       "How it works":
@@ -142,22 +153,17 @@ const PARTS = [
     <h1>A heading</h1>
     <p>Some <strong>bold</strong> text.</p>
   </div>
-</body>
-
-<!-- div is the PARENT of h1 and p.              -->
-<!-- h1 and p are CHILDREN of div, and SIBLINGS. -->
-<!-- strong is a DESCENDANT of div, not a child. -->
-<!-- body is an ANCESTOR of every one of them.   -->`,
+</body>`,
       },
     ],
     tree: {
-      label: "The same markup, drawn as the tree the browser builds",
+      label: "The same markup as a tree, with every position named",
       lines: [
-        { depth: 0, name: "body", kind: "folder" },
-        { depth: 1, name: "div.card", kind: "folder", mark: "parent" },
-        { depth: 2, name: "h1", kind: "file", mark: "child" },
-        { depth: 2, name: "p", kind: "folder", mark: "child" },
-        { depth: 3, name: "strong", kind: "file", mark: "descendant" },
+        { depth: 0, name: "body", kind: "folder", mark: "ancestor of strong" },
+        { depth: 1, name: "div.card", kind: "folder", mark: "parent of h1 and p" },
+        { depth: 2, name: "h1", kind: "file", mark: "child of div" },
+        { depth: 2, name: "p", kind: "folder", mark: "child of div" },
+        { depth: 3, name: "strong", kind: "file", mark: "descendant of div" },
       ],
     },
     keyPoint:

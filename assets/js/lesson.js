@@ -157,6 +157,24 @@
     window.addEventListener("resize", update);
   }
 
+  /* One specimen, taken apart. Parts nest, and each one names the reference
+     table row it belongs to. */
+  function anatomyParts(parts) {
+    return parts
+      .map(function (p) {
+        const inner = p.parts ? anatomyParts(p.parts) : escapeHtml(p.text);
+        if (!p.ref && !p.tone) return inner;
+        const cls =
+          (p.ref ? "anatomy-part" : "") + (p.tone ? (p.ref ? " " : "") + p.tone : "");
+        return (
+          '<span class="' + cls + '"' +
+          (p.ref ? ' data-ref="' + escapeHtml(p.ref) + '"' : "") +
+          ">" + inner + "</span>"
+        );
+      })
+      .join("");
+  }
+
   function renderSections(host, lesson) {
     host.innerHTML = lesson.sections
       .map(function (s) {
@@ -211,7 +229,8 @@
             s.examples
               .map(function (ex) {
                 return (
-                  '<tr><td class="ref-syntax"><code>' + escapeHtml(ex.syntax) + "</code></td>" +
+                  "<tr" + (ex.ref ? ' data-ref="' + escapeHtml(ex.ref) + '"' : "") + ">" +
+                  '<td class="ref-syntax"><code>' + escapeHtml(ex.syntax) + "</code></td>" +
                   '<td class="ref-name">' + escapeHtml(ex.label) + "</td>" +
                   '<td class="ref-code"><code>' + escapeHtml(ex.code) + "</code></td>" +
                   '<td class="ref-meaning">' + ex.meaning + "</td></tr>"
@@ -219,6 +238,14 @@
               })
               .join("") +
             "</tbody></table></div>"
+          : "";
+
+        const anatomy = s.anatomy
+          ? '<figure class="anatomy"><figcaption>' + escapeHtml(s.anatomy.label) +
+            '</figcaption><pre class="anatomy-specimen">' +
+            anatomyParts(s.anatomy.parts) + "</pre>" +
+            '<p class="anatomy-hint">' + escapeHtml(s.anatomy.hint ||
+              "Hover a part to light up its row in the table below.") + "</p></figure>"
           : "";
 
         const tree = s.tree
@@ -249,6 +276,7 @@
           '<dl class="method-meta">' + meta + "</dl>" +
           (code ? '<div class="method-code">' + code + "</div>" : "") +
           tree +
+          anatomy +
           examples +
           (s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : "") +
           '<div class="method-notes">' + notes + "</div>" +
@@ -257,6 +285,34 @@
         );
       })
       .join("");
+  }
+
+  /* Hovering a piece of the specimen lights the row explaining it, and hovering
+     a row lights the piece, so the two are read as one thing. */
+  function wireAnatomy(host) {
+    Array.prototype.forEach.call(host.querySelectorAll(".method"), function (section) {
+      const figure = section.querySelector(".anatomy");
+      const table = section.querySelector(".ref-table");
+      if (!figure || !table) return;
+
+      function light(ref) {
+        Array.prototype.forEach.call(section.querySelectorAll("[data-ref]"), function (el) {
+          el.classList.toggle("is-lit", !!ref && el.getAttribute("data-ref") === ref);
+        });
+      }
+
+      function over(selector) {
+        return function (event) {
+          const hit = event.target.closest(selector);
+          light(hit ? hit.getAttribute("data-ref") : null);
+        };
+      }
+
+      figure.addEventListener("mouseover", over(".anatomy-part"));
+      table.addEventListener("mouseover", over("tr[data-ref]"));
+      figure.addEventListener("mouseleave", function () { light(null); });
+      table.addEventListener("mouseleave", function () { light(null); });
+    });
   }
 
   // ── Live demos ───────────────────────────────────────
@@ -440,6 +496,7 @@
 
     const sectionHost = document.getElementById("sections");
     renderSections(sectionHost, LESSON);
+    wireAnatomy(sectionHost);
     buildDemos(sectionHost, LESSON);
     renderComparison(document.getElementById("comparison"), LESSON);
     renderLadder(document.getElementById("ladder"), LESSON);

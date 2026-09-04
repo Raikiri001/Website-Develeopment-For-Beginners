@@ -64,20 +64,46 @@ About us
     accent: "#d97706",
     lead:
       "A page is made of <strong>elements</strong>, and an element is one piece of content with a name. It is written as an opening <strong>tag</strong>, the content, and a closing tag, and the name is the part carrying the meaning.",
-    blocks: [
-      {
-        label: "index.html",
-        lang: "html",
-        code: `<p class="intro">Some text.</p>
-<!--
-<p ... >          the opening tag
-    class="intro" an attribute: an extra setting
-Some text.        the content
-</p>              the closing tag, with a slash
-p                 the tag name, which says what this is
--->`,
-      },
-    ],
+    anatomy: {
+      label: "One element, taken apart",
+      parts: [
+        {
+          ref: "element",
+          parts: [
+            {
+              ref: "open",
+              parts: [
+                { text: "<", tone: "tag" },
+                { ref: "name", text: "p", tone: "tag" },
+                { text: " " },
+                {
+                  ref: "attribute",
+                  parts: [
+                    { text: "class", tone: "attr" },
+                    { text: "=" },
+                    { text: '"intro"', tone: "string" },
+                  ],
+                },
+                { text: ">", tone: "tag" },
+              ],
+            },
+            { text: "Some text." },
+            { ref: "close", text: "</p>", tone: "tag" },
+          ],
+        },
+        { text: "\n" },
+        {
+          ref: "void",
+          parts: [
+            { text: "<img ", tone: "tag" },
+            { text: "src", tone: "attr" },
+            { text: "=" },
+            { text: '"a.jpg"', tone: "string" },
+            { text: " />", tone: "tag" },
+          ],
+        },
+      ],
+    },
     keyPoint:
       "Tag names are a <strong>fixed vocabulary</strong>. The browser understands an element only because it already knows the name, so an invented tag name does nothing at all.",
     meta: {
@@ -87,12 +113,12 @@ p                 the tag name, which says what this is
     },
     exampleHeadings: ["Part", "What it is called", "Example", "What it does"],
     examples: [
-      { syntax: "<tag>content</tag>", label: "Element", code: "<p>Some text.</p>", meaning: "One complete piece of content, with a name saying what it is." },
-      { syntax: "<tag>", label: "Opening tag", code: "<p>", meaning: "Marks where the element starts. Attributes go here, and nowhere else." },
-      { syntax: "</tag>", label: "Closing tag", code: "</p>", meaning: "Marks where it ends. The same name again, with a slash." },
-      { syntax: "tag", label: "Tag name", code: "p", meaning: "Says what the content is. This is where the meaning lives." },
-      { syntax: 'name="value"', label: "Attribute", code: 'class="intro"', meaning: "An extra setting the tag name alone cannot carry." },
-      { syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "Holds no content, so there is nothing to close." },
+      { ref: "element", syntax: "<tag>content</tag>", label: "Element", code: "<p>Some text.</p>", meaning: "One complete piece of content, with a name saying what it is." },
+      { ref: "open", syntax: "<tag>", label: "Opening tag", code: "<p>", meaning: "Marks where the element starts. Attributes go here, and nowhere else." },
+      { ref: "close", syntax: "</tag>", label: "Closing tag", code: "</p>", meaning: "Marks where it ends. The same name again, with a slash." },
+      { ref: "name", syntax: "tag", label: "Tag name", code: "p", meaning: "Says what the content is. This is where the meaning lives." },
+      { ref: "attribute", syntax: 'name="value"', label: "Attribute", code: 'class="intro"', meaning: "An extra setting the tag name alone cannot carry." },
+      { ref: "void", syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "Holds no content, so there is nothing to close." },
     ],
     notes: {
       "How it works":
