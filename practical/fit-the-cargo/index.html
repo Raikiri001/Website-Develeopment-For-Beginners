@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Pack a crate into a slot that will not move. Eighteen box model puzzles where you set width, height, padding, border and margin so the whole footprint fills a fixed space exactly."
+    />
+    <title>Fit the Cargo - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <header class="page-header">
+      <h1>Fit the Cargo</h1>
+      <div class="header-desc">
+        Every level packs a crate into a <strong>slot that will not move</strong>.
+        Set the <strong>padding</strong>, <strong>border</strong> and
+        <strong>margin</strong> the load asks for, then work out the
+        <strong>width and height</strong> that make the whole footprint fill the
+        slot exactly.
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="header-top">
+            <span>Problems</span>
+            <span class="panel-badge" id="totalCount">18</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span id="progressCount">0/18</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="category-list" id="categoryList"></div>
+      </aside>
+
+      <div class="main-content panel">
+        <div class="title-bar">
+          <div class="title-bar-left">
+            <span class="title-bar-badge" id="titleBarBadge">Ready</span>
+            <h2 id="titleBarTitle">Select a Problem</h2>
+          </div>
+          <div class="title-bar-right">
+            <button class="btn" id="btnReset" disabled>Reset</button>
+            <button class="btn btn-warning" id="btnHint" disabled>Hint</button>
+            <button class="btn btn-success" id="btnCheck" disabled>
+              Check Solution
+            </button>
+            <button class="btn btn-primary" id="btnNext" hidden>
+              Next question
+            </button>
+          </div>
+        </div>
+
+        <!-- Shown until a problem is selected -->
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon">&#9635;</div>
+          <h2 class="welcome-title">Select a problem to begin</h2>
+          <p class="welcome-subtitle">
+            Pick a problem from the sidebar. Each one gives you a slot of a
+            fixed size and three rules the crate has to obey. Type the five box
+            model values into the CSS, watch the crate change as you type, and
+            get the footprint to match the slot on both sides.
+          </p>
+          <div class="welcome-stats" id="welcomeStats"></div>
+        </div>
+
+        <div class="workspace" id="workspace" hidden>
+          <div class="panel brief-panel">
+            <div class="panel-header">
+              <div class="header-top">
+                <span>The situation</span>
+                <span
+                  class="panel-badge difficulty-badge"
+                  id="promptDifficultyBadge"
+                  >Easy</span
+                >
+              </div>
+            </div>
+            <p class="brief-body" id="briefBody"></p>
+            <ul class="rule-list" id="ruleList"></ul>
+          </div>
+
+          <div class="work-grid">
+            <div class="work-column">
+              <div class="panel code-panel">
+                <div class="panel-header">
+                  <div class="header-top">
+                    <span>The crate's CSS</span>
+                    <span class="panel-badge">Updates as you type</span>
+                  </div>
+                </div>
+                <div class="code-body">
+                  <div class="code-text code-editable" id="cssEditor"></div>
+                </div>
+              </div>
+
+              <div class="panel ledger-panel">
+                <div class="panel-header">
+                  <div class="header-top">
+                    <span>The footprint</span>
+                    <span class="panel-badge" id="ledgerModeBadge"
+                      >content-box</span
+                    >
+                  </div>
+                </div>
+                <div class="ledger-body">
+                  <table class="ledger" id="ledger">
+                    <thead>
+                      <tr>
+                        <th scope="col">What it adds</th>
+                        <th scope="col">Across</th>
+                        <th scope="col">Down</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ledgerBody"></tbody>
+                  </table>
+                  <p class="ledger-note" id="ledgerNote"></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel scene-panel">
+              <div class="panel-header">
+                <div class="header-top">
+                  <span>The slot</span>
+                  <span class="panel-badge" id="gapSizeBadge">320 &times; 200</span>
+                </div>
+              </div>
+              <div class="scene-body">
+                <div class="scene" id="scene">
+                  <div class="block block-left">
+                    <span class="block-label" id="blockLeft">Crate 11</span>
+                  </div>
+                  <div class="void-wrap">
+                    <div class="void-caption" id="voidCaption">The slot</div>
+                    <div class="void" id="void">
+                      <div class="crate" id="crate">
+                        <span class="crate-badge" id="crateBadge">Glassware</span>
+                      </div>
+                    </div>
+                    <div class="void-readout" id="voidReadout"></div>
+                  </div>
+                  <div class="block block-right">
+                    <span class="block-label" id="blockRight">Crate 13</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="feedback-note" id="feedbackNote" aria-live="polite"></div>
+        </div>
+
+        <div class="completion-panel" id="completionPanel">
+          <h2>All done</h2>
+          <p id="completionScoreText"></p>
+          <button class="btn btn-primary" id="btnRestart">
+            Restart all problems
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="levels.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

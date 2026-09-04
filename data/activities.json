@@ -168,12 +168,26 @@
     ]
   },
   {
+    "id": "fit-the-cargo",
+    "title": "Fit the Cargo",
+    "description": "Pack a crate into a slot that will not move. Eighteen box model puzzles where you set width, height, padding, border and margin so the whole footprint fills a fixed space exactly, with a live loading bay and a running footprint sum.",
+    "category": "practical",
+    "topic": "css",
+    "order": 4,
+    "href": "practical/fit-the-cargo/",
+    "tags": [
+      "CSS",
+      "box model",
+      "layout"
+    ]
+  },
+  {
     "id": "css-selectors",
     "title": "CSS Selectors",
     "description": "What a CSS selector actually is: a pattern that picks out elements, how simple selectors combine, how pseudo-classes match a state, and how specificity settles a conflict between two rules.",
     "category": "theory",
     "topic": "css",
-    "order": 4,
+    "order": 5,
     "href": "theory/css-selectors/",
     "tags": [
       "CSS",
@@ -187,7 +201,7 @@
     "description": "The CSS is written for you but the selector is missing. Read the page, then write a selector that reaches exactly the outlined elements. Thirty problems across basic selectors, combinators, pseudo-classes and attributes.",
     "category": "practical",
     "topic": "css",
-    "order": 5,
+    "order": 6,
     "href": "practical/write-the-selector/",
     "tags": [
       "CSS",
@@ -201,7 +215,7 @@
     "description": "Read a real CSS snippet, then pick which of five live previews it actually produces. Forty questions across single HTML elements and whole-page layouts, running from obvious to easy to miss.",
     "category": "practical",
     "topic": "css",
-    "order": 6,
+    "order": 7,
     "href": "practical/match-the-css/",
     "tags": [
       "CSS",
@@ -215,7 +229,7 @@
     "description": "The three places CSS can live, explained through annotated code. External, internal and inline side by side, with the comments in the code doing half the teaching, and a plain account of which one wins.",
     "category": "theory",
     "topic": "css",
-    "order": 7,
+    "order": 8,
     "href": "theory/inline-internal-external/",
     "tags": [
       "CSS",
