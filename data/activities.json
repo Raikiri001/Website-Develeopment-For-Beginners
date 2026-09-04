@@ -2,7 +2,7 @@
   {
     "id": "html-overview",
     "title": "HTML Overview",
-    "description": "What HTML is and what a page is made of: content and meaning rather than appearance, the element as the unit everything is built from, how a browser reads a file in order, why the tag you choose matters, and how a page reaches the other files it needs.",
+    "description": "What HTML is and what a page is made of: content and meaning rather than appearance, how a browser reads a file in order, why the tag you choose matters, and how a page reaches the other files it needs.",
     "category": "theory",
     "topic": "html",
     "order": 1,

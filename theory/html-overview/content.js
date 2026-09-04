@@ -69,140 +69,8 @@ About us
   },
 
   {
-    id: "element",
-    number: "02",
-    name: "The Element",
-    tagline: "The unit everything is built from",
-    accent: "#d97706",
-    lead:
-      "A page is made of <strong>elements</strong>, and an element is one piece of content with a name. It is written as an opening <strong>tag</strong>, the content, and a closing tag, and the name is the part carrying the meaning.",
-    anatomy: {
-      label: "One element, taken apart",
-      parts: [
-        {
-          ref: "element",
-          parts: [
-            {
-              ref: "open",
-              parts: [
-                { text: "<", tone: "tag" },
-                { ref: "name", text: "p", tone: "tag" },
-                { text: ">", tone: "tag" },
-              ],
-            },
-            { ref: "content", text: "Hello World!" },
-            {
-              ref: "close",
-              parts: [
-                { text: "</", tone: "tag" },
-                { ref: "name", text: "p", tone: "tag" },
-                { text: ">", tone: "tag" },
-              ],
-            },
-          ],
-        },
-        { text: "\n\n" },
-        {
-          ref: "element",
-          parts: [
-            {
-              ref: "open",
-              parts: [
-                { text: "<", tone: "tag" },
-                { ref: "name", text: "p", tone: "tag" },
-                { text: " " },
-                {
-                  ref: "attribute",
-                  parts: [
-                    { text: "class", tone: "attr" },
-                    { text: "=" },
-                    { text: '"intro"', tone: "string" },
-                  ],
-                },
-                { text: ">", tone: "tag" },
-              ],
-            },
-            { ref: "content", text: "A short introduction." },
-            {
-              ref: "close",
-              parts: [
-                { text: "</", tone: "tag" },
-                { ref: "name", text: "p", tone: "tag" },
-                { text: ">", tone: "tag" },
-              ],
-            },
-          ],
-        },
-        { text: "\n" },
-        {
-          ref: "void",
-          parts: [
-            { text: "<", tone: "tag" },
-            { ref: "name", text: "img", tone: "tag" },
-            { text: " " },
-            {
-              ref: "attribute",
-              parts: [
-                { text: "src", tone: "attr" },
-                { text: "=" },
-                { text: '"a.jpg"', tone: "string" },
-              ],
-            },
-            { text: " />", tone: "tag" },
-          ],
-        },
-      ],
-    },
-    keyPoint:
-      "Tag names are a <strong>fixed vocabulary</strong>. The browser understands an element only because it already knows the name, so an invented tag name does nothing at all.",
-    meta: {
-      "What it is": "One piece of content, named by its tag",
-      "Written as": "<name>content</name>",
-      "Why it matters": "It is the unit every page is built from",
-    },
-    exampleHeadings: ["Part", "What it is called", "Example", "What it does"],
-    examples: [
-      { ref: "element", syntax: "<tag>content</tag>", label: "Element", code: "<p>Hello World!</p>", meaning: "One complete piece of content, with a name saying what it is." },
-      { ref: "open", syntax: "<tag>", label: "Opening tag", code: "<p>", meaning: "Marks where the element starts. Attributes go here, and nowhere else." },
-      { ref: "close", syntax: "</tag>", label: "Closing tag", code: "</p>", meaning: "Marks where it ends. The same name again, with a slash." },
-      { ref: "content", syntax: "content", label: "Content", code: "Hello World!", meaning: "What sits between the two tags. Text, other elements, or both." },
-      { ref: "name", syntax: "tag", label: "Tag name", code: "p", meaning: "Says what the content is. This is where the meaning lives." },
-      { ref: "attribute", syntax: 'name="value"', label: "Attribute", code: 'class="intro"', meaning: "An extra setting the tag name alone cannot carry." },
-      { ref: "void", syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "Holds no content, so there is nothing to close." },
-    ],
-    notes: [
-      {
-        after: "anatomy",
-        title: "What the tag name does",
-        body:
-          "The browser reads the tag name, works out what the element is, and applies its own defaults for that name. This is why a heading is already large and bold on a page with no CSS attached to it.",
-      },
-      {
-        after: "examples",
-        title: "Elements with nothing to close",
-        body:
-          "Most elements need a closing tag, but a few hold no content and so have nothing to close. Forgetting to close one that needs it leaves the browser guessing where it was supposed to end.",
-      },
-      {
-        after: "end",
-        title: "One element, then a page",
-        body:
-          "Everything else in HTML is elements arranged in some way. Once you can read one element, a whole page is the same thing repeated and nested.",
-      },
-    ],
-    demo: {
-      editorKind: "html",
-      editorLabel: "index.html",
-      paneCss: "",
-      value: "<h1>A heading</h1>\n<p>A paragraph of text.</p>\n<a href=\"about.html\">A link</a>",
-      result: "Change a tag name and the browser's defaults for that name apply instead. No CSS involved.",
-      panes: [{ label: "Rendered page", html: "", applies: true }],
-    },
-  },
-
-  {
     id: "reading",
-    number: "03",
+    number: "02",
     name: "How A Page Is Read",
     tagline: "Top to bottom, once, in order",
     accent: "#0d9488",
@@ -265,7 +133,7 @@ About us
 
   {
     id: "meaning",
-    number: "04",
+    number: "03",
     name: "Meaning Comes First",
     tagline: "Choosing the tag that says the right thing",
     accent: "#7c3aed",
@@ -323,7 +191,7 @@ About us
 
   {
     id: "linking",
-    number: "05",
+    number: "04",
     name: "A Page Is Not Alone",
     tagline: "Reaching stylesheets, images and other pages",
     accent: "#db2777",
@@ -419,8 +287,8 @@ const LESSON = {
         }),
       };
     }).concat([
-      { label: "Where you meet it", values: [ "Before you write any HTML at all", "On every line of every page", "As soon as a page has two things on it", "Every time you reach for a tag", "As soon as a page needs anything else", ] },
-      { label: "Get it wrong and", values: [ "Content ends up styled but meaningless", "The browser guesses where the element ends", "Things appear in an order you did not intend", "The page looks fine and says the wrong thing", "The file quietly never arrives", ] },
+      { label: "Where you meet it", values: [ "Before you write any HTML at all", "As soon as a page has two things on it", "Every time you reach for a tag", "As soon as a page needs anything else", ] },
+      { label: "Get it wrong and", values: [ "Content ends up styled but meaningless", "Things appear in an order you did not intend", "The page looks fine and says the wrong thing", "The file quietly never arrives", ] },
     ]),
   },
 };

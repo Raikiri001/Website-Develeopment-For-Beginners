@@ -238,12 +238,6 @@ const PARTS = [
     },
     notes: [
       {
-        after: "code",
-        title: "Semantic is not styled",
-        body:
-          "Semantic does not mean styled. <code>&lt;header&gt;</code> gets no special appearance, so nothing on screen tells you whether you chose well. The same applies to <code>&lt;h1&gt;</code> against a large <code>&lt;div&gt;</code>: identical on screen, and only one of them is a heading.",
-      },
-      {
         after: "examples",
         title: "What a landmark adds",
         body:
@@ -253,7 +247,7 @@ const PARTS = [
         after: "end",
         title: "Using them well",
         body:
-          "Use <code>&lt;main&gt;</code> once per page, keep headings in order without skipping a level, and reach for <code>&lt;div&gt;</code> only when there is genuinely no meaning to express. Choose the tag for what the content <em>is</em>, then style it however you like.",
+          "Use <code>&lt;main&gt;</code> once per page, keep headings in order without skipping a level, and reach for <code>&lt;div&gt;</code> only when there is genuinely no meaning to express.",
       },
     ],
     demo: {
