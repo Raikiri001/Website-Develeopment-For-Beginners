@@ -70,7 +70,7 @@
     voidReadout: document.getElementById("voidReadout"),
     marginBand: document.getElementById("marginBand"),
     crate: document.getElementById("crate"),
-    crateBadge: document.getElementById("crateBadge"),
+    slotLoad: document.getElementById("slotLoad"),
     feedbackNote: document.getElementById("feedbackNote"),
     welcomeState: document.getElementById("welcomeState"),
     welcomeStats: document.getElementById("welcomeStats"),
@@ -267,7 +267,7 @@
 
   function buildScene(category, level) {
     dom.bay.dataset.theme = category.id;
-    dom.crateBadge.textContent = titleCase(level.cargo);
+    dom.slotLoad.textContent = titleCase(level.cargo);
     dom.voidEl.style.width = level.gap.width + "px";
     dom.voidEl.style.height = level.gap.height + "px";
     dom.slotDims.innerHTML = `${level.gap.width} &times; ${level.gap.height}`;
@@ -293,10 +293,6 @@
     crate.style.borderWidth = values.border === null ? "" : values.border + "px";
     crate.style.margin = values.margin === null ? "" : values.margin + "px";
 
-    crate.classList.toggle(
-      "is-cramped",
-      values.padding !== null && values.padding < level.require.padding
-    );
     crate.classList.toggle(
       "is-touching",
       values.margin !== null && values.margin < level.require.margin
@@ -389,7 +385,7 @@
   }
 
   function refreshLedger(level, values, footprint) {
-    const doubled = (n) => (n === null ? "&mdash;" : `+ 2 &times; ${n}px`);
+    const doubled = (n) => (n === null ? "&mdash;" : `2 &times; ${n}px`);
     const typedIsContent = level.boxSizing === "content-box";
     const content = contentFor(level, values);
     const borderBox = borderBoxFor(level, values);
@@ -405,17 +401,23 @@
         content.width !== null && content.width <= 0 ? "is-impossible" : "",
         "content"
       ),
-      ledgerRow("padding", doubled(values.padding), doubled(values.padding), "", "padding"),
-      ledgerRow("border", doubled(values.border), doubled(values.border), "", "border"),
       ledgerRow(
-        ledgerLabel("= the crate", !typedIsContent),
+        "padding",
+        doubled(values.padding),
+        doubled(values.padding),
+        "ledger-add",
+        "padding"
+      ),
+      ledgerRow("border", doubled(values.border), doubled(values.border), "ledger-add", "border"),
+      ledgerRow(
+        ledgerLabel("the crate", !typedIsContent),
         px(borderBox.width),
         px(borderBox.height),
         "ledger-subtotal"
       ),
-      ledgerRow("margin", doubled(values.margin), doubled(values.margin), "", "margin"),
+      ledgerRow("margin", doubled(values.margin), doubled(values.margin), "ledger-add", "margin"),
       ledgerRow(
-        "= footprint",
+        "the footprint",
         px(footprint.width),
         px(footprint.height),
         "ledger-total" + (exact ? " is-exact" : "")
