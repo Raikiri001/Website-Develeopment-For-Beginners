@@ -418,181 +418,402 @@ body {
   overflow: auto;
 }
 
-/* One bay per category, told apart by its structure rather than by new colours. */
+/* A bay per category: a wall behind, a floor below, and neighbours standing on it. */
 .bay {
-  --bay-line: var(--border-color);
-  --bay-face: var(--bg-sunken);
-  --bay-mark: var(--accent-warning);
+  --bay-wall-a: var(--slate-200);
+  --bay-wall-b: var(--slate-100);
+  --bay-ground-a: var(--slate-300);
+  --bay-ground-b: var(--slate-400);
+  --bay-line: var(--slate-500);
+  --bay-mark: var(--amber-500);
+  --prop-a: var(--slate-100);
+  --prop-b: var(--slate-300);
+  --prop-edge: var(--slate-500);
+
+  position: relative;
   width: max-content;
   min-width: 100%;
+  padding: var(--space-10) var(--space-6) 64px;
   border-radius: var(--radius-md);
-  padding: var(--space-4) var(--space-5);
-  background-color: var(--bay-face);
   border: 1px solid var(--border-color);
+  overflow: hidden;
+  background-image: linear-gradient(180deg, var(--bay-wall-a), var(--bay-wall-b));
 }
 
-.bay-roof,
-.bay-floor {
-  height: 14px;
-  border-radius: var(--radius-sm);
-  background-color: var(--bg-surface);
-  border: 1px solid var(--bay-line);
+@media (prefers-color-scheme: dark) {
+  .bay {
+    --bay-wall-a: var(--slate-900);
+    --bay-wall-b: var(--slate-800);
+    --bay-ground-a: var(--slate-800);
+    --bay-ground-b: var(--slate-950);
+    --bay-line: var(--slate-600);
+    --prop-a: var(--slate-700);
+    --prop-b: var(--slate-800);
+    --prop-edge: var(--slate-500);
+  }
 }
 
 .bay-roof {
-  margin-bottom: var(--space-4);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 40px;
 }
 
 .bay-floor {
-  margin-top: var(--space-4);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  border-top: 2px solid var(--bay-line);
+  background-image: linear-gradient(180deg, var(--bay-ground-a), var(--bay-ground-b));
 }
 
 .scene {
+  position: relative;
+  z-index: 1;
   display: flex;
-  align-items: center;
-  gap: var(--space-4);
+  align-items: flex-end;
+  gap: var(--space-5);
   justify-content: center;
 }
 
-/* The rigid blocks either side: as tall as the slot, and not moving. */
+/* The neighbours: rigid, as tall as the slot, standing on the same floor. */
 .block {
+  position: relative;
   flex: none;
-  width: 68px;
+  width: 88px;
   height: var(--block-height, 200px);
   border-radius: var(--radius-sm);
-  background-color: var(--bg-surface);
-  border: 1px solid var(--bay-line);
-  background-image: var(--block-pattern, none);
+  border: 1px solid var(--prop-edge);
+  background-image: linear-gradient(180deg, var(--prop-a), var(--prop-b));
+  box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+/* Two texture layers per neighbour: the material, then the hardware on top of it. */
+.block::before,
+.block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 .block-label {
+  position: relative;
+  z-index: 1;
   writing-mode: vertical-rl;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.04em;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   background-color: var(--bg-surface);
-  padding: var(--space-2) 2px;
-  border-radius: var(--radius-sm);
+  padding: var(--space-2) 3px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Loading bay: timber crates under a roller door, on a marked-out dock floor. */
+/* Loading bay: timber crates on a marked dock floor, under a roller door. */
 .bay[data-theme="loading-bay"] {
-  --block-pattern: repeating-linear-gradient(
-      180deg,
-      transparent 0 21px,
-      var(--bay-line) 21px 22px
-    ),
-    repeating-linear-gradient(45deg, transparent 0 13px, var(--bay-line) 13px 14px);
+  --prop-a: var(--orange-100);
+  --prop-b: var(--orange-400);
+  --prop-edge: var(--orange-600);
+  --door-a: var(--slate-300);
+  --door-b: var(--slate-200);
+}
+
+@media (prefers-color-scheme: dark) {
+  .bay[data-theme="loading-bay"] {
+    --prop-a: var(--orange-600);
+    --prop-b: var(--orange-600);
+    --prop-edge: var(--slate-900);
+    --door-a: var(--slate-700);
+    --door-b: var(--slate-800);
+  }
 }
 
 .bay[data-theme="loading-bay"] .bay-roof {
+  height: 44px;
+  border-bottom: 3px solid var(--bay-line);
+  background-image: repeating-linear-gradient(
+    180deg,
+    var(--door-a) 0 7px,
+    var(--door-b) 7px 13px
+  );
+  box-shadow: var(--shadow-sm);
+}
+
+.bay[data-theme="loading-bay"] .bay-floor::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 18px;
+  height: 15px;
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--bay-mark) 0 10px,
+    transparent 10px 30px
+  );
+}
+
+.bay[data-theme="loading-bay"] .block::before {
+  opacity: 0.5;
   background-image: repeating-linear-gradient(
     90deg,
-    transparent 0 7px,
-    var(--bay-line) 7px 8px
+    transparent 0 18px,
+    var(--prop-edge) 18px 20px
   );
 }
 
-.bay[data-theme="loading-bay"] .bay-floor {
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--bay-mark) 0 26px,
-    transparent 26px 52px
-  );
-  opacity: 0.85;
+.bay[data-theme="loading-bay"] .block::after {
+  inset: 8px;
+  border: 2px solid var(--prop-edge);
+  border-radius: 3px;
+  opacity: 0.6;
+  background-image: linear-gradient(
+      to bottom right,
+      transparent calc(50% - 1.5px),
+      var(--prop-edge) calc(50% - 1.5px) calc(50% + 1.5px),
+      transparent calc(50% + 1.5px)
+    ),
+    linear-gradient(
+      to bottom left,
+      transparent calc(50% - 1.5px),
+      var(--prop-edge) calc(50% - 1.5px) calc(50% + 1.5px),
+      transparent calc(50% + 1.5px)
+    );
 }
 
-/* Freight deck: corrugated steel containers lashed to a plated deck. */
-.bay[data-theme="freight-deck"] {
-  --block-pattern: repeating-linear-gradient(
-    90deg,
-    transparent 0 6px,
-    var(--bay-line) 6px 7px
-  );
-}
-
-.bay[data-theme="freight-deck"] .block {
-  border-radius: var(--radius-sm);
-  border-width: 2px;
-}
-
+/* Freight deck: corrugated containers lashed to diamond plating. */
 .bay[data-theme="freight-deck"] .bay-roof {
-  visibility: hidden;
+  height: 22px;
+  border-bottom: 2px solid var(--bay-line);
+  background-image: linear-gradient(180deg, var(--bay-ground-a), var(--bay-wall-a));
 }
 
-.bay[data-theme="freight-deck"] .bay-floor {
+.bay[data-theme="freight-deck"] .bay-floor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
   background-image: repeating-linear-gradient(
       45deg,
-      transparent 0 5px,
-      var(--bay-line) 5px 6px
+      var(--bay-line) 0 2px,
+      transparent 2px 13px
     ),
-    repeating-linear-gradient(-45deg, transparent 0 5px, var(--bay-line) 5px 6px);
+    repeating-linear-gradient(-45deg, var(--bay-line) 0 2px, transparent 2px 13px);
 }
 
-/* Container yard: stacks in the open air, over crane rails set into the tarmac. */
-.bay[data-theme="container-yard"] {
-  --block-pattern: repeating-linear-gradient(
+.bay[data-theme="freight-deck"] .bay-floor::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 8px;
+  height: 12px;
+  opacity: 0.7;
+  background-image: radial-gradient(
+    circle at 11px 6px,
+    var(--bay-line) 0 5px,
+    transparent 5.5px
+  );
+  background-size: 46px 12px;
+}
+
+.bay[data-theme="freight-deck"] .block::before {
+  opacity: 0.45;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--prop-edge) 0 2px,
+    transparent 2px 9px
+  );
+}
+
+.bay[data-theme="freight-deck"] .block::after {
+  opacity: 0.75;
+  background-image: linear-gradient(180deg, var(--prop-edge) 0 9px, transparent 9px),
+    linear-gradient(0deg, var(--prop-edge) 0 9px, transparent 9px),
+    linear-gradient(
       90deg,
-      transparent 0 5px,
-      var(--bay-line) 5px 6px
-    ),
-    linear-gradient(180deg, transparent 46%, var(--bay-mark) 46% 54%, transparent 54%);
+      transparent calc(50% - 2px),
+      var(--prop-edge) calc(50% - 2px) calc(50% + 2px),
+      transparent calc(50% + 2px)
+    );
 }
 
-.bay[data-theme="container-yard"] .block {
-  border-width: 2px;
+/* Container yard: stacks in the open, under a gantry crane, on rails set in tarmac. */
+.bay[data-theme="container-yard"] {
+  --bay-wall-a: var(--blue-100);
+  --bay-wall-b: var(--blue-50);
+  --bay-ground-a: var(--slate-400);
+  --bay-ground-b: var(--slate-500);
+  --bay-line: var(--slate-600);
+  padding-top: var(--space-16);
+}
+
+@media (prefers-color-scheme: dark) {
+  .bay[data-theme="container-yard"] {
+    --bay-wall-a: var(--slate-950);
+    --bay-wall-b: var(--slate-800);
+    --bay-ground-a: var(--slate-800);
+    --bay-ground-b: var(--slate-950);
+  }
+}
+
+/* The gantry: a beam across the bay on two legs, with the hook over the slot. */
+.bay[data-theme="container-yard"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image: linear-gradient(
+      180deg,
+      transparent 0 20px,
+      var(--bay-line) 20px 29px,
+      transparent 29px
+    ),
+    linear-gradient(90deg, transparent 0 5%, var(--bay-line) 5% 6.4%, transparent 6.4%),
+    linear-gradient(
+      90deg,
+      transparent 0 93.6%,
+      var(--bay-line) 93.6% 95%,
+      transparent 95%
+    );
+}
+
+.bay[data-theme="container-yard"]::after {
+  content: "";
+  position: absolute;
+  top: 29px;
+  left: 50%;
+  width: 5px;
+  height: 26px;
+  transform: translateX(-50%);
+  opacity: 0.5;
+  background-color: var(--bay-line);
 }
 
 .bay[data-theme="container-yard"] .bay-roof {
-  visibility: hidden;
+  display: none;
 }
 
-.bay[data-theme="container-yard"] .bay-floor {
-  height: 18px;
+.bay[data-theme="container-yard"] .bay-floor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.45;
   background-image: linear-gradient(
-    180deg,
-    transparent 22%,
-    var(--text-dim) 22% 30%,
-    transparent 30% 70%,
-    var(--text-dim) 70% 78%,
-    transparent 78%
+      180deg,
+      transparent 0 18px,
+      var(--slate-700) 18px 23px,
+      transparent 23px
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 44px,
+      var(--slate-700) 44px 49px,
+      transparent 49px
+    );
+}
+
+.bay[data-theme="container-yard"] .block::before {
+  opacity: 0.4;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--prop-edge) 0 2px,
+    transparent 2px 7px
   );
 }
 
-/* Air freight: ULDs with a cut corner, under the curve of the fuselage, on roller track. */
+/* Three containers stacked, with a painted band across the middle one. */
+.bay[data-theme="container-yard"] .block::after {
+  opacity: 0.8;
+  background-image: linear-gradient(
+      180deg,
+      transparent calc(33.3% - 3px),
+      var(--prop-edge) calc(33.3% - 3px) 33.3%,
+      transparent 33.3%
+    ),
+    linear-gradient(
+      180deg,
+      transparent calc(66.6% - 3px),
+      var(--prop-edge) calc(66.6% - 3px) 66.6%,
+      transparent 66.6%
+    ),
+    linear-gradient(180deg, transparent 46%, var(--bay-mark) 46% 53%, transparent 53%);
+}
+
+/* Air freight: ULDs with a cut corner, under fuselage ribs, on roller track. */
 .bay[data-theme="air-freight"] {
-  --block-pattern: radial-gradient(
-    circle at center,
-    var(--bay-line) 1.5px,
-    transparent 1.6px
-  );
-}
-
-.bay[data-theme="air-freight"] .block {
-  background-size: 16px 16px;
-  clip-path: polygon(0 0, 100% 0, 100% 82%, 78% 100%, 0 100%);
-}
-
-.bay[data-theme="air-freight"] .block-right {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 22% 100%, 0 82%);
+  padding-top: var(--space-16);
 }
 
 .bay[data-theme="air-freight"] .bay-roof {
-  height: 22px;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  border-bottom: none;
-}
-
-.bay[data-theme="air-freight"] .bay-floor {
+  height: 62px;
+  border-bottom: 2px solid var(--bay-line);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  background-color: var(--bay-wall-a);
   background-image: repeating-linear-gradient(
     90deg,
-    var(--bay-line) 0 2px,
-    transparent 2px 18px
+    transparent 0 42px,
+    var(--bay-line) 42px 44px
   );
+  box-shadow: var(--shadow-sm);
+}
+
+.bay[data-theme="air-freight"] .bay-floor::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12px;
+  height: 18px;
+  opacity: 0.55;
+  background-image: radial-gradient(
+    circle at 13px 9px,
+    var(--bay-line) 0 8px,
+    transparent 8.5px
+  );
+  background-size: 30px 18px;
+}
+
+.bay[data-theme="air-freight"] .block {
+  clip-path: polygon(0 0, 100% 0, 100% 89%, 82% 100%, 0 100%);
+}
+
+.bay[data-theme="air-freight"] .block-right {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 18% 100%, 0 89%);
+}
+
+.bay[data-theme="air-freight"] .block::before {
+  opacity: 0.5;
+  background-image: radial-gradient(
+    circle,
+    var(--prop-edge) 1.5px,
+    transparent 1.6px
+  );
+  background-size: 15px 15px;
+}
+
+.bay[data-theme="air-freight"] .block::after {
+  inset: 10px;
+  border: 2px solid var(--prop-edge);
+  border-radius: 3px;
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0 9px,
+      var(--prop-edge) 9px 10px
+    ),
+    repeating-linear-gradient(180deg, transparent 0 9px, var(--prop-edge) 9px 10px);
 }
 
 .void-wrap {
@@ -608,24 +829,29 @@ body {
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text-secondary);
+  background-color: var(--bg-surface);
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Hazard striping sits in the border, so the inner area stays exactly the slot's size. */
 .void {
   position: relative;
   box-sizing: content-box;
-  border: 6px solid transparent;
+  border: 5px solid transparent;
   border-radius: var(--radius-sm);
   display: flow-root;
   background:
     linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
     repeating-linear-gradient(
         45deg,
-        var(--amber-500) 0 9px,
-        var(--slate-900) 9px 18px
+        var(--amber-400) 0 8px,
+        var(--slate-700) 8px 16px
       )
       border-box;
+  box-shadow: var(--shadow-md);
   transition: box-shadow var(--transition-fast);
 }
 
@@ -690,8 +916,9 @@ body {
 }
 
 .void-readout {
+  margin-top: var(--space-4);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.02em;
   color: var(--text-muted);
   text-align: center;

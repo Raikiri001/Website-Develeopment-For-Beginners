@@ -222,7 +222,7 @@
 
     crate.classList.toggle(
       "is-cramped",
-      values.padding === null || values.padding < level.require.padding
+      values.padding !== null && values.padding < level.require.padding
     );
     crate.classList.toggle(
       "is-touching",
