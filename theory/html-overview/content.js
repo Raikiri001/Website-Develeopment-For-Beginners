@@ -46,16 +46,16 @@ About us
           "You write the content, then wrap parts of it in tags that name what those parts are. The browser reads those names and knows it is looking at a heading, a paragraph, a link or an image.",
       },
       {
+        after: "examples",
+        title: "Who else reads it",
+        body:
+          "HTML is read by more than browsers. Search engines and screen readers use the same markup to work out what a page contains, so the meaning you put in is the meaning they get out.",
+      },
+      {
         after: "end",
         title: "Neither plain nor styled",
         body:
           "Marked-up content is not plain text and it is not styled either. Every element already has an appearance before you write any CSS, because browsers apply defaults to the tags they recognise, and those defaults are a starting point rather than a design.",
-      },
-      {
-        after: "end",
-        title: "Who else reads it",
-        body:
-          "HTML is read by more than browsers. Search engines and screen readers use the same markup to work out what a page contains, so the meaning you put in is the meaning they get out.",
       },
     ],
     demo: {

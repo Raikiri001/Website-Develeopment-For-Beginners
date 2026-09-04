@@ -56,16 +56,16 @@ const PARTS = [
           "The browser reads the HTML to work out what is on the page, then reads the CSS to work out how to draw it. Neither one can do the other's job: there is no HTML tag that means \"teal\", and no CSS property that means \"this is a heading\".",
       },
       {
+        after: "examples",
+        title: "Meaning stays in the HTML",
+        body:
+          "Because the meaning lives in the HTML, you can restyle a whole site without touching a single tag, and anything that reads the page rather than looking at it still understands it.",
+      },
+      {
         after: "end",
         title: "Browser defaults",
         body:
           "Every element already looks like something before you write a line of CSS. Browsers apply their own default styling, which is why an <code>h1</code> is large and bold on a blank page. You are always changing a default, never starting from nothing.",
-      },
-      {
-        after: "end",
-        title: "Meaning stays in the HTML",
-        body:
-          "Because the meaning lives in the HTML, you can restyle a whole site without touching a single tag, and anything that reads the page rather than looking at it still understands it.",
       },
     ],
   },
@@ -222,16 +222,22 @@ const PARTS = [
     ],
     notes: [
       {
+        after: "tree",
+        title: "The href is a path",
+        body:
+          "The <code>href</code> is a path, written from the HTML file to the stylesheet, so moving either file breaks it. A page with a broken stylesheet path looks like a page with no CSS at all, which is the usual first sign something is wrong.",
+      },
+      {
         after: "anatomy",
         title: "What the link tag does",
         body:
           "When the browser meets the <code>link</code> tag it fetches that file, reads the rules in it, and applies them to the page. One stylesheet can be linked by as many pages as you like, which is how a whole site ends up looking consistent.",
       },
       {
-        after: "tree",
-        title: "The href is a path",
+        after: "examples",
+        title: "The rel attribute",
         body:
-          "The <code>href</code> is a path, written from the HTML file to the stylesheet, so moving either file breaks it. A page with a broken stylesheet path looks like a page with no CSS at all, which is the usual first sign something is wrong.",
+          "The <code>rel=\"stylesheet\"</code> is what tells the browser the file is CSS. Without it the browser has no reason to fetch the file at all, and the page loads unstyled even though the path is correct.",
       },
       {
         after: "end",
