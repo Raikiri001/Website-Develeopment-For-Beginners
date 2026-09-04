@@ -1,0 +1,520 @@
+/* Fit the Student - layout and components specific to this activity. */
+
+/* Shared components set their own display, so [hidden] needs to win. */
+[hidden] {
+  display: none !important;
+}
+
+/* Fixed to the viewport; .category-list and .workspace scroll internally. */
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-shell {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+/* Sidebar, panel, title-bar and button components live in assets/css/base.css. */
+
+/* ---------- Sidebar ---------- */
+.progress-container {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.progress-label span:last-child {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+/* Attempted but not yet solved. */
+.problem-item.started .status-dot {
+  background: var(--accent-warning);
+}
+
+/* ---------- Main panel ---------- */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.difficulty-easy {
+  background-color: var(--accent-success-tint);
+  border-color: var(--accent-success-tint);
+  color: var(--accent-success);
+}
+
+.difficulty-medium {
+  background-color: var(--accent-warning-tint);
+  border-color: var(--accent-warning-tint);
+  color: var(--accent-warning);
+}
+
+.difficulty-hard {
+  background-color: var(--accent-danger-tint);
+  border-color: var(--accent-danger-tint);
+  color: var(--accent-danger);
+}
+
+/* ---------- Workspace ---------- */
+.workspace {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.brief-body {
+  padding: var(--space-4) var(--space-5) 0;
+  margin: 0;
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+}
+
+/* ---------- The rules ---------- */
+.rule-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+.rule-item {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent-warning);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+}
+
+.rule-item.is-met {
+  border-left-color: var(--accent-success);
+  background-color: var(--accent-success-tint);
+}
+
+.rule-tick {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--accent-warning);
+}
+
+.rule-item.is-met .rule-tick {
+  color: var(--accent-success);
+}
+
+.rule-body strong {
+  color: var(--text-primary);
+}
+
+.rule-body code,
+.ledger-note code,
+.feedback-note code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+/* ---------- Work grid ---------- */
+.work-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.work-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.scene-panel {
+  min-width: 0;
+}
+
+/* ---------- The CSS editor ---------- */
+.code-body {
+  padding: var(--space-5);
+}
+
+.code-text {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 2.1;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.code-line {
+  white-space: pre;
+}
+
+.code-text .attr {
+  color: var(--code-attr);
+}
+.code-text .string {
+  color: var(--code-string);
+}
+.code-text .keyword {
+  color: var(--code-keyword);
+}
+
+/* Width is set in `ch` from app.js; see FIELD_WIDTH. */
+.field {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  padding: 2px 6px;
+  border: 1px dashed var(--accent-primary);
+  border-radius: var(--radius-sm);
+  background-color: var(--accent-primary-tint);
+  color: var(--text-primary);
+  vertical-align: baseline;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.field::placeholder {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.field:focus {
+  outline: none;
+  border-style: solid;
+  border-color: var(--border-active);
+  box-shadow: 0 0 0 3px var(--accent-primary-tint-strong);
+}
+
+.field.is-correct {
+  border-style: solid;
+  border-color: var(--accent-success);
+  background-color: var(--accent-success-tint);
+  color: var(--accent-success);
+  font-weight: 600;
+}
+
+.field.is-wrong {
+  border-style: solid;
+  border-color: var(--accent-danger);
+  background-color: var(--accent-danger-tint);
+}
+
+/* ---------- The ledger ---------- */
+.ledger-body {
+  padding: var(--space-5);
+}
+
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.ledger th,
+.ledger td {
+  padding: var(--space-2) var(--space-3);
+  text-align: right;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.ledger thead th {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.ledger th[scope="row"],
+.ledger thead th:first-child {
+  text-align: left;
+}
+
+.ledger .ledger-total th,
+.ledger .ledger-total td {
+  color: var(--text-primary);
+  font-weight: 600;
+  border-top: 1px solid var(--border-color);
+}
+
+.ledger .ledger-total.is-exact th,
+.ledger .ledger-total.is-exact td {
+  color: var(--accent-success);
+}
+
+.ledger .ledger-target th,
+.ledger .ledger-target td {
+  border-bottom: none;
+  color: var(--text-muted);
+}
+
+.ledger-note {
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+}
+
+/* ---------- The scene ---------- */
+.scene-body {
+  padding: var(--space-5);
+  overflow: auto;
+}
+
+.scene {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: max-content;
+  min-width: 100%;
+  justify-content: center;
+}
+
+/* The rigid blocks either side: as tall as the gap, and not moving. */
+.block {
+  flex: none;
+  width: 64px;
+  height: var(--block-height, 200px);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-sunken);
+  border: 1px solid var(--border-color);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 10px,
+    var(--border-color) 10px 11px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.block-label {
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.void-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+.void-caption {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Hazard striping sits in the border, so the inner area stays exactly the gap's size. */
+.void {
+  box-sizing: content-box;
+  border: 6px solid transparent;
+  border-radius: var(--radius-sm);
+  display: flow-root;
+  background:
+    linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
+    repeating-linear-gradient(
+        45deg,
+        var(--amber-500) 0 9px,
+        var(--slate-900) 9px 18px
+      )
+      border-box;
+  transition: box-shadow var(--transition-fast);
+}
+
+.scene.is-breach .void {
+  box-shadow: 0 0 0 3px var(--accent-danger), var(--shadow-md);
+}
+
+/* The pod's own box model comes from the learner's CSS, set inline by app.js. */
+.pod {
+  border-style: solid;
+  border-width: 0;
+  border-color: var(--accent-primary);
+  border-radius: var(--radius-sm);
+  background-color: var(--accent-primary-tint-strong);
+}
+
+.pod-badge {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: var(--radius-sm);
+  background-color: var(--accent-primary);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Not enough padding: the badge is pressed into the pod wall. */
+.pod.is-cramped .pod-badge {
+  background-color: var(--accent-danger);
+}
+
+/* Not enough margin: the pod is inside the clearance the hazard needs. */
+.pod.is-touching {
+  outline: 2px dashed var(--accent-danger);
+  outline-offset: 0;
+}
+
+.void-readout {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.void-readout.is-exact {
+  color: var(--accent-success);
+}
+
+.void-readout.is-over {
+  color: var(--accent-danger);
+}
+
+.void-readout.is-under {
+  color: var(--accent-warning);
+}
+
+/* ---------- Feedback ---------- */
+.feedback-note {
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-sunken);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.feedback-note:empty {
+  display: none;
+}
+
+.feedback-note.is-correct {
+  border-left-color: var(--accent-success);
+  background-color: var(--accent-success-tint);
+}
+
+.feedback-note.is-wrong {
+  border-left-color: var(--accent-danger);
+  background-color: var(--accent-danger-tint);
+}
+
+.feedback-note.is-hint {
+  border-left-color: var(--accent-warning);
+  background-color: var(--accent-warning-tint);
+}
+
+/* ---------- Completion ---------- */
+.completion-panel {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+}
+
+.completion-panel h2 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+.completion-panel p {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+}
+
+.completion-panel.is-visible {
+  display: flex;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px) {
+  .work-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  .workspace,
+  .code-body,
+  .ledger-body,
+  .scene-body,
+  .rule-list {
+    padding: var(--space-3);
+  }
+
+  .brief-body {
+    padding: var(--space-3) var(--space-3) 0;
+  }
+}

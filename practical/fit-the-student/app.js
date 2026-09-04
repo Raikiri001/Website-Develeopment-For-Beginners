@@ -1,0 +1,832 @@
+/* Fit the Student - level logic: drives the pod's live box model, the footprint ledger and the marking. */
+(function () {
+  "use strict";
+
+  const ACTIVITY_ID = "fit-the-student";
+  const STATE_KEY = "fit_student_state_v1";
+
+  // Starting width of a value input, in characters.
+  const FIELD_WIDTH = 7;
+
+  const FIELDS = [
+    { name: "width", label: "width" },
+    { name: "height", label: "height" },
+    { name: "padding", label: "padding" },
+    { name: "border", label: "border" },
+    { name: "margin", label: "margin" },
+  ];
+
+  const state = {
+    currentCategoryId: null,
+    currentLevelId: null,
+    hintIndex: 0,
+    solved: new Set(),
+    attempted: new Set(),
+  };
+
+  const dom = {
+    categoryList: document.getElementById("categoryList"),
+    totalCount: document.getElementById("totalCount"),
+    progressCount: document.getElementById("progressCount"),
+    progressFill: document.getElementById("progressFill"),
+    titleBarBadge: document.getElementById("titleBarBadge"),
+    titleBarTitle: document.getElementById("titleBarTitle"),
+    promptDifficultyBadge: document.getElementById("promptDifficultyBadge"),
+    btnReset: document.getElementById("btnReset"),
+    btnHint: document.getElementById("btnHint"),
+    btnCheck: document.getElementById("btnCheck"),
+    btnNext: document.getElementById("btnNext"),
+    briefBody: document.getElementById("briefBody"),
+    ruleList: document.getElementById("ruleList"),
+    cssEditor: document.getElementById("cssEditor"),
+    ledgerBody: document.getElementById("ledgerBody"),
+    ledgerNote: document.getElementById("ledgerNote"),
+    ledgerModeBadge: document.getElementById("ledgerModeBadge"),
+    gapSizeBadge: document.getElementById("gapSizeBadge"),
+    scene: document.getElementById("scene"),
+    voidEl: document.getElementById("void"),
+    voidReadout: document.getElementById("voidReadout"),
+    pod: document.getElementById("pod"),
+    podBadge: document.getElementById("podBadge"),
+    blockLeft: document.getElementById("blockLeft"),
+    blockRight: document.getElementById("blockRight"),
+    feedbackNote: document.getElementById("feedbackNote"),
+    welcomeState: document.getElementById("welcomeState"),
+    welcomeStats: document.getElementById("welcomeStats"),
+    workspace: document.getElementById("workspace"),
+    completionPanel: document.getElementById("completionPanel"),
+    completionScoreText: document.getElementById("completionScoreText"),
+    btnRestart: document.getElementById("btnRestart"),
+  };
+
+  // -- Pure helpers ------------------------------------
+  /** Read a typed length, accepting a bare number or one with px on the end. */
+  function parsePx(raw) {
+    const text = String(raw).trim().toLowerCase().replace(/\s+/g, "");
+    if (text === "") return { empty: true, value: null };
+    const match = text.match(/^(\d+(?:\.\d+)?)(px)?$/);
+    if (!match) return { empty: false, value: null };
+    return { empty: false, value: Number(match[1]) };
+  }
+
+  /** The width and height that make the footprint match the gap exactly. */
+  function solutionFor(level) {
+    const { padding, border, margin } = level.require;
+    if (level.boxSizing === "border-box") {
+      return {
+        width: level.gap.width - 2 * margin,
+        height: level.gap.height - 2 * margin,
+      };
+    }
+    const ring = padding + border + margin;
+    return {
+      width: level.gap.width - 2 * ring,
+      height: level.gap.height - 2 * ring,
+    };
+  }
+
+  /** What the typed values actually take up, or null on either axis that isn't set yet. */
+  function footprintFor(level, values) {
+    const outside =
+      level.boxSizing === "border-box"
+        ? values.margin
+        : sum([values.padding, values.border, values.margin]);
+    if (outside === null) return { width: null, height: null };
+    return {
+      width: values.width === null ? null : values.width + 2 * outside,
+      height: values.height === null ? null : values.height + 2 * outside,
+    };
+  }
+
+  function sum(list) {
+    return list.some((n) => n === null) ? null : list.reduce((a, b) => a + b, 0);
+  }
+
+  function px(value) {
+    return value === null ? "&mdash;" : value + "px";
+  }
+
+  // -- The CSS editor ----------------------------------
+  function makeSpan(className, text) {
+    const el = document.createElement("span");
+    el.className = className;
+    el.textContent = text;
+    return el;
+  }
+
+  function makeField(name) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "field";
+    input.dataset.field = name;
+    input.autocomplete = "off";
+    input.spellcheck = false;
+    input.placeholder = "0px";
+    input.setAttribute("aria-label", name);
+    input.style.width = FIELD_WIDTH + "ch";
+    return input;
+  }
+
+  function makeLine(nodes) {
+    const line = document.createElement("div");
+    line.className = "code-line";
+    nodes.forEach((n) => line.appendChild(n));
+    return line;
+  }
+
+  function buildCssEditor(level) {
+    dom.cssEditor.innerHTML = "";
+    dom.cssEditor.appendChild(
+      makeLine([makeSpan("keyword", ".pod"), document.createTextNode(" {")])
+    );
+
+    if (level.boxSizing === "border-box") {
+      dom.cssEditor.appendChild(
+        makeLine([
+          document.createTextNode("  "),
+          makeSpan("attr", "box-sizing"),
+          document.createTextNode(": "),
+          makeSpan("string", "border-box"),
+          document.createTextNode(";"),
+        ])
+      );
+    }
+
+    FIELDS.forEach((field) => {
+      const parts = [
+        document.createTextNode("  "),
+        makeSpan("attr", field.label),
+        document.createTextNode(": "),
+        makeField(field.name),
+      ];
+      if (field.name === "border") {
+        parts.push(document.createTextNode(" "));
+        parts.push(makeSpan("string", "solid #1f6f68"));
+      }
+      parts.push(document.createTextNode(";"));
+      dom.cssEditor.appendChild(makeLine(parts));
+    });
+
+    dom.cssEditor.appendChild(makeLine([document.createTextNode("}")]));
+  }
+
+  function getFields() {
+    return Array.from(dom.cssEditor.querySelectorAll("input.field"));
+  }
+
+  /** Every typed value as a number, with null for blank or unreadable. */
+  function readValues() {
+    const values = {};
+    getFields().forEach((input) => {
+      values[input.dataset.field] = parsePx(input.value).value;
+    });
+    return values;
+  }
+
+  function fitFieldWidth(input) {
+    input.style.width = Math.max(FIELD_WIDTH, input.value.length + 2) + "ch";
+  }
+
+  function setFieldValue(name, value) {
+    const input = getFields().find((i) => i.dataset.field === name);
+    if (!input) return;
+    input.value = value === null ? "" : value + "px";
+    fitFieldWidth(input);
+  }
+
+  // -- The scene ---------------------------------------
+  function buildScene(level) {
+    dom.blockLeft.textContent = level.left;
+    dom.blockRight.textContent = level.right;
+    dom.podBadge.innerHTML = level.badge;
+    dom.voidEl.style.width = level.gap.width + "px";
+    dom.voidEl.style.height = level.gap.height + "px";
+    dom.gapSizeBadge.innerHTML = `${level.gap.width} &times; ${level.gap.height}`;
+    dom.scene.style.setProperty("--block-height", level.gap.height + "px");
+  }
+
+  /** Push whatever is typed onto the pod, so the box model does the drawing. */
+  function refreshScene(level) {
+    const values = readValues();
+    const pod = dom.pod;
+
+    pod.style.boxSizing = level.boxSizing;
+    pod.style.width = values.width === null ? "" : values.width + "px";
+    pod.style.height = values.height === null ? "" : values.height + "px";
+    pod.style.padding = values.padding === null ? "" : values.padding + "px";
+    pod.style.borderWidth = values.border === null ? "" : values.border + "px";
+    pod.style.margin = values.margin === null ? "" : values.margin + "px";
+
+    pod.classList.toggle(
+      "is-cramped",
+      values.padding === null || values.padding < level.require.padding
+    );
+    pod.classList.toggle(
+      "is-touching",
+      values.margin !== null && values.margin < level.require.margin
+    );
+
+    const footprint = footprintFor(level, values);
+    const overWidth =
+      footprint.width === null ? 0 : footprint.width - level.gap.width;
+    const overHeight =
+      footprint.height === null ? 0 : footprint.height - level.gap.height;
+
+    dom.scene.classList.toggle("is-breach", overWidth > 0 || overHeight > 0);
+    dom.voidReadout.innerHTML = readoutText(level, footprint, overWidth, overHeight);
+    dom.voidReadout.className =
+      "void-readout" +
+      (footprint.width === null || footprint.height === null
+        ? ""
+        : overWidth > 0 || overHeight > 0
+        ? " is-over"
+        : overWidth === 0 && overHeight === 0
+        ? " is-exact"
+        : " is-under");
+
+    refreshLedger(level, values, footprint);
+    refreshRuleTicks(level, values, footprint);
+  }
+
+  function readoutText(level, footprint, overWidth, overHeight) {
+    if (footprint.width === null || footprint.height === null) {
+      return "Footprint &mdash; fill in every value to measure it.";
+    }
+    const size = `Footprint ${footprint.width} &times; ${footprint.height}`;
+    const notes = [];
+    if (overWidth > 0) notes.push(`${overWidth}px too wide`);
+    if (overWidth < 0) notes.push(`${-overWidth}px of slack across`);
+    if (overHeight > 0) notes.push(`${overHeight}px too tall`);
+    if (overHeight < 0) notes.push(`${-overHeight}px of slack down`);
+    return notes.length ? `${size} &middot; ${notes.join(", ")}` : `${size} &middot; fills the gap exactly`;
+  }
+
+  // -- The ledger --------------------------------------
+  function ledgerRow(label, across, down, className) {
+    return `
+      <tr class="${className || ""}">
+        <th scope="row">${label}</th>
+        <td>${across}</td>
+        <td>${down}</td>
+      </tr>`;
+  }
+
+  function refreshLedger(level, values, footprint) {
+    const rows = [];
+    const doubled = (n) => (n === null ? "&mdash;" : `+ 2 &times; ${n}px`);
+
+    if (level.boxSizing === "border-box") {
+      rows.push(
+        ledgerRow("width / height", px(values.width), px(values.height))
+      );
+      rows.push(ledgerRow("margin", doubled(values.margin), doubled(values.margin)));
+    } else {
+      rows.push(
+        ledgerRow("width / height", px(values.width), px(values.height))
+      );
+      rows.push(ledgerRow("padding", doubled(values.padding), doubled(values.padding)));
+      rows.push(ledgerRow("border", doubled(values.border), doubled(values.border)));
+      rows.push(ledgerRow("margin", doubled(values.margin), doubled(values.margin)));
+    }
+
+    const exact =
+      footprint.width === level.gap.width && footprint.height === level.gap.height;
+    rows.push(
+      ledgerRow(
+        "= footprint",
+        px(footprint.width),
+        px(footprint.height),
+        "ledger-total" + (exact ? " is-exact" : "")
+      )
+    );
+    rows.push(
+      ledgerRow(
+        "the gap",
+        level.gap.width + "px",
+        level.gap.height + "px",
+        "ledger-target"
+      )
+    );
+
+    dom.ledgerBody.innerHTML = rows.join("");
+    dom.ledgerModeBadge.textContent = level.boxSizing;
+    dom.ledgerNote.innerHTML = ledgerNoteText(level, values);
+  }
+
+  function ledgerNoteText(level, values) {
+    if (level.boxSizing !== "border-box") {
+      return "With <code>content-box</code>, <code>width</code> measures the content only, so padding, border and margin are all added on top of it.";
+    }
+    const inside = sum([values.padding, values.border]);
+    if (values.width === null || inside === null) {
+      return "With <code>border-box</code>, <code>width</code> already contains the padding and the border, so only the margin is added on top of it.";
+    }
+    return `With <code>border-box</code>, <code>width</code> already contains the padding and the border, so only the margin is added on top of it. Of your ${values.width}px across, 2 &times; ${values.border}px is border and 2 &times; ${values.padding}px is padding, leaving ${values.width - 2 * inside}px of content.`;
+  }
+
+  // -- The rules ---------------------------------------
+  /** The three fixed demands plus the fit, worded the same way every level. */
+  function rulesFor(level) {
+    const r = level.require;
+    return [
+      {
+        key: "padding",
+        name: "Elbow room",
+        text: `${level.student}'s name badge is crushed against the pod wall. Set <code>padding</code> to exactly ${r.padding}px on every side.`,
+      },
+      {
+        key: "border",
+        name: "Pod wall",
+        text: `The pod is not rated to carry anything until its wall is built. Set <code>border</code> to exactly ${r.border}px on every side.`,
+      },
+      {
+        key: "margin",
+        name: "Clearance",
+        text: `${level.hazard} runs down every edge of the gap, and the pod must not touch it. Set <code>margin</code> to exactly ${r.margin}px on every side.`,
+      },
+      {
+        key: "fit",
+        name: "The fit",
+        text: `Nothing around the gap will move. Work out the <code>width</code> and <code>height</code> that make the whole footprint exactly ${level.gap.width}px by ${level.gap.height}px.`,
+      },
+    ];
+  }
+
+  function buildRules(level) {
+    dom.ruleList.innerHTML = rulesFor(level)
+      .map(
+        (rule) => `
+        <li class="rule-item" data-rule="${rule.key}">
+          <span class="rule-tick" aria-hidden="true">&#9675;</span>
+          <span class="rule-body"><strong>${rule.name}.</strong> ${rule.text}</span>
+        </li>`
+      )
+      .join("");
+  }
+
+  function refreshRuleTicks(level, values, footprint) {
+    const met = {
+      padding: values.padding === level.require.padding,
+      border: values.border === level.require.border,
+      margin: values.margin === level.require.margin,
+      fit:
+        footprint.width === level.gap.width &&
+        footprint.height === level.gap.height,
+    };
+    dom.ruleList.querySelectorAll(".rule-item").forEach((item) => {
+      const done = met[item.dataset.rule];
+      item.classList.toggle("is-met", done);
+      item.querySelector(".rule-tick").innerHTML = done ? "&#10003;" : "&#9675;";
+    });
+  }
+
+  // -- Marking -----------------------------------------
+  function handleCheck() {
+    const level = findLevel(state.currentLevelId);
+    if (!level) return;
+
+    const inputs = getFields();
+    const parsed = {};
+    let emptyCount = 0;
+    let badCount = 0;
+
+    inputs.forEach((input) => {
+      const result = parsePx(input.value);
+      parsed[input.dataset.field] = result;
+      input.classList.remove("is-correct", "is-wrong");
+      if (result.empty) emptyCount++;
+      else if (result.value === null) badCount++;
+    });
+
+    if (emptyCount > 0 || badCount > 0) {
+      inputs.forEach((input) => {
+        const result = parsed[input.dataset.field];
+        if (!result.empty && result.value === null) input.classList.add("is-wrong");
+      });
+      setFeedback(
+        badCount > 0
+          ? "One of those is not a length. Type a number of pixels, such as 12 or 12px, and nothing else."
+          : emptyCount === inputs.length
+          ? "Nothing set yet. Every one of the five properties needs a value before the pod has a size."
+          : `${emptyCount} of the five properties are still empty, so the pod has no measurable footprint yet.`,
+        "is-wrong"
+      );
+      return;
+    }
+
+    const values = readValues();
+    const solution = solutionFor(level);
+    const footprint = footprintFor(level, values);
+    const correct = {
+      padding: values.padding === level.require.padding,
+      border: values.border === level.require.border,
+      margin: values.margin === level.require.margin,
+      width: values.width === solution.width,
+      height: values.height === solution.height,
+    };
+
+    inputs.forEach((input) => {
+      const name = input.dataset.field;
+      input.classList.toggle("is-correct", correct[name] === true);
+      input.classList.toggle("is-wrong", correct[name] === false);
+    });
+
+    state.attempted.add(level.id);
+
+    const allRight = Object.keys(correct).every((key) => correct[key]);
+    if (allRight) {
+      state.solved.add(level.id);
+      setFeedback(explainSolution(level, values), "is-correct");
+      dom.btnCheck.hidden = true;
+      dom.btnNext.hidden = false;
+      dom.btnHint.disabled = true;
+      dom.btnNext.focus();
+    } else {
+      setFeedback(diagnose(level, values, footprint, solution), "is-wrong");
+      const firstWrong = inputs.find((i) => i.classList.contains("is-wrong"));
+      if (firstWrong) firstWrong.focus();
+    }
+
+    saveState();
+    updateProgress();
+  }
+
+  /** Name the one thing that is most wrong, in the story's own terms. */
+  function diagnose(level, values, footprint, solution) {
+    const r = level.require;
+
+    if (values.padding !== r.padding) {
+      return values.padding < r.padding
+        ? `${level.student} is still squashed. The rule asks for exactly ${r.padding}px of padding and you have given ${values.padding}px.`
+        : `That is more breathing room than asked for. The rule asks for exactly ${r.padding}px of padding and you have given ${values.padding}px.`;
+    }
+    if (values.border !== r.border) {
+      return values.border < r.border
+        ? `The pod wall is too thin to carry anything. The rule asks for exactly ${r.border}px of border and you have given ${values.border}px.`
+        : `The pod wall is thicker than the rule allows. It asks for exactly ${r.border}px of border and you have given ${values.border}px.`;
+    }
+    if (values.margin !== r.margin) {
+      return values.margin < r.margin
+        ? `Too close to the edge. ${level.hazard} needs exactly ${r.margin}px of margin between it and the pod, and you have left ${values.margin}px.`
+        : `That is further from the edge than the rule wants. It asks for exactly ${r.margin}px of margin and you have left ${values.margin}px.`;
+    }
+
+    const notes = [];
+    if (footprint.width !== level.gap.width) {
+      const over = footprint.width - level.gap.width;
+      notes.push(
+        over > 0
+          ? `${over}px too wide, so the pod runs into ${level.right}`
+          : `${-over}px narrower than the gap, so the pod rattles around in it`
+      );
+    }
+    if (footprint.height !== level.gap.height) {
+      const over = footprint.height - level.gap.height;
+      notes.push(
+        over > 0
+          ? `${over}px too tall, so it spills out of the gap`
+          : `${-over}px shorter than the gap, so it does not reach the bottom`
+      );
+    }
+
+    const rings =
+      level.boxSizing === "border-box"
+        ? `2 &times; ${r.margin}px of margin`
+        : `2 &times; ${r.padding}px of padding, 2 &times; ${r.border}px of border and 2 &times; ${r.margin}px of margin`;
+
+    return `The three rules are right, but the footprint is ${notes.join(" and ")}. Remember the footprint is your width and height plus ${rings}.`;
+  }
+
+  function explainSolution(level, values) {
+    const r = level.require;
+    if (level.boxSizing === "border-box") {
+      return `Exactly right. With <code>border-box</code> the ${values.width}px you set already contains the ${r.border}px border and the ${r.padding}px padding on each side, so the only thing added outside is the margin: ${values.width} + 2 &times; ${r.margin} = ${level.gap.width}px across, and ${values.height} + 2 &times; ${r.margin} = ${level.gap.height}px down. ${level.student} fits with nothing touching the edges.`;
+    }
+    const ring = r.padding + r.border + r.margin;
+    return `Exactly right. Each side adds ${r.padding} + ${r.border} + ${r.margin} = ${ring}px, so across it is ${values.width} + 2 &times; ${ring} = ${level.gap.width}px, and down it is ${values.height} + 2 &times; ${ring} = ${level.gap.height}px. With <code>content-box</code>, <code>width</code> only ever measures the content, which is why the pod ends up ${2 * ring}px wider than the number you typed.`;
+  }
+
+  // -- Hints -------------------------------------------
+  function hintsFor(level) {
+    const r = level.require;
+    const solution = solutionFor(level);
+    if (level.boxSizing === "border-box") {
+      return [
+        `Start with the three the story fixes for you: padding ${r.padding}px, border ${r.border}px, margin ${r.margin}px.`,
+        `With <code>border-box</code>, padding and border sit inside the width, so the footprint is just width + 2 &times; margin.`,
+        `Across: ${level.gap.width} &minus; 2 &times; ${r.margin} = ${solution.width}. Down works the same way.`,
+        `The answers are width ${solution.width}px and height ${solution.height}px.`,
+      ];
+    }
+    const ring = r.padding + r.border + r.margin;
+    return [
+      `Start with the three the story fixes for you: padding ${r.padding}px, border ${r.border}px, margin ${r.margin}px.`,
+      `The footprint is width + 2 &times; (padding + border + margin), and the same again for height.`,
+      `Each side adds ${r.padding} + ${r.border} + ${r.margin} = ${ring}px, so both sides together take ${2 * ring}px off the gap.`,
+      `Across: ${level.gap.width} &minus; ${2 * ring} = ${solution.width}. Down: ${level.gap.height} &minus; ${2 * ring} = ${solution.height}.`,
+    ];
+  }
+
+  function handleHint() {
+    const level = findLevel(state.currentLevelId);
+    if (!level) return;
+    const hints = hintsFor(level);
+    const hint = hints[Math.min(state.hintIndex, hints.length - 1)];
+    state.hintIndex++;
+    setFeedback(`Hint: ${hint}`, "is-hint");
+  }
+
+  function handleReset() {
+    const level = findLevel(state.currentLevelId);
+    if (!level) return;
+    getFields().forEach((input) => {
+      input.value = "";
+      input.classList.remove("is-correct", "is-wrong");
+      fitFieldWidth(input);
+    });
+    state.hintIndex = 0;
+    setFeedback("");
+    dom.btnCheck.hidden = false;
+    dom.btnNext.hidden = true;
+    dom.btnHint.disabled = false;
+    refreshScene(level);
+  }
+
+  function setFeedback(html, className) {
+    dom.feedbackNote.innerHTML = html || "";
+    dom.feedbackNote.className =
+      "feedback-note" + (html && className ? " " + className : "");
+  }
+
+  // -- Category and level lookup -----------------------
+  function allLevels() {
+    const flat = [];
+    FIT_STUDENT_CATEGORIES.forEach((category) => {
+      category.levels.forEach((level) => flat.push({ category, level }));
+    });
+    return flat;
+  }
+
+  function totalLevels() {
+    return allLevels().length;
+  }
+
+  function findLevel(id) {
+    const hit = allLevels().find((item) => item.level.id === id);
+    return hit ? hit.level : null;
+  }
+
+  /** Next unsolved level after the current one, wrapping to the start. */
+  function findNextUnsolved() {
+    const flat = allLevels();
+    const fromIndex = flat.findIndex((item) => item.level.id === state.currentLevelId);
+    for (let i = fromIndex + 1; i < flat.length; i++) {
+      if (!state.solved.has(flat[i].level.id)) return flat[i];
+    }
+    for (let i = 0; i <= fromIndex && i < flat.length; i++) {
+      if (!state.solved.has(flat[i].level.id)) return flat[i];
+    }
+    return null;
+  }
+
+  // -- Sidebar -----------------------------------------
+  function buildWelcomeStats() {
+    dom.welcomeStats.innerHTML = FIT_STUDENT_CATEGORIES.map(
+      (category) => `
+        <div class="welcome-stat">
+          <div class="welcome-stat-icon">&#9670;</div>
+          <div class="welcome-stat-label">${category.levels.length} ${category.name}</div>
+        </div>
+      `
+    ).join("");
+  }
+
+  function buildSidebar() {
+    dom.categoryList.innerHTML = "";
+
+    FIT_STUDENT_CATEGORIES.forEach((category, catIdx) => {
+      const group = document.createElement("div");
+      group.className = "category-group";
+
+      const header = document.createElement("div");
+      header.className = "category-header" + (catIdx === 0 ? " expanded" : "");
+      header.innerHTML = `
+        <span>${category.name}</span>
+        <span class="category-count">(${category.levels.length})</span>
+        <span class="cat-chevron">&#9656;</span>
+      `;
+
+      const list = document.createElement("div");
+      list.className = "category-problems" + (catIdx === 0 ? " open" : "");
+
+      category.levels.forEach((level, idx) => {
+        const item = document.createElement("div");
+        item.className = "problem-item";
+        item.dataset.levelId = level.id;
+        item.dataset.categoryId = category.id;
+        item.innerHTML = `
+          <span class="status-dot"></span>
+          <span>Problem ${idx + 1}</span>
+        `;
+        item.addEventListener("click", () => loadLevel(category, level));
+        list.appendChild(item);
+      });
+
+      header.addEventListener("click", () => {
+        header.classList.toggle("expanded");
+        list.classList.toggle("open");
+      });
+
+      group.appendChild(header);
+      group.appendChild(list);
+      dom.categoryList.appendChild(group);
+    });
+
+    updateSidebarStates();
+  }
+
+  function updateSidebarStates() {
+    document.querySelectorAll(".problem-item").forEach((el) => {
+      const id = el.dataset.levelId;
+      el.classList.toggle("solved", state.solved.has(id));
+      el.classList.toggle("started", state.attempted.has(id) && !state.solved.has(id));
+      el.classList.toggle("active", id === state.currentLevelId);
+    });
+  }
+
+  function setDifficultyBadge(el, difficulty) {
+    el.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+    el.classList.remove("difficulty-easy", "difficulty-medium", "difficulty-hard");
+    el.classList.add(`difficulty-${difficulty}`);
+  }
+
+  // -- Loading a level ---------------------------------
+  function loadLevel(category, level) {
+    state.currentCategoryId = category.id;
+    state.currentLevelId = level.id;
+    state.hintIndex = 0;
+
+    const indexInCategory = category.levels.findIndex((l) => l.id === level.id);
+    dom.titleBarBadge.textContent = category.name;
+    dom.titleBarBadge.style.background = category.color + "22";
+    dom.titleBarBadge.style.color = category.color;
+    dom.titleBarTitle.textContent = `Problem ${indexInCategory + 1}`;
+    setDifficultyBadge(dom.promptDifficultyBadge, level.difficulty);
+
+    dom.briefBody.textContent = level.brief;
+    buildRules(level);
+    buildCssEditor(level);
+    buildScene(level);
+
+    // A solved level comes back filled in and marked.
+    if (state.solved.has(level.id)) {
+      const solution = solutionFor(level);
+      setFieldValue("width", solution.width);
+      setFieldValue("height", solution.height);
+      setFieldValue("padding", level.require.padding);
+      setFieldValue("border", level.require.border);
+      setFieldValue("margin", level.require.margin);
+      getFields().forEach((input) => input.classList.add("is-correct"));
+      setFeedback(explainSolution(level, solution), "is-correct");
+      dom.btnCheck.hidden = true;
+      dom.btnNext.hidden = false;
+      dom.btnHint.disabled = true;
+    } else {
+      setFeedback("");
+      dom.btnCheck.hidden = false;
+      dom.btnNext.hidden = true;
+      dom.btnHint.disabled = false;
+    }
+
+    dom.btnCheck.disabled = false;
+    dom.btnReset.disabled = false;
+
+    refreshScene(level);
+
+    dom.welcomeState.hidden = true;
+    dom.workspace.hidden = false;
+    dom.completionPanel.classList.remove("is-visible");
+
+    updateSidebarStates();
+
+    const first = getFields()[0];
+    if (first && !state.solved.has(level.id)) first.focus();
+  }
+
+  function handleNext() {
+    const next = findNextUnsolved();
+    if (next) loadLevel(next.category, next.level);
+    else showCompletion();
+  }
+
+  function showCompletion() {
+    dom.workspace.hidden = true;
+    dom.completionPanel.classList.add("is-visible");
+    dom.completionScoreText.textContent = `You have fitted every student into every gap, across all ${totalLevels()} levels.`;
+    state.currentLevelId = null;
+    state.currentCategoryId = null;
+    dom.btnCheck.disabled = true;
+    dom.btnHint.disabled = true;
+    dom.btnReset.disabled = true;
+    dom.btnNext.hidden = true;
+    updateSidebarStates();
+  }
+
+  function restartAll() {
+    state.solved = new Set();
+    state.attempted = new Set();
+    saveState();
+    updateProgress();
+    dom.completionPanel.classList.remove("is-visible");
+    dom.welcomeState.hidden = false;
+    dom.workspace.hidden = true;
+  }
+
+  // -- Progress ----------------------------------------
+  function updateProgress() {
+    const total = totalLevels();
+    const solved = state.solved.size;
+    const pct = Math.round((solved / total) * 100);
+
+    dom.progressCount.textContent = `${solved}/${total}`;
+    dom.progressFill.style.width = pct + "%";
+    dom.progressFill.classList.toggle("is-complete", pct >= 100);
+
+    if (window.WDFBProgress) window.WDFBProgress.setPercent(ACTIVITY_ID, pct);
+
+    updateSidebarStates();
+  }
+
+  // -- Persistence -------------------------------------
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STATE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      const validIds = new Set(allLevels().map((item) => item.level.id));
+      (saved.solved || []).forEach((id) => {
+        if (validIds.has(id)) state.solved.add(id);
+      });
+      (saved.attempted || []).forEach((id) => {
+        if (validIds.has(id)) state.attempted.add(id);
+      });
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(
+        STATE_KEY,
+        JSON.stringify({ solved: [...state.solved], attempted: [...state.attempted] })
+      );
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  // -- Init --------------------------------------------
+  function init() {
+    if (window.WDFBProgress) window.WDFBProgress.markViewed(ACTIVITY_ID);
+
+    loadState();
+    dom.totalCount.textContent = totalLevels();
+    dom.progressCount.textContent = `${state.solved.size}/${totalLevels()}`;
+    buildSidebar();
+    buildWelcomeStats();
+    updateProgress();
+
+    dom.btnCheck.addEventListener("click", handleCheck);
+    dom.btnHint.addEventListener("click", handleHint);
+    dom.btnReset.addEventListener("click", handleReset);
+    dom.btnNext.addEventListener("click", handleNext);
+    dom.btnRestart.addEventListener("click", restartAll);
+
+    // One delegated listener, since the fields are rebuilt per level.
+    dom.cssEditor.addEventListener("input", (e) => {
+      if (!e.target.classList.contains("field")) return;
+      const level = findLevel(state.currentLevelId);
+      if (!level) return;
+      e.target.classList.remove("is-wrong", "is-correct");
+      fitFieldWidth(e.target);
+      refreshScene(level);
+    });
+
+    // Enter checks the answer.
+    dom.cssEditor.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" || !e.target.classList.contains("field")) return;
+      e.preventDefault();
+      if (!dom.btnNext.hidden) handleNext();
+      else handleCheck();
+    });
+
+    // Never auto-load a level; the learner picks one from the sidebar.
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
