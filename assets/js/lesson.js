@@ -69,6 +69,24 @@
     return section.notes ? Object.keys(section.notes) : lesson.noteLabels || [];
   }
 
+  /* A note reads next to the thing it is explaining, so each one follows one
+     of the section's parts instead of all of them piling up at the bottom. */
+  function spread(shows, notes) {
+    if (!shows.length) return notes.join("");
+    /* One note after each part. A section with fewer parts than notes puts the
+       spare ones above the first part, so two never end up back to back. */
+    const lead = notes.slice(0, Math.max(0, notes.length - shows.length));
+    const rest = notes.slice(lead.length);
+    return (
+      lead.join("") +
+      shows
+        .map(function (show, k) {
+          return show + (rest[k] || "");
+        })
+        .join("")
+    );
+  }
+
   /* A contents rail listing every section, with its notes nested underneath.
      Only the section being read is expanded; the rest stay collapsed and
      dimmed, so the rail says where you are rather than just where you could
@@ -203,15 +221,13 @@
 
         /* Each section names its own notes, so a subheading says what this part
            of the concept is about rather than repeating the same three words. */
-        const notes = noteLabels(lesson, s)
-          .map(function (label, i) {
-            return (
-              '<div class="note" id="' + s.id + "-note-" + i + '">' +
-              '<h3 class="note-label">' + escapeHtml(label) + "</h3>" +
-              "<p>" + s.notes[label] + "</p></div>"
-            );
-          })
-          .join("");
+        const notes = noteLabels(lesson, s).map(function (label, i) {
+          return (
+            '<div class="note" id="' + s.id + "-note-" + i + '">' +
+            '<h3 class="note-label">' + escapeHtml(label) + "</h3>" +
+            "<p>" + s.notes[label] + "</p></div>"
+          );
+        });
 
         /* The one line someone skimming has to come away with. */
         /* The text is wrapped so the flex row has exactly two children. Left
@@ -273,19 +289,22 @@
             "</div></figure>"
           : "";
 
+        /* What the section shows, in the order it shows it: the summary, then
+           whatever it draws, then its reference table. The notes are spread
+           over these rather than stacked after the last of them. */
+        const shows = [
+          '<dl class="method-meta">' + meta + "</dl>",
+          (code ? '<div class="method-code">' + code + "</div>" : "") + tree + anatomy,
+          examples + (s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : ""),
+        ].filter(Boolean);
+
         return (
           '<section class="method" id="' + s.id + '" style="--accent:' + s.accent + '">' +
           '<header class="method-head"><span class="method-num">' + s.number + "</span>" +
           "<div><h2>" + s.name + '</h2><p class="method-tagline">' + s.tagline + "</p></div></header>" +
           '<p class="method-lead">' + s.lead + "</p>" +
           keyPoint +
-          '<dl class="method-meta">' + meta + "</dl>" +
-          (code ? '<div class="method-code">' + code + "</div>" : "") +
-          tree +
-          anatomy +
-          examples +
-          (s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : "") +
-          '<div class="method-notes">' + notes + "</div>" +
+          spread(shows, notes) +
           (s.demo ? '<div class="tryit" data-section="' + s.id + '"></div>' : "") +
           "</section>"
         );
