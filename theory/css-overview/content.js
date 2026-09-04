@@ -291,12 +291,6 @@ p {
         body:
           "This cuts both ways. Widening a selector to fix one element quietly restyles every other element it now matches, and those are often somewhere else on the page where you will not notice.",
       },
-      {
-        after: "end",
-        title: "How wide to aim",
-        body:
-          "A selector can be as broad or as narrow as you need, from every paragraph on the site down to one single element. Choosing how wide to aim is most of the skill in writing CSS.",
-      },
     ],
     demo: {
       editorLabel: "styles.css",

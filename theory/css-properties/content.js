@@ -44,12 +44,6 @@ const PARTS = [
           "The property name says what to change, the value says what to change it to, and the semicolon ends the declaration. The browser reads each one on its own and applies what it understands.",
       },
       {
-        after: "code",
-        title: "A typo, thrown away",
-        body:
-          "If the browser does not understand a property name or a value, it silently throws that one declaration away and carries on. There is no error message, so a typo simply does nothing.",
-      },
-      {
         after: "end",
         title: "The property vocabulary",
         body:
@@ -120,9 +114,9 @@ const PARTS = [
       },
       {
         after: "examples",
-        title: "Numbers and units",
+        title: "Unitless values",
         body:
-          "A number that is not zero almost always needs a unit, and the unit is joined on with no space: <code>16px</code>, never <code>16 px</code>. A few properties take a bare number on purpose, such as <code>line-height</code> and <code>font-weight</code>.",
+          "A few properties take a bare number on purpose, such as <code>line-height</code> and <code>font-weight</code>, where a unit would be wrong rather than missing.",
       },
       {
         after: "end",
@@ -183,12 +177,6 @@ const PARTS = [
       { syntax: "font: ...", label: "Several at once", code: "font: 16px Arial", meaning: "Resets line-height, weight and style back to their defaults too." },
     ],
     notes: [
-      {
-        after: "code",
-        title: "What a shorthand resets",
-        body:
-          "A shorthand sets <em>every</em> property it covers, including the ones you did not mention, which get their default back. Writing <code>background: red</code> after setting a background image throws the image away.",
-      },
       {
         after: "examples",
         title: "What a shorthand expands to",
@@ -261,12 +249,6 @@ const PARTS = [
     ],
     notes: [
       {
-        after: "code",
-        title: "What inherits",
-        body:
-          "Properties about text tend to inherit, so setting <code>color</code> on a container passes it down to everything inside. Properties about the box, such as <code>padding</code> and <code>border</code>, do not.",
-      },
-      {
         after: "examples",
         title: "The CSS-wide keywords",
         body:
@@ -332,9 +314,9 @@ const PARTS = [
     notes: [
       {
         after: "code",
-        title: "Declaring and reading one",
+        title: "One value, read in many places",
         body:
-          "A custom property is declared on a selector like any other, and read back with <code>var()</code>. Change the declaration and every <code>var()</code> reading it updates, because it is genuinely the same value rather than a copy.",
+          "Change the declaration and every <code>var()</code> reading it updates, because each one reads the value rather than holding a copy of it.",
       },
       {
         after: "examples",

@@ -55,12 +55,6 @@ const PARTS = [
           "The browser reads the path, works out which file it points at, and requests that file. If nothing is there, the request fails and whatever depended on it does not appear.",
       },
       {
-        after: "examples",
-        title: "Which failures are visible",
-        body:
-          "Only images announce themselves when they fail. A stylesheet, a script or a link that points nowhere gives you no marker on the page, so the symptom you see is unstyled text, a dead button, or a click that goes to a missing page, rather than anything naming the path.",
-      },
-      {
         after: "end",
         title: "Case sensitivity",
         body:
@@ -201,12 +195,6 @@ const PARTS = [
         title: "Tied to the domain root",
         body:
           "Root-relative paths look tidier but tie the site to sitting at the root of its domain. This project uses relative paths everywhere for exactly that reason, so it also works from a subfolder.",
-      },
-      {
-        after: "examples",
-        title: "Starting from the root",
-        body:
-          "A leading slash tells the browser to start at the root of whatever server it is talking to. A full URL goes further and names the server too, so it works from any site at all.",
       },
       {
         after: "end",
@@ -370,12 +358,6 @@ const PARTS = [
         title: "Each file counts from itself",
         body:
           "Each file resolves its own paths. An <code>href</code> in a page counts from the page's folder, and a <code>url()</code> in a stylesheet counts from the stylesheet's folder, even though both end up on the same screen.",
-      },
-      {
-        after: "end",
-        title: "Which file is it written in",
-        body:
-          "Ask which <em>file</em> the path is written in, not which page is open. That one question resolves nearly every path that mysteriously does not work.",
       },
     ],
   },

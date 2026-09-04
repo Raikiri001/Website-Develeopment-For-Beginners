@@ -121,12 +121,6 @@ li { }
           "Classes and ids do nothing on their own. They exist purely so CSS has something to select by, which is why you add a class to an element you intend to style.",
       },
       {
-        after: "examples",
-        title: "The marker characters",
-        body:
-          "Each kind reads one thing about the element. The marker character tells you which: a full stop means a class, a hash means an id, square brackets mean an attribute, and a bare word means a tag name.",
-      },
-      {
         after: "end",
         title: "What to build with",
         body:
@@ -187,12 +181,6 @@ h1 + p { }`,
       { syntax: "A ~ B", label: "General sibling", code: "h1 ~ p", meaning: "Every <code>B</code> after an <code>A</code> that shares its parent." },
     ],
     notes: [
-      {
-        after: "code",
-        title: "The space",
-        body:
-          "A space is the easiest character in CSS to add or lose by accident, and it changes the meaning without ever causing an error. <code>li.item</code> and <code>li .item</code> match completely different things.",
-      },
       {
         after: "examples",
         title: "With and without a separator",
@@ -267,12 +255,6 @@ p::before { }      /* content inserted at the start */`,
         title: "How nth-child counts",
         body:
           "<code>:nth-child</code> counts from 1 rather than 0, and it counts <em>all</em> siblings, not only the ones your selector matches. That is the usual reason a striped list stripes the wrong rows.",
-      },
-      {
-        after: "end",
-        title: "One colon or two",
-        body:
-          "One colon is a class, two colons is an element. This is the only reliable way to tell which kind you are looking at, and it is why the doubled colon exists at all.",
       },
     ],
     demo: {

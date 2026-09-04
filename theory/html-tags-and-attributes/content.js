@@ -67,12 +67,6 @@ const PARTS = [
         body:
           "Most elements need closing, but void elements never do, because there is no content to wrap. Trying to close one, or forgetting to close one that needs it, both cause trouble.",
       },
-      {
-        after: "end",
-        title: "The tag vocabulary",
-        body:
-          "Tag names are a fixed vocabulary. You cannot invent one and expect meaning from it, because the meaning comes from the browser knowing the name already.",
-      },
     ],
     demo: {
       editorKind: "html",
@@ -175,12 +169,6 @@ const PARTS = [
         title: "Boolean attributes",
         body:
           "A few attributes are boolean: writing them at all turns them on, and there is no value to give. Their presence is the setting.",
-      },
-      {
-        after: "end",
-        title: "A missing attribute",
-        body:
-          "Leaving out a required attribute usually produces no error, just an element that quietly does not work. A link with no destination still looks like a link.",
       },
     ],
     demo: {

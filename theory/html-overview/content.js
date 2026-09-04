@@ -307,12 +307,6 @@ About us
     ],
     notes: [
       {
-        after: "code",
-        title: "The div that looks right",
-        body:
-          "The failure here is silent. A styled <code>div</code> and a real heading look identical on screen, so nothing prompts you to fix it, and the cost falls entirely on people using a screen reader or a keyboard.",
-      },
-      {
         after: "examples",
         title: "What the right tag brings",
         body:

@@ -66,12 +66,6 @@ const PARTS = [
           "The doctype tells the browser to use modern standards, <code>head</code> holds information about the page, and <code>body</code> holds everything a visitor actually sees.",
       },
       {
-        after: "examples",
-        title: "Leaving out the doctype",
-        body:
-          "Without the doctype the browser switches to a compatibility mode built for pages from the 1990s, and layouts start behaving in ways no amount of CSS will explain.",
-      },
-      {
         after: "end",
         title: "Typing it yourself",
         body:
@@ -136,12 +130,6 @@ const PARTS = [
         title: "Children and the tree",
         body:
           "An element inside another is its child, and the whole page is one tree of these relationships. Indentation is only for humans, but the nesting itself is real structure.",
-      },
-      {
-        after: "examples",
-        title: "Closing order",
-        body:
-          "Tags must close in the reverse order they were opened. Cross them over and the browser repairs the markup by guessing, which is how a page ends up not matching the HTML you wrote.",
       },
       {
         after: "end",
@@ -214,12 +202,6 @@ const PARTS = [
           "The browser turns your markup into this tree before it draws anything, and from then on the tree is the page. Change the nesting and you have changed the tree, whatever the page looks like afterwards.",
       },
       {
-        after: "examples",
-        title: "Child and descendant",
-        body:
-          "A child and a descendant are not the same thing, and the difference is exactly where beginners lose an afternoon. <code>strong</code> is inside <code>div</code>, so it is a descendant, but its parent is <code>p</code>, so it is not a child of <code>div</code>.",
-      },
-      {
         after: "end",
         title: "Why the names matter",
         body:
@@ -289,9 +271,9 @@ const PARTS = [
       },
       {
         after: "examples",
-        title: "Inline width and height",
+        title: "Padding on an inline element",
         body:
-          "Setting <code>width</code> or <code>height</code> on an inline element does nothing, and vertical padding on one overlaps its neighbours instead of pushing them away. This is a very common first confusion. The exception is an element holding a file rather than text, such as <code>&lt;img&gt;</code>: it is inline, but width and height do size it, which is why <code>&lt;img width=\"400\"&gt;</code> works.",
+          "Vertical padding on an inline element overlaps its neighbours instead of pushing them away, which is the other half of the same surprise.",
       },
       {
         after: "end",
