@@ -132,7 +132,7 @@ const PARTS = [
           "An element inside another is its child, and the whole page is one tree of these relationships. Indentation is only for humans, but the nesting itself is real structure.",
       },
       {
-        after: "end",
+        after: "examples",
         title: "Indentation",
         body:
           "Indentation is for people reading the file and means nothing to the browser. A page written entirely on one line nests exactly the same way, which is why a badly indented file can still be correct, and a neatly indented one can still be wrong.",

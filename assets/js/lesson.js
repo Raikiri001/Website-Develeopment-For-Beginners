@@ -89,6 +89,14 @@
             return note.html;
           })
           .join("");
+        /* Anything that is not about one block is gathered under a heading of
+           its own, rather than trailing after the section as loose prose. */
+        if (part.name === "end") {
+          return (
+            '<div class="details"><p class="details-label">Important details</p>' +
+            captions + "</div>"
+          );
+        }
         if (!part.framed) return part.html + captions;
         return (
           '<div class="block">' + part.html +

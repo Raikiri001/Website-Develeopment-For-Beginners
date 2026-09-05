@@ -46,7 +46,7 @@ About us
           "You write the content, then wrap parts of it in tags that name what those parts are. The browser reads those names and knows it is looking at a heading, a paragraph, a link or an image.",
       },
       {
-        after: "examples",
+        after: "end",
         title: "Who else reads it",
         body:
           "HTML is read by more than browsers. Search engines and screen readers use the same markup to work out what a page contains, so the meaning you put in is the meaning they get out.",
@@ -103,13 +103,13 @@ About us
     },
     notes: [
       {
-        after: "meta",
+        after: "code",
         title: "Top to bottom, once",
         body:
           "The browser starts at the first line and works down, turning each element it meets into part of the page. By the time it reaches the end of the file, the page exists.",
       },
       {
-        after: "code",
+        after: "end",
         title: "Reading forwards only",
         body:
           "Because it only reads forwards, anything referred to before it has been read is a problem. This is why stylesheets are linked near the top, so the styling is ready before there is a page to apply it to.",

@@ -42,13 +42,13 @@ const METHODS = [
     },
     notes: [
       {
-        after: "meta",
+        after: "code",
         title: "How it works",
         body:
           "The <code>&lt;link&gt;</code> joins the file to the page, and every rule in that file applies. The selector decides which elements each rule reaches.",
       },
       {
-        after: "code",
+        after: "end",
         title: "What it costs",
         body:
           "It is a second file and a second request. If the path in <code>href</code> is wrong the file never loads, and the page appears with no styling at all.",
@@ -98,13 +98,13 @@ const METHODS = [
     },
     notes: [
       {
-        after: "meta",
+        after: "code",
         title: "How it works",
         body:
           "The rules sit inside the page itself, written exactly as they would be in a <code>.css</code> file. The selector decides which elements each rule reaches.",
       },
       {
-        after: "code",
+        after: "end",
         title: "What it costs",
         body:
           "It reaches no other page. A second page needs its own copy, so the same rules now exist twice and both have to be kept in step.",
@@ -150,13 +150,13 @@ const METHODS = [
     },
     notes: [
       {
-        after: "meta",
+        after: "code",
         title: "How it works",
         body:
           "The declarations sit in an attribute on the element, with no selector and no curly brackets. There is nothing to select, because the attribute is already attached to what it styles.",
       },
       {
-        after: "code",
+        after: "end",
         title: "What it costs",
         body:
           "It reaches no other element. Every element that wants the same styling needs its own copy, and styling is mixed into markup meant to describe structure.",

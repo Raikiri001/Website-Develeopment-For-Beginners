@@ -38,7 +38,7 @@ const PARTS = [
     },
     notes: [
       {
-        after: "meta",
+        after: "code",
         title: "Property, value, semicolon",
         body:
           "The property name says what to change, the value says what to change it to, and the semicolon ends the declaration. The browser reads each one on its own and applies what it understands.",
@@ -119,7 +119,7 @@ const PARTS = [
           "A few properties take a bare number on purpose, such as <code>line-height</code> and <code>font-weight</code>, where a unit would be wrong rather than missing.",
       },
       {
-        after: "end",
+        after: "examples",
         title: "Absolute and relative",
         body:
           "Absolute units like <code>px</code> stay the same size whatever happens around them. Relative units like <code>em</code>, <code>rem</code> and <code>%</code> are measured against something else, so they change when that thing does.",
@@ -325,7 +325,7 @@ const PARTS = [
           "The name needs both dashes and is case sensitive, so <code>--Brand</code> and <code>--brand</code> are different properties. A <code>var()</code> pointing at something undefined falls back to the second argument, or makes the declaration invalid if there is none.",
       },
       {
-        after: "end",
+        after: "examples",
         title: "Declaring them on :root",
         body:
           "Custom properties inherit, so declaring them on <code>:root</code> makes them available to the whole page. That is exactly how this site's colours and spacing are defined.",

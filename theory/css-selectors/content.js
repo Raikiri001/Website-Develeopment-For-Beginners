@@ -41,13 +41,13 @@ const PARTS = [
     },
     notes: [
       {
-        after: "meta",
+        after: "code",
         title: "How matching works",
         body:
           "The browser checks every element against the pattern and collects the ones that match. The declarations are then applied to all of them, however many that turns out to be.",
       },
       {
-        after: "code",
+        after: "end",
         title: "A selector that matches nothing",
         body:
           "A selector that matches nothing is perfectly valid CSS, so nothing warns you. If a rule seems to do nothing, the selector is usually wrong before the declarations are.",

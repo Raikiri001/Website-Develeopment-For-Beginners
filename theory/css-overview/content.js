@@ -56,7 +56,7 @@ const PARTS = [
           "The browser reads the HTML to work out what is on the page, then reads the CSS to work out how to draw it. Neither one can do the other's job: there is no HTML tag that means \"teal\", and no CSS property that means \"this is a heading\".",
       },
       {
-        after: "examples",
+        after: "end",
         title: "Meaning stays in the HTML",
         body:
           "Because the meaning lives in the HTML, you can restyle a whole site without touching a single tag, and anything that reads the page rather than looking at it still understands it.",
@@ -280,13 +280,13 @@ p {
     },
     notes: [
       {
-        after: "meta",
+        after: "code",
         title: "How matching works",
         body:
           "The browser checks every element on the page against the selector and applies the declarations to all of them. Nothing is applied to elements that do not match, and a selector matching nothing at all is not an error.",
       },
       {
-        after: "code",
+        after: "end",
         title: "Widening a selector",
         body:
           "This cuts both ways. Widening a selector to fix one element quietly restyles every other element it now matches, and those are often somewhere else on the page where you will not notice.",
