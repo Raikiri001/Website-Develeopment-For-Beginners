@@ -38,14 +38,26 @@ About us
       { syntax: "Say how it looks", label: "CSS", code: "color: #0d9488;", meaning: "Not HTML's job. Appearance is handled separately." },
       { syntax: "Make it do something", label: "JavaScript", code: "button.addEventListener", meaning: "Not HTML's job either. HTML has no logic in it at all." },
     ],
-    notes: {
-      "How it works":
-        "You write the content, then wrap parts of it in tags that name what those parts are. The browser reads those names and knows it is looking at a heading, a paragraph, a link or an image.",
-      "What to watch for":
-        "Marked-up content is not plain text and it is not styled either. Every element already has an appearance before you write any CSS, because browsers apply defaults to the tags they recognise, and those defaults are a starting point rather than a design.",
-      "Worth remembering":
-        "HTML is read by more than browsers. Search engines and screen readers use the same markup to work out what a page contains, so the meaning you put in is the meaning they get out.",
-    },
+    notes: [
+      {
+        after: "code",
+        title: "Wrapping content in names",
+        body:
+          "You write the content, then wrap parts of it in tags that name what those parts are. The browser reads those names and knows it is looking at a heading, a paragraph, a link or an image.",
+      },
+      {
+        after: "end",
+        title: "Who else reads it",
+        body:
+          "HTML is read by more than browsers. Search engines and screen readers use the same markup to work out what a page contains, so the meaning you put in is the meaning they get out.",
+      },
+      {
+        after: "end",
+        title: "Neither plain nor styled",
+        body:
+          "Marked-up content is not plain text and it is not styled either. Every element already has an appearance before you write any CSS, because browsers apply defaults to the tags they recognise, and those defaults are a starting point rather than a design.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
@@ -57,64 +69,8 @@ About us
   },
 
   {
-    id: "element",
-    number: "02",
-    name: "The Element",
-    tagline: "The unit everything is built from",
-    accent: "#d97706",
-    lead:
-      "A page is made of <strong>elements</strong>, and an element is one piece of content with a name. It is written as an opening <strong>tag</strong>, the content, and a closing tag, and the name is the part carrying the meaning.",
-    blocks: [
-      {
-        label: "index.html",
-        lang: "html",
-        code: `<p class="intro">Some text.</p>
-<!--
-<p ... >          the opening tag
-    class="intro" an attribute: an extra setting
-Some text.        the content
-</p>              the closing tag, with a slash
-p                 the tag name, which says what this is
--->`,
-      },
-    ],
-    keyPoint:
-      "Tag names are a <strong>fixed vocabulary</strong>. The browser understands an element only because it already knows the name, so an invented tag name does nothing at all.",
-    meta: {
-      "What it is": "One piece of content, named by its tag",
-      "Written as": "<name>content</name>",
-      "Why it matters": "It is the unit every page is built from",
-    },
-    exampleHeadings: ["Part", "What it is called", "Example", "What it does"],
-    examples: [
-      { syntax: "<tag>content</tag>", label: "Element", code: "<p>Some text.</p>", meaning: "One complete piece of content, with a name saying what it is." },
-      { syntax: "<tag>", label: "Opening tag", code: "<p>", meaning: "Marks where the element starts. Attributes go here, and nowhere else." },
-      { syntax: "</tag>", label: "Closing tag", code: "</p>", meaning: "Marks where it ends. The same name again, with a slash." },
-      { syntax: "tag", label: "Tag name", code: "p", meaning: "Says what the content is. This is where the meaning lives." },
-      { syntax: 'name="value"', label: "Attribute", code: 'class="intro"', meaning: "An extra setting the tag name alone cannot carry." },
-      { syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "Holds no content, so there is nothing to close." },
-    ],
-    notes: {
-      "How it works":
-        "The browser reads the tag name, works out what the element is, and applies its own defaults for that name. This is why a heading is already large and bold on a page with no CSS attached to it.",
-      "What to watch for":
-        "Most elements need a closing tag, but a few hold no content and so have nothing to close. Forgetting to close one that needs it leaves the browser guessing where it was supposed to end.",
-      "Worth remembering":
-        "Everything else in HTML is elements arranged in some way. Once you can read one element, a whole page is the same thing repeated and nested.",
-    },
-    demo: {
-      editorKind: "html",
-      editorLabel: "index.html",
-      paneCss: "",
-      value: "<h1>A heading</h1>\n<p>A paragraph of text.</p>\n<a href=\"about.html\">A link</a>",
-      result: "Change a tag name and the browser's defaults for that name apply instead. No CSS involved.",
-      panes: [{ label: "Rendered page", html: "", applies: true }],
-    },
-  },
-
-  {
     id: "reading",
-    number: "03",
+    number: "02",
     name: "How A Page Is Read",
     tagline: "Top to bottom, once, in order",
     accent: "#0d9488",
@@ -145,14 +101,26 @@ p                 the tag name, which says what this is
       "Written as": "Not written; it is the order you type things",
       "Why it matters": "It decides what appears where, before any CSS",
     },
-    notes: {
-      "How it works":
-        "The browser starts at the first line and works down, turning each element it meets into part of the page. By the time it reaches the end of the file, the page exists.",
-      "What to watch for":
-        "Because it only reads forwards, anything referred to before it has been read is a problem. This is why stylesheets are linked near the top, so the styling is ready before there is a page to apply it to.",
-      "Worth remembering":
-        "CSS can move things around later, but the source order is the starting point and it is also the order the page is read aloud in. Getting it right in the HTML matters even when CSS is going to rearrange it.",
-    },
+    notes: [
+      {
+        after: "code",
+        title: "Top to bottom, once",
+        body:
+          "The browser starts at the first line and works down, turning each element it meets into part of the page. By the time it reaches the end of the file, the page exists.",
+      },
+      {
+        after: "end",
+        title: "Reading forwards only",
+        body:
+          "Because it only reads forwards, anything referred to before it has been read is a problem. This is why stylesheets are linked near the top, so the styling is ready before there is a page to apply it to.",
+      },
+      {
+        after: "end",
+        title: "Source order",
+        body:
+          "CSS can move things around later, but the source order is the starting point and it is also the order the page is read aloud in. Getting it right in the HTML matters even when CSS is going to rearrange it.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html (the body)",
@@ -165,7 +133,7 @@ p                 the tag name, which says what this is
 
   {
     id: "meaning",
-    number: "04",
+    number: "03",
     name: "Meaning Comes First",
     tagline: "Choosing the tag that says the right thing",
     accent: "#7c3aed",
@@ -205,19 +173,25 @@ p                 the tag name, which says what this is
       { syntax: "A run of items", label: "<ul><li>", code: "<p>* item</p>", meaning: "Nothing knows how many items there are, or that it is a list at all." },
       { syntax: "A picture", label: "<img alt>", code: "A background image", meaning: "Nothing can describe it, so it is invisible to anyone not looking." },
     ],
-    notes: {
-      "How it works":
-        "Each tag comes with meaning and, for some of them, behaviour: a link can be followed and a button can be pressed with a keyboard, and you get all of that without writing anything extra. Recreating it on a <code>div</code> means rebuilding it yourself, badly.",
-      "What to watch for":
-        "The failure here is silent. A styled <code>div</code> and a real heading look identical on screen, so nothing prompts you to fix it, and the cost falls entirely on people using a screen reader or a keyboard.",
-      "Worth remembering":
-        "Choose the tag for what the content <em>is</em>, then style it however you like. Going the other way, choosing a tag for how it looks and then fixing the meaning later, almost never gets fixed.",
-    },
+    notes: [
+      {
+        after: "examples",
+        title: "What the right tag brings",
+        body:
+          "Each tag comes with meaning and, for some of them, behaviour: a link can be followed and a button can be pressed with a keyboard, and you get all of that without writing anything extra. Recreating it on a <code>div</code> means rebuilding it yourself, badly.",
+      },
+      {
+        after: "end",
+        title: "Choosing the tag",
+        body:
+          "Choose the tag for what the content <em>is</em>, then style it however you like. Going the other way, choosing a tag for how it looks and then fixing the meaning later, almost never gets fixed.",
+      },
+    ],
   },
 
   {
     id: "linking",
-    number: "05",
+    number: "04",
     name: "A Page Is Not Alone",
     tagline: "Reaching stylesheets, images and other pages",
     accent: "#db2777",
@@ -268,14 +242,26 @@ p                 the tag name, which says what this is
       { syntax: '<a href="...">', label: "Another page", code: 'href="about.html"', meaning: "Not loaded until someone clicks. Until then it is only a pointer." },
       { syntax: '<script src="...">', label: "A JavaScript file", code: 'src="js/app.js"', meaning: "Loaded and run, which is how a page gains behaviour." },
     ],
-    notes: {
-      "How it works":
-        "Some of these are pulled in as the page loads, so they are part of what you see. A link is different: it only points, and nothing happens until someone follows it.",
-      "What to watch for":
-        "Every one of these is a path, written from the file doing the pointing to the file being pointed at, so moving either file breaks it. A broken path fails quietly, which is why a page with no styling on it is usually a path problem rather than a CSS one.",
-      "Worth remembering":
-        "This is what makes a set of pages a site rather than a folder of files. The same stylesheet can serve every page, and the links between pages are what turn them into something you can move around in.",
-    },
+    notes: [
+      {
+        after: "tree",
+        title: "Every one is a path",
+        body:
+          "Every one of these is a path, written from the file doing the pointing to the file being pointed at, so moving either file breaks it. A broken path fails quietly, which is why a page with no styling on it is usually a path problem rather than a CSS one.",
+      },
+      {
+        after: "examples",
+        title: "Pulled in, or pointed at",
+        body:
+          "Some of these are pulled in as the page loads, so they are part of what you see. A link is different: it only points, and nothing happens until someone follows it.",
+      },
+      {
+        after: "end",
+        title: "What makes a site",
+        body:
+          "This is what makes a set of pages a site rather than a folder of files. The same stylesheet can serve every page, and the links between pages are what turn them into something you can move around in.",
+      },
+    ],
   },
 ];
 
@@ -284,7 +270,6 @@ const METAKEYS = ["What it is", "Written as", "Why it matters"];
 const LESSON = {
   id: "html-overview",
   metaKeys: METAKEYS,
-  noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   exampleHeadings: ["Part", "What it is called", "Example", "What it does"],
   demoHint: "Edit the HTML and watch the page rebuild",
   sections: PARTS,
@@ -302,8 +287,8 @@ const LESSON = {
         }),
       };
     }).concat([
-      { label: "Where you meet it", values: [ "Before you write any HTML at all", "On every line of every page", "As soon as a page has two things on it", "Every time you reach for a tag", "As soon as a page needs anything else", ] },
-      { label: "Get it wrong and", values: [ "Content ends up styled but meaningless", "The browser guesses where the element ends", "Things appear in an order you did not intend", "The page looks fine and says the wrong thing", "The file quietly never arrives", ] },
+      { label: "Where you meet it", values: [ "Before you write any HTML at all", "As soon as a page has two things on it", "Every time you reach for a tag", "As soon as a page needs anything else", ] },
+      { label: "Get it wrong and", values: [ "Content ends up styled but meaningless", "Things appear in an order you did not intend", "The page looks fine and says the wrong thing", "The file quietly never arrives", ] },
     ]),
   },
 };

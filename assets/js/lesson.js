@@ -64,6 +64,48 @@
   }
 
   // ── Rendering ────────────────────────────────────────
+  /* Each note names the part of the section it explains. A note on a framed
+     part is rendered as that frame's caption, inside it, so the two read as
+     one block rather than as a paragraph that happens to follow a figure. A
+     note naming a part this section does not have closes the section instead
+     of disappearing. */
+  function placeNotes(parts, notes) {
+    const names = parts.map(function (part) {
+      return part.name;
+    });
+    const orphans = notes.filter(function (note) {
+      return names.indexOf(note.after) === -1;
+    });
+    return parts
+      .map(function (part) {
+        const mine = notes
+          .filter(function (note) {
+            return note.after === part.name;
+          })
+          .concat(part.name === "end" ? orphans : []);
+        if (!mine.length) return part.html;
+        const captions = mine
+          .map(function (note) {
+            return note.html;
+          })
+          .join("");
+        /* Anything that is not about one block is gathered under a heading of
+           its own, rather than trailing after the section as loose prose. */
+        if (part.name === "end") {
+          return (
+            '<div class="details"><p class="details-label">Important details</p>' +
+            captions + "</div>"
+          );
+        }
+        if (!part.framed) return part.html + captions;
+        return (
+          '<div class="block">' + part.html +
+          '<div class="block-notes">' + captions + "</div></div>"
+        );
+      })
+      .join("");
+  }
+
   /* A contents rail listing every section, with its notes nested underneath.
      Only the section being read is expanded; the rest stay collapsed and
      dimmed, so the rail says where you are rather than just where you could
@@ -86,8 +128,8 @@
           name: s.name,
           number: s.number,
           accent: s.accent,
-          subs: lesson.noteLabels.map(function (label, i) {
-            return { id: s.id + "-note-" + i, name: label };
+          subs: (s.notes || []).map(function (note, i) {
+            return { id: s.id + "-note-" + i, name: note.title };
           }),
         };
       })
@@ -157,6 +199,24 @@
     window.addEventListener("resize", update);
   }
 
+  /* One specimen, taken apart. Parts nest, and each one names the reference
+     table row it belongs to. */
+  function anatomyParts(parts) {
+    return parts
+      .map(function (p) {
+        const inner = p.parts ? anatomyParts(p.parts) : escapeHtml(p.text);
+        if (!p.ref && !p.tone) return inner;
+        const cls =
+          (p.ref ? "anatomy-part" : "") + (p.tone ? (p.ref ? " " : "") + p.tone : "");
+        return (
+          '<span class="' + cls + '"' +
+          (p.ref ? ' data-ref="' + escapeHtml(p.ref) + '"' : "") +
+          ">" + inner + "</span>"
+        );
+      })
+      .join("");
+  }
+
   function renderSections(host, lesson) {
     host.innerHTML = lesson.sections
       .map(function (s) {
@@ -178,16 +238,17 @@
           })
           .join("");
 
-        // Same questions, same order, labelled so they can be read across.
-        const notes = lesson.noteLabels
-          .map(function (label, i) {
-            return (
-              '<p class="note" id="' + s.id + "-note-" + i + '">' +
-              '<strong class="note-label">' + escapeHtml(label) + ".</strong> " +
-              s.notes[label] + "</p>"
-            );
-          })
-          .join("");
+        /* Each note carries its own heading, stating the point it makes, so the
+           headings alone still teach something to someone skimming. */
+        const notes = (s.notes || []).map(function (note, i) {
+          return {
+            after: note.after,
+            html:
+              '<div class="note" id="' + s.id + "-note-" + i + '">' +
+              '<h3 class="note-label">' + escapeHtml(note.title) + "</h3>" +
+              "<p>" + note.body + "</p></div>",
+          };
+        });
 
         /* The one line someone skimming has to come away with. */
         /* The text is wrapped so the flex row has exactly two children. Left
@@ -211,7 +272,8 @@
             s.examples
               .map(function (ex) {
                 return (
-                  '<tr><td class="ref-syntax"><code>' + escapeHtml(ex.syntax) + "</code></td>" +
+                  "<tr" + (ex.ref ? ' data-ref="' + escapeHtml(ex.ref) + '"' : "") + ">" +
+                  '<td class="ref-syntax"><code>' + escapeHtml(ex.syntax) + "</code></td>" +
                   '<td class="ref-name">' + escapeHtml(ex.label) + "</td>" +
                   '<td class="ref-code"><code>' + escapeHtml(ex.code) + "</code></td>" +
                   '<td class="ref-meaning">' + ex.meaning + "</td></tr>"
@@ -219,6 +281,14 @@
               })
               .join("") +
             "</tbody></table></div>"
+          : "";
+
+        const anatomy = s.anatomy
+          ? '<figure class="anatomy"><figcaption>' + escapeHtml(s.anatomy.label) +
+            '</figcaption><pre class="anatomy-specimen">' +
+            '<span class="anatomy-lines">' + anatomyParts(s.anatomy.parts) + "</span></pre>" +
+            '<p class="anatomy-hint">' + escapeHtml(s.anatomy.hint ||
+              "Hover a part to light up its row in the table below.") + "</p></figure>"
           : "";
 
         const tree = s.tree
@@ -240,23 +310,83 @@
             "</div></figure>"
           : "";
 
+        /* The parts of a section, in the order they are shown. A note names the
+           one it belongs beside, or "end" to close the section off. */
+        const parts = [
+          { name: "meta", html: '<dl class="method-meta">' + meta + "</dl>" },
+          { name: "code", html: code ? '<div class="method-code">' + code + "</div>" : "", framed: true },
+          { name: "tree", html: tree, framed: true },
+          { name: "anatomy", html: anatomy, framed: true },
+          { name: "examples", html: examples, framed: true },
+          { name: "ladder", html: s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : "" },
+        ]
+          .filter(function (part) {
+            return part.html;
+          })
+          .concat([{ name: "end", html: "" }]);
+
         return (
           '<section class="method" id="' + s.id + '" style="--accent:' + s.accent + '">' +
           '<header class="method-head"><span class="method-num">' + s.number + "</span>" +
           "<div><h2>" + s.name + '</h2><p class="method-tagline">' + s.tagline + "</p></div></header>" +
           '<p class="method-lead">' + s.lead + "</p>" +
           keyPoint +
-          '<dl class="method-meta">' + meta + "</dl>" +
-          (code ? '<div class="method-code">' + code + "</div>" : "") +
-          tree +
-          examples +
-          (s.ladder ? '<ol class="ladder ladder-inline">' + ladderRows(s.ladder) + "</ol>" : "") +
-          '<div class="method-notes">' + notes + "</div>" +
+          placeNotes(parts, notes) +
           (s.demo ? '<div class="tryit" data-section="' + s.id + '"></div>' : "") +
           "</section>"
         );
       })
       .join("");
+  }
+
+  /* Hovering a piece of the specimen lights the row explaining it, and hovering
+     a row lights the piece, so the two are read as one thing. */
+  function wireAnatomy(host) {
+    Array.prototype.forEach.call(host.querySelectorAll(".method"), function (section) {
+      const figure = section.querySelector(".anatomy");
+      const table = section.querySelector(".ref-table");
+      if (!figure || !table) return;
+
+      function clear() {
+        Array.prototype.forEach.call(section.querySelectorAll(".is-lit"), function (el) {
+          el.classList.remove("is-lit");
+        });
+      }
+
+      function row(ref) {
+        return table.querySelector('tr[data-ref="' + ref + '"]');
+      }
+
+      /* A part lights on its own. Two paragraphs on two lines are two
+         separate elements, so hovering one must not light the other. */
+      figure.addEventListener("mouseover", function (event) {
+        const part = event.target.closest(".anatomy-part");
+        clear();
+        if (!part) return;
+        part.classList.add("is-lit");
+        const match = row(part.getAttribute("data-ref"));
+        if (match) match.classList.add("is-lit");
+      });
+
+      /* A row names a kind of part rather than one instance of it, so it
+         lights every part of that kind in the specimen. */
+      table.addEventListener("mouseover", function (event) {
+        const hit = event.target.closest("tr[data-ref]");
+        clear();
+        if (!hit) return;
+        hit.classList.add("is-lit");
+        const ref = hit.getAttribute("data-ref");
+        Array.prototype.forEach.call(
+          figure.querySelectorAll('.anatomy-part[data-ref="' + ref + '"]'),
+          function (part) {
+            part.classList.add("is-lit");
+          }
+        );
+      });
+
+      figure.addEventListener("mouseleave", clear);
+      table.addEventListener("mouseleave", clear);
+    });
   }
 
   // ── Live demos ───────────────────────────────────────
@@ -440,6 +570,7 @@
 
     const sectionHost = document.getElementById("sections");
     renderSections(sectionHost, LESSON);
+    wireAnatomy(sectionHost);
     buildDemos(sectionHost, LESSON);
     renderComparison(document.getElementById("comparison"), LESSON);
     renderLadder(document.getElementById("ladder"), LESSON);

@@ -36,14 +36,20 @@ const PARTS = [
       "Written as": "property: value;",
       "Why it matters": "It is the unit every rule is built from",
     },
-    notes: {
-      "How it works":
-        "The property name says what to change, the value says what to change it to, and the semicolon ends the declaration. The browser reads each one on its own and applies what it understands.",
-      "What to watch for":
-        "If the browser does not understand a property name or a value, it silently throws that one declaration away and carries on. There is no error message, so a typo simply does nothing.",
-      "Worth remembering":
-        "Property names are a fixed vocabulary defined by the CSS specification, so a made-up name is exactly as invisible as a misspelled one. There is one deliberate exception, custom properties, which is the last part of this lesson.",
-    },
+    notes: [
+      {
+        after: "code",
+        title: "Property, value, semicolon",
+        body:
+          "The property name says what to change, the value says what to change it to, and the semicolon ends the declaration. The browser reads each one on its own and applies what it understands.",
+      },
+      {
+        after: "end",
+        title: "The property vocabulary",
+        body:
+          "Property names are a fixed vocabulary defined by the CSS specification, so a made-up name is exactly as invisible as a misspelled one. There is one deliberate exception, custom properties, which is the last part of this lesson.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: ".heading {\n  color: #0d9488;\n  font-size: 26px;\n}",
@@ -99,14 +105,26 @@ const PARTS = [
       { syntax: "#rrggbb", label: "Colour", code: "#0d9488", meaning: "Red, green and blue as hex. Also <code>rgb()</code> and named colours." },
       { syntax: "a, b, c", label: "List", code: "Arial, sans-serif", meaning: "Tried in order. The first one available is used." },
     ],
-    notes: {
-      "How it works":
-        "Every property defines which values it accepts. <code>display</code> takes a keyword from a fixed list, <code>width</code> takes a length, and giving one the other kind is simply ignored.",
-      "What to watch for":
-        "A number that is not zero almost always needs a unit, and the unit is joined on with no space: <code>16px</code>, never <code>16 px</code>. A few properties take a bare number on purpose, such as <code>line-height</code> and <code>font-weight</code>.",
-      "Worth remembering":
-        "Absolute units like <code>px</code> stay the same size whatever happens around them. Relative units like <code>em</code>, <code>rem</code> and <code>%</code> are measured against something else, so they change when that thing does.",
-    },
+    notes: [
+      {
+        after: "code",
+        title: "Which values a property takes",
+        body:
+          "Every property defines which values it accepts. <code>display</code> takes a keyword from a fixed list, <code>width</code> takes a length, and giving one the other kind is simply ignored.",
+      },
+      {
+        after: "examples",
+        title: "Unitless values",
+        body:
+          "A few properties take a bare number on purpose, such as <code>line-height</code> and <code>font-weight</code>, where a unit would be wrong rather than missing.",
+      },
+      {
+        after: "examples",
+        title: "Absolute and relative",
+        body:
+          "Absolute units like <code>px</code> stay the same size whatever happens around them. Relative units like <code>em</code>, <code>rem</code> and <code>%</code> are measured against something else, so they change when that thing does.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: ".box {\n  width: 60%;\n  padding: 10px 20px;\n  background-color: #f1f5f9;\n}",
@@ -158,14 +176,20 @@ const PARTS = [
       { syntax: "background: ...", label: "Several at once", code: "background: red", meaning: "Also clears any background image already set." },
       { syntax: "font: ...", label: "Several at once", code: "font: 16px Arial", meaning: "Resets line-height, weight and style back to their defaults too." },
     ],
-    notes: {
-      "How it works":
-        "A shorthand expands into the individual properties behind it. Some read positionally, so <code>margin: 10px 20px</code> means top and bottom, then left and right; others read by kind, so <code>border</code> works out which part is the width and which is the colour.",
-      "What to watch for":
-        "A shorthand sets <em>every</em> property it covers, including the ones you did not mention, which get their default back. Writing <code>background: red</code> after setting a background image throws the image away.",
-      "Worth remembering":
-        "Values inside a shorthand are separated by spaces. Commas mean something different in CSS, and using them here makes the whole declaration invalid.",
-    },
+    notes: [
+      {
+        after: "examples",
+        title: "What a shorthand expands to",
+        body:
+          "A shorthand expands into the individual properties behind it. Some read positionally, so <code>margin: 10px 20px</code> means top and bottom, then left and right; others read by kind, so <code>border</code> works out which part is the width and which is the colour.",
+      },
+      {
+        after: "end",
+        title: "Spaces, not commas",
+        body:
+          "Values inside a shorthand are separated by spaces. Commas mean something different in CSS, and using them here makes the whole declaration invalid.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: ".box {\n  border: 2px solid #94a3b8;\n  padding: 12px;\n}",
@@ -223,14 +247,20 @@ const PARTS = [
       { syntax: "color", label: "Inherits", code: ".box { color: red }", meaning: "Children get it without being told. Most text properties behave this way." },
       { syntax: "padding", label: "Does not inherit", code: ".box { padding: 8px }", meaning: "Children get the initial value instead, which for padding is zero." },
     ],
-    notes: {
-      "How it works":
-        "Properties about text tend to inherit, so setting <code>color</code> on a container passes it down to everything inside. Properties about the box, such as <code>padding</code> and <code>border</code>, do not.",
-      "What to watch for":
-        "Before any of your CSS runs, the browser has already applied its own default stylesheet. Headings are large and bold, and lists have bullets, because of that, not because nothing is set.",
-      "Worth remembering":
-        "The keywords <code>inherit</code>, <code>initial</code>, <code>unset</code> and <code>revert</code> work on any property, so you can always ask for the parent's value or reset explicitly. Note <code>initial</code> is the CSS specification's value, not the browser's, which is what <code>revert</code> gets you. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Inheritance\" target=\"_blank\" rel=\"noopener\">MDN's inheritance guide</a>.",
-    },
+    notes: [
+      {
+        after: "examples",
+        title: "The CSS-wide keywords",
+        body:
+          "The keywords <code>inherit</code>, <code>initial</code>, <code>unset</code> and <code>revert</code> work on any property, so you can always ask for the parent's value or reset explicitly. Note <code>initial</code> is the CSS specification's value, not the browser's, which is what <code>revert</code> gets you. The full rules are in <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Inheritance\" target=\"_blank\" rel=\"noopener\">MDN's inheritance guide</a>.",
+      },
+      {
+        after: "end",
+        title: "The browser's own stylesheet",
+        body:
+          "Before any of your CSS runs, the browser has already applied its own default stylesheet. Headings are large and bold, and lists have bullets, because of that, not because nothing is set.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: ".box {\n  color: #7c3aed;\n  padding: 10px;\n}",
@@ -281,14 +311,26 @@ const PARTS = [
       { syntax: "var(--name, fallback)", label: "With a fallback", code: "var(--line, #ccc)", meaning: "The fallback is used when the custom property is not defined." },
       { syntax: ":root { --name: v }", label: "Make it global", code: ":root { --brand: teal }", meaning: "Custom properties inherit, so the whole page can read it." },
     ],
-    notes: {
-      "How it works":
-        "A custom property is declared on a selector like any other, and read back with <code>var()</code>. Change the declaration and every <code>var()</code> reading it updates, because it is genuinely the same value rather than a copy.",
-      "What to watch for":
-        "The name needs both dashes and is case sensitive, so <code>--Brand</code> and <code>--brand</code> are different properties. A <code>var()</code> pointing at something undefined falls back to the second argument, or makes the declaration invalid if there is none.",
-      "Worth remembering":
-        "Custom properties inherit, so declaring them on <code>:root</code> makes them available to the whole page. That is exactly how this site's colours and spacing are defined.",
-    },
+    notes: [
+      {
+        after: "code",
+        title: "One value, read in many places",
+        body:
+          "Change the declaration and every <code>var()</code> reading it updates, because each one reads the value rather than holding a copy of it.",
+      },
+      {
+        after: "examples",
+        title: "Names and fallbacks",
+        body:
+          "The name needs both dashes and is case sensitive, so <code>--Brand</code> and <code>--brand</code> are different properties. A <code>var()</code> pointing at something undefined falls back to the second argument, or makes the declaration invalid if there is none.",
+      },
+      {
+        after: "examples",
+        title: "Declaring them on :root",
+        body:
+          "Custom properties inherit, so declaring them on <code>:root</code> makes them available to the whole page. That is exactly how this site's colours and spacing are defined.",
+      },
+    ],
     demo: {
       editorLabel: "styles.css",
       value: ":root {\n  --brand: #0d9488;\n}\n\n.heading {\n  color: var(--brand);\n}\n\n.text {\n  color: var(--brand);\n}",
@@ -303,7 +345,6 @@ const METAKEYS = ["What it is", "Written as", "Why it matters"];
 const LESSON = {
   id: "css-properties",
   metaKeys: METAKEYS,
-  noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   exampleHeadings: ["Syntax", "Kind", "Example", "What it means"],
   demoHint: "Edit the CSS and watch what each declaration does",
   sections: PARTS,

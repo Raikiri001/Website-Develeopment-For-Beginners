@@ -9,26 +9,38 @@ const PARTS = [
     accent: "#2563eb",
     lead:
       "An <strong>element</strong> is one piece of a page. It is written as an opening <strong>tag</strong>, the content, and a closing tag, and the tag name says <strong>what that content is</strong>.",
-    blocks: [
-      {
-        label: "index.html",
-        lang: "html",
-        code: `<!-- opening tag, content, closing tag -->
-<p>Some text.</p>
-
-<!--  ^        ^         ^                     -->
-<!--  says     the       repeats the name,     -->
-<!--  what     content   with a slash          -->
-
-<!-- The name is what carries the meaning. The -->
-<!-- browser gives each name its own defaults. -->
-<h1>A heading</h1>
-
-<!-- A few elements have no content, so they   -->
-<!-- have nothing to close. These are "void".  -->
-<img src="photo.jpg" alt="A description" />`,
-      },
-    ],
+    anatomy: {
+      label: "Four elements, each written its own way",
+      parts: [
+        { ref: "normal", text: "<p>Some text.</p>", tone: "tag" },
+        { text: "\n" },
+        {
+          ref: "void",
+          parts: [
+            { text: "<img ", tone: "tag" },
+            { text: "src", tone: "attr" },
+            { text: "=" },
+            { text: '"a.jpg"', tone: "string" },
+            { text: " />", tone: "tag" },
+          ],
+        },
+        { text: "\n" },
+        {
+          ref: "attribute",
+          parts: [
+            { text: "<a ", tone: "tag" },
+            { text: "href", tone: "attr" },
+            { text: "=" },
+            { text: '"x.html"', tone: "string" },
+            { text: ">", tone: "tag" },
+            { text: "Link" },
+            { text: "</a>", tone: "tag" },
+          ],
+        },
+        { text: "\n" },
+        { ref: "comment", text: "<!-- a note -->", tone: "comment" },
+      ],
+    },
     keyPoint:
       "Tag names are a <strong>fixed vocabulary</strong>. The browser gives an element meaning and defaults only because it already knows the name, so an invented one does nothing.",
     meta: {
@@ -37,19 +49,25 @@ const PARTS = [
       "Why it matters": "The name is what gives content meaning",
     },
     examples: [
-      { syntax: "<tag>content</tag>", label: "Normal element", code: "<p>Some text.</p>", meaning: "Opening tag, content, closing tag. The usual shape." },
-      { syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "No content, so nothing to close. Also <code>br</code>, <code>input</code>, <code>meta</code>." },
-      { syntax: '<tag name="value">', label: "With an attribute", code: '<a href="x.html">Link</a>', meaning: "Attributes go in the opening tag, never the closing one." },
-      { syntax: "<!-- text -->", label: "Comment", code: "<!-- a note -->", meaning: "Ignored by the browser, but still visible in view-source." },
+      { ref: "normal", syntax: "<tag>content</tag>", label: "Normal element", code: "<p>Some text.</p>", meaning: "Opening tag, content, closing tag. The usual shape." },
+      { ref: "void", syntax: "<tag />", label: "Void element", code: '<img src="a.jpg" />', meaning: "No content, so nothing to close. Also <code>br</code>, <code>input</code>, <code>meta</code>." },
+      { ref: "attribute", syntax: '<tag name="value">', label: "With an attribute", code: '<a href="x.html">Link</a>', meaning: "Attributes go in the opening tag, never the closing one." },
+      { ref: "comment", syntax: "<!-- text -->", label: "Comment", code: "<!-- a note -->", meaning: "Ignored by the browser, but still visible in view-source." },
     ],
-    notes: {
-      "How it works":
-        "The browser reads the tag name and applies its own defaults for that name, which is why a heading is already large and bold before you write any CSS at all.",
-      "What to watch for":
-        "Most elements need closing, but void elements never do, because there is no content to wrap. Trying to close one, or forgetting to close one that needs it, both cause trouble.",
-      "Worth remembering":
-        "Tag names are a fixed vocabulary. You cannot invent one and expect meaning from it, because the meaning comes from the browser knowing the name already.",
-    },
+    notes: [
+      {
+        after: "examples",
+        title: "Void elements",
+        body:
+          "Most elements need closing, but void elements never do, because there is no content to wrap. Trying to close one, or forgetting to close one that needs it, both cause trouble.",
+      },
+      {
+        after: "end",
+        title: "What the tag name does",
+        body:
+          "The browser reads the tag name and applies its own defaults for that name, which is why a heading is already large and bold before you write any CSS at all.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
@@ -68,25 +86,61 @@ const PARTS = [
     accent: "#d97706",
     lead:
       "An <strong>attribute</strong> is a setting written inside the opening tag. It carries information the tag name alone cannot: where a link goes, which image to load, or a name for CSS to select by.",
-    blocks: [
-      {
-        label: "index.html",
-        lang: "html",
-        code: `<!-- Inside the OPENING tag only, never the closing. -->
-<!-- name="value", and several are space separated. -->
-<a href="page.html" class="link">A link</a>
-
-<!--  ^^^^  ^^^^^^^^^                             -->
-<!--  name   value, in quotes                     -->
-
-<!-- Some attributes are needed for the element  -->
-<!-- to work at all. This link goes nowhere:     -->
-<a>Not really a link</a>
-
-<!-- Some are just present or absent, with no value. -->
-<input type="checkbox" checked />`,
-      },
-    ],
+    anatomy: {
+      label: "Three elements, and the attributes on them",
+      parts: [
+        { text: "<a ", tone: "tag" },
+        {
+          ref: "href",
+          parts: [
+            { text: "href", tone: "attr" },
+            { text: "=" },
+            { text: '"page.html"', tone: "string" },
+          ],
+        },
+        { text: " " },
+        {
+          ref: "class",
+          parts: [
+            { text: "class", tone: "attr" },
+            { text: "=" },
+            { text: '"link"', tone: "string" },
+          ],
+        },
+        { text: ">", tone: "tag" },
+        { text: "A link" },
+        { text: "</a>\n<img ", tone: "tag" },
+        {
+          ref: "id",
+          parts: [
+            { text: "id", tone: "attr" },
+            { text: "=" },
+            { text: '"logo"', tone: "string" },
+          ],
+        },
+        { text: " " },
+        {
+          ref: "src",
+          parts: [
+            { text: "src", tone: "attr" },
+            { text: "=" },
+            { text: '"logo.png"', tone: "string" },
+          ],
+        },
+        { text: " " },
+        {
+          ref: "alt",
+          parts: [
+            { text: "alt", tone: "attr" },
+            { text: "=" },
+            { text: '"A dog"', tone: "string" },
+          ],
+        },
+        { text: ' />\n<input type="checkbox" ', tone: "tag" },
+        { ref: "checked", text: "checked", tone: "attr" },
+        { text: " />", tone: "tag" },
+      ],
+    },
     keyPoint:
       "Leaving out a required attribute produces <strong>no error, just an element that quietly does not work</strong>. A link with no <code>href</code> still looks like a link.",
     meta: {
@@ -96,21 +150,27 @@ const PARTS = [
     },
     exampleHeadings: ["Written", "Kind", "Example", "What it does"],
     examples: [
-      { syntax: 'class="name"', label: "Global", code: 'class="card"', meaning: "A hook for CSS and JavaScript. Any number of elements may share it." },
-      { syntax: 'id="name"', label: "Global", code: 'id="main"', meaning: "Also a hook, but meant to appear once on the page." },
-      { syntax: 'href="url"', label: "Element specific", code: '<a href="p.html">', meaning: "Where a link goes. Without it, the element is not a link at all." },
-      { syntax: 'src="url"', label: "Element specific", code: '<img src="a.jpg">', meaning: "What to load. Required for the element to show anything." },
-      { syntax: 'alt="text"', label: "Element specific", code: '<img alt="A dog">', meaning: "Read out, or shown, when the image cannot be." },
-      { syntax: "checked", label: "Boolean", code: "<input checked>", meaning: "Present means on. There is no value to give it." },
+      { ref: "class", syntax: 'class="name"', label: "Global", code: 'class="card"', meaning: "A hook for CSS and JavaScript. Any number of elements may share it." },
+      { ref: "id", syntax: 'id="name"', label: "Global", code: 'id="main"', meaning: "Also a hook, but meant to appear once on the page." },
+      { ref: "href", syntax: 'href="url"', label: "Element specific", code: '<a href="p.html">', meaning: "Where a link goes. Without it, the element is not a link at all." },
+      { ref: "src", syntax: 'src="url"', label: "Element specific", code: '<img src="a.jpg">', meaning: "What to load. Required for the element to show anything." },
+      { ref: "alt", syntax: 'alt="text"', label: "Element specific", code: '<img alt="A dog">', meaning: "Read out, or shown, when the image cannot be." },
+      { ref: "checked", syntax: "checked", label: "Boolean", code: "<input checked>", meaning: "Present means on. There is no value to give it." },
     ],
-    notes: {
-      "How it works":
-        "Each attribute is a name, an equals sign, and a value in quotes. Some are global and work on any element, such as <code>class</code> and <code>id</code>; others only mean something on particular elements.",
-      "What to watch for":
-        "Leaving out a required attribute usually produces no error, just an element that quietly does not work. A link with no destination still looks like a link.",
-      "Worth remembering":
-        "A few attributes are boolean: writing them at all turns them on, and there is no value to give. Their presence is the setting.",
-    },
+    notes: [
+      {
+        after: "anatomy",
+        title: "How an attribute is written",
+        body:
+          "Each attribute is a name, an equals sign, and a value in quotes. Some are global and work on any element, such as <code>class</code> and <code>id</code>; others only mean something on particular elements.",
+      },
+      {
+        after: "examples",
+        title: "Boolean attributes",
+        body:
+          "A few attributes are boolean: writing them at all turns them on, and there is no value to give. Their presence is the setting.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
@@ -176,14 +236,20 @@ const PARTS = [
       "Written as": "<header>, <nav>, <main>, <footer>",
       "Why it matters": "It names regions nothing else can name",
     },
-    notes: {
-      "How it works":
-        "A landmark lays out exactly like a <code>&lt;div&gt;</code>, so the page looks no different. What changes is that the browser now exposes a named region, and assistive software can list those regions and jump between them.",
-      "What to watch for":
-        "Semantic does not mean styled. <code>&lt;header&gt;</code> gets no special appearance, so nothing on screen tells you whether you chose well. The same applies to <code>&lt;h1&gt;</code> against a large <code>&lt;div&gt;</code>: identical on screen, and only one of them is a heading.",
-      "Worth remembering":
-        "Use <code>&lt;main&gt;</code> once per page, keep headings in order without skipping a level, and reach for <code>&lt;div&gt;</code> only when there is genuinely no meaning to express. Choose the tag for what the content <em>is</em>, then style it however you like.",
-    },
+    notes: [
+      {
+        after: "examples",
+        title: "What a landmark adds",
+        body:
+          "A landmark lays out exactly like a <code>&lt;div&gt;</code>, so the page looks no different. What changes is that the browser now exposes a named region, and assistive software can list those regions and jump between them.",
+      },
+      {
+        after: "end",
+        title: "Using them well",
+        body:
+          "Use <code>&lt;main&gt;</code> once per page, keep headings in order without skipping a level, and reach for <code>&lt;div&gt;</code> only when there is genuinely no meaning to express.",
+      },
+    ],
     demo: {
       editorKind: "html",
       editorLabel: "index.html",
@@ -200,7 +266,6 @@ const METAKEYS = ["What it is", "Written as", "Why it matters"];
 const LESSON = {
   id: "html-tags-and-attributes",
   metaKeys: METAKEYS,
-  noteLabels: ["How it works", "What to watch for", "Worth remembering"],
   exampleHeadings: ["Syntax", "Kind", "Example", "What it does"],
   demoHint: "Edit the HTML and watch the page rebuild",
   sections: PARTS,
