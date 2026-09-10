@@ -113,17 +113,15 @@ body {
   --part-margin-ink: var(--violet-600);
 }
 
-@media (prefers-color-scheme: dark) {
-  .workspace {
-    --part-content-fill: var(--blue-500);
-    --part-content-ink: var(--blue-400);
-    --part-padding-fill: var(--teal-500);
-    --part-padding-ink: var(--teal-400);
-    --part-border-fill: var(--slate-400);
-    --part-border-ink: var(--slate-300);
-    --part-margin-fill: var(--violet-500);
-    --part-margin-ink: var(--violet-400);
-  }
+:root[data-theme="dark"] .workspace {
+  --part-content-fill: var(--blue-500);
+  --part-content-ink: var(--blue-400);
+  --part-padding-fill: var(--teal-500);
+  --part-padding-ink: var(--teal-400);
+  --part-border-fill: var(--slate-400);
+  --part-border-ink: var(--slate-300);
+  --part-margin-fill: var(--violet-500);
+  --part-margin-ink: var(--violet-400);
 }
 
 .part-content {
@@ -431,17 +429,15 @@ body {
   background-image: linear-gradient(180deg, var(--bay-wall-a), var(--bay-wall-b));
 }
 
-@media (prefers-color-scheme: dark) {
-  .bay {
-    --bay-wall-a: var(--slate-900);
-    --bay-wall-b: var(--slate-800);
-    --bay-ground-a: var(--slate-800);
-    --bay-ground-b: var(--slate-950);
-    --bay-line: var(--slate-600);
-    --prop-a: var(--slate-700);
-    --prop-b: var(--slate-800);
-    --prop-edge: var(--slate-500);
-  }
+:root[data-theme="dark"] .bay {
+  --bay-wall-a: var(--slate-900);
+  --bay-wall-b: var(--slate-800);
+  --bay-ground-a: var(--slate-800);
+  --bay-ground-b: var(--slate-950);
+  --bay-line: var(--slate-600);
+  --prop-a: var(--slate-700);
+  --prop-b: var(--slate-800);
+  --prop-edge: var(--slate-500);
 }
 
 .bay-roof {
@@ -571,14 +567,12 @@ body {
   --door-b: var(--slate-200);
 }
 
-@media (prefers-color-scheme: dark) {
-  .bay[data-theme="loading-bay"] {
-    --prop-a: var(--orange-600);
-    --prop-b: var(--orange-600);
-    --prop-edge: var(--slate-900);
-    --door-a: var(--slate-700);
-    --door-b: var(--slate-800);
-  }
+:root[data-theme="dark"] .bay[data-theme="loading-bay"] {
+  --prop-a: var(--orange-600);
+  --prop-b: var(--orange-600);
+  --prop-edge: var(--slate-900);
+  --door-a: var(--slate-700);
+  --door-b: var(--slate-800);
 }
 
 .bay[data-theme="loading-bay"] .bay-roof {
@@ -701,13 +695,11 @@ body {
   --bay-line: var(--slate-600);
 }
 
-@media (prefers-color-scheme: dark) {
-  .bay[data-theme="container-yard"] {
-    --bay-wall-a: var(--slate-950);
-    --bay-wall-b: var(--slate-800);
-    --bay-ground-a: var(--slate-800);
-    --bay-ground-b: var(--slate-950);
-  }
+:root[data-theme="dark"] .bay[data-theme="container-yard"] {
+  --bay-wall-a: var(--slate-950);
+  --bay-wall-b: var(--slate-800);
+  --bay-ground-a: var(--slate-800);
+  --bay-ground-b: var(--slate-950);
 }
 
 /* The gantry: a beam across the bay on two legs, with the hook over the slot. */
@@ -802,14 +794,12 @@ body {
   --bay-ground-b: var(--slate-500);
 }
 
-@media (prefers-color-scheme: dark) {
-  .bay[data-theme="rail-yard"] {
-    --prop-a: var(--slate-700);
-    --prop-b: var(--slate-800);
-    --prop-edge: var(--slate-500);
-    --bay-ground-a: var(--slate-800);
-    --bay-ground-b: var(--slate-950);
-  }
+:root[data-theme="dark"] .bay[data-theme="rail-yard"] {
+  --prop-a: var(--slate-700);
+  --prop-b: var(--slate-800);
+  --prop-edge: var(--slate-500);
+  --bay-ground-a: var(--slate-800);
+  --bay-ground-b: var(--slate-950);
 }
 
 .bay[data-theme="rail-yard"] .bay-roof {

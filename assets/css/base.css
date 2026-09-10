@@ -144,6 +144,49 @@ img {
   background-color: var(--accent-primary-tint);
 }
 
+/* Light or dark, sitting at the end of the nav it belongs to. It is written
+   by assets/js/theme.js rather than pasted into every page's header. */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color var(--transition-fast), background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  background-color: var(--accent-primary-tint);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.theme-toggle-icon {
+  font-size: var(--text-base);
+  line-height: 1;
+}
+
+/* The label is the first thing worth dropping on a narrow screen. */
+@media (max-width: 640px) {
+  .theme-toggle-label {
+    display: none;
+  }
+}
+
 /* ---------- Activity page header ---------- */
 /* h1 + one-sentence intro shown below the site header on every full-page
    interactive activity, so each activity opens with the same masthead
