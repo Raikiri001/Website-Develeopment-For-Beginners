@@ -97,10 +97,12 @@
             captions + "</div>"
           );
         }
-        if (!part.framed) return part.html + captions;
+        /* The explanation comes first and the thing it explains follows, so a
+           reader meets the point before the code rather than after it. */
+        if (!part.framed) return captions + part.html;
         return (
-          '<div class="block">' + part.html +
-          '<div class="block-notes">' + captions + "</div></div>"
+          '<div class="block"><div class="block-notes">' + captions + "</div>" +
+          part.html + "</div>"
         );
       })
       .join("");

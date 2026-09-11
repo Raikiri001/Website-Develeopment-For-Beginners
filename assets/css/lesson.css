@@ -376,7 +376,7 @@
 
 .block-notes {
   padding: var(--space-5) var(--space-6);
-  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .block-notes .note:last-child {
