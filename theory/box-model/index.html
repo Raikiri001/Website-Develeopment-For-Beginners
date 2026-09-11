@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The invisible anatomy of every element: the content box in the middle, the padding and the border around it, the margin outside, and what the width you set actually measures." />
+    <title>The Box Model - Web Dev For Beginners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="../../assets/css/lesson.css" />
+    <script src="../../assets/js/theme.js"></script>
+  </head>
+  <body>
+    <div class="read-progress" id="readProgress" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="../../">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>Web Dev For Beginners</span>
+      </a>
+      <nav>
+        <a href="../../">Home</a>
+        <a href="../../dashboard/">Dashboard</a>
+      </nav>
+    </header>
+
+    <main class="lesson">
+      <nav class="lesson-toc" id="lessonToc" aria-label="On this page"></nav>
+      <div class="lesson-body">
+      <header class="lesson-hero">
+        <p class="lesson-eyebrow">Theory</p>
+        <h1>The Box Model</h1>
+        <p class="lesson-standfirst">Every element a browser draws is a <strong>box</strong>, and that box is built from four areas you cannot see all of: the content, the padding around it, the border around that, and the margin outside. This is the invisible anatomy of an element, and what the <strong>width</strong> you set actually measures.</p>
+      </header>
+
+      <div id="sections"></div>
+
+      <section class="compare-section" id="compare">
+        <header class="section-head">
+          <p class="section-eyebrow">Side by side</p>
+          <h2>Every part, compared</h2>
+          <p class="section-lead">
+            Every row asks the same question of all of them, so you can read
+            straight across to see what actually differs.
+          </p>
+        </header>
+        <div class="compare-scroll">
+          <table class="compare-table" id="comparison"></table>
+        </div>
+      </section>
+
+      <footer class="lesson-end">
+        <p>Every element is a box of four nested areas, padding is the space inside it, the border is the edge you can see, margin is the space it keeps clear outside itself, and the width you set only covers the whole box when you ask it to. Get those five straight and an element is never a size you cannot account for.</p>
+      </footer>
+      </div>
+    </main>
+
+    <script src="../../assets/js/progress.js"></script>
+    <script src="content.js"></script>
+    <script src="../../assets/js/lesson.js"></script>
+  </body>
+</html>
