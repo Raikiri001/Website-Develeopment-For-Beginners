@@ -252,6 +252,20 @@
     ]
   },
   {
+    "id": "modern-css-layouts",
+    "title": "Modern CSS Layouts",
+    "description": "How a page is laid out: the normal flow you start from, the one question that separates Flexbox from Grid, what each of the two tools does, and how a real page nests them.",
+    "category": "theory",
+    "topic": "css",
+    "order": 10,
+    "href": "theory/modern-css-layouts/",
+    "tags": [
+      "CSS",
+      "flexbox",
+      "grid"
+    ]
+  },
+  {
     "id": "dom-parsing",
     "title": "How Browsers Parse HTML and CSS",
     "description": "Step through a browser's parser one token at a time and watch it build the DOM tree, the CSSOM tree and the render tree in real time.",
